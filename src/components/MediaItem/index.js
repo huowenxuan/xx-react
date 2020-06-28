@@ -1,10 +1,6 @@
 import React, {PureComponent} from "react";
+import './index.css'
 
-const styles = {
-  img: {
-    width: '100%'
-  }
-}
 export default class MediaItem extends PureComponent {
   constructor(props) {
     super(props)
@@ -16,7 +12,7 @@ export default class MediaItem extends PureComponent {
   }
 
   _renderImage(item) {
-    return <img style={styles.img} src={item.body}/>
+    return <img className='image' src={item.body}/>
   }
 
   render() {
