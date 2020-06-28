@@ -9,7 +9,7 @@ export default class Index extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      openedAddItem: -1,
+      openedAddItem: 0,
       post
     }
   }

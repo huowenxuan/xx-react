@@ -6,7 +6,7 @@ export default class AddItem extends PureComponent {
     super(props)
 
     this.addActions = [
-      {'text': '照片', color: 'black'},
+      {'text': '照片', color: 'green'},
       {'text': '文字', color: 'cyan'},
       {'text': '链接', color: 'pink'},
       {'text': '视频', color: 'yellow'},
@@ -22,13 +22,12 @@ export default class AddItem extends PureComponent {
       >
         {this.addActions.map(({text, color}) => (
           <div
-            key={text}
-            onClick={() => {
-              alert(text)
-            }}
             className='add-item'
+            key={text}
+            onClick={() => alert(text)}
             style={{backgroundColor: color}}
           >
+            <p>icon</p>
             {text}
           </div>
         ))}
@@ -53,8 +52,8 @@ export default class AddItem extends PureComponent {
     const {isOpen, onClick} = this.props
     return (
       <div
-        // className='add-row'
-        style={{width: '100%', height: '30px', backgroundColor: isOpen ? 'red' : 'blue'}}
+        className='add-row'
+        style={{backgroundColor: isOpen ? 'red' : 'blue'}}
       >
         {isOpen
           ? this._renderOpen()
