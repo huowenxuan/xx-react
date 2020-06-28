@@ -1,3 +1,14 @@
+## TODO
+增加照片、文字、链接、视频 1
+文字样式 0.2
+增加音乐 0.5
+增加背景模板 0.5
++ 动画 0.5
+引入icon 0.2
+无状态组件 + 简单hooks 1
+sass/less 1
+
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
