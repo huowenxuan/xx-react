@@ -1,6 +1,8 @@
 import React, {Component} from 'react'
 import MediaItem from "../../components/MediaItem/";
 import AddItem from "../../components/AddItem/";
+import OpacityOverlay from '../../components/OpacityOverlay/'
+import AddTextOverlay from '../../components/AddTextOverlay/'
 import './index.css'
 
 const post = require('../../tmp/post.json')
@@ -12,13 +14,13 @@ const OverlayTypes = {
   Video: 'video'
 }
 
-export default class Index extends Component {
+export default class DetailPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
       openedAddItem: 0,
       overlayType: OverlayTypes.None,
-      overlayDisplay: 'none',
+      overlayIndex: -1,
       post
     }
 
@@ -29,6 +31,20 @@ export default class Index extends Component {
     const {id} = this.props.match.params
   }
 
+  _insertToMedia(index, data) {
+    const {media} = this.state.post
+    let arr1 = media.slice(0, index)
+    let arr2 = media.slice(index, media.length + 1)
+    arr1.push(data)
+    let newMedia = arr1.concat(arr2)
+    this.setState((preState)=>({
+      post: {
+        ...preState.post,
+        media: newMedia
+      }
+    }))
+  }
+
   _renderAddItem(index) {
     const {openedAddItem} = this.state
     return <AddItem
@@ -37,15 +53,15 @@ export default class Index extends Component {
         this.setState({openedAddItem: index})
       }}
       onText={() => {
-        this.setState({overlayDisplay: 'inherit'}, () => {
-          setImmediate(() => {
-            this.setState({
-              overlayType: 'text',
-            })
-          })
+        this.setState({
+          overlayType: OverlayTypes.Text,
+          overlayIndex: index
         })
       }}
       onImage={() => {
+        this.setState({
+          overlayIndex: index
+        })
         this.imageUpload.current.click()
       }}
       onLink={() => {
@@ -70,17 +86,16 @@ export default class Index extends Component {
   }
 
   _renderOverlayText() {
-    return (
-      <div
-        style={{
-          height: '50px', width: '300px', backgroundColor: 'blue'
-        }}
-      />
-    )
+    const {overlayIndex} = this.state
+    return <AddTextOverlay
+      onChange={(data)=>{
+        this._insertToMedia(overlayIndex, data)
+      }}
+    />
   }
 
   _renderOverlay() {
-    const {overlayType, overlayDisplay} = this.state
+    const {overlayType} = this.state
     let overlayView = null
     switch (overlayType) {
       case 'text':
@@ -92,21 +107,12 @@ export default class Index extends Component {
         }}/>
     }
     return (
-      <div
-        className='item-overlay'
-        style={{
-          display: overlayDisplay,
-          opacity: overlayType ? 1 : 0
-        }}
-        onClick={() => {
-          this.setState({overlayType: OverlayTypes.None})
-          setTimeout(() => {
-            this.setState({overlayDisplay: 'none'})
-          }, 300)
-        }}
+      <OpacityOverlay
+        show={!!overlayType}
+        onHidden={()=>this.setState({overlayType: OverlayTypes.None})}
       >
         {overlayView}
-      </div>
+      </OpacityOverlay>
     )
   }
 
@@ -133,7 +139,6 @@ export default class Index extends Component {
           {this._renderMedia(post.media)}
         </div>
 
-
         {this._renderOverlay()}
         <input
           ref={this.imageUpload}
@@ -147,15 +152,13 @@ export default class Index extends Component {
           }}
           onChange={(e) => {
             let files = this.imageUpload.current.files
-            let post = this.state.post
             let src = window.URL.createObjectURL(files[0]);
             console.log(src)
-            post.media.unshift({
+            this._insertToMedia(this.state.overlayIndex, {
               type: 'image',
               body: src,
               is_new: true
             })
-            this.setState(({post}))
           }}
         />
       </div>

@@ -19,13 +19,3 @@ input {
     padding: 5px;
     font-weight: 700;
 }
-
-.item-overlay {
-    background: white;
-    position: fixed;
-    transition: opacity .3s ease-out;
-    left: 0;
-    top:0;
-    right: 0;
-    bottom: 0;
-}

@@ -6,7 +6,7 @@ export default class AddItem extends PureComponent {
     super(props)
     const {onImage, onText, onLink, onVideo} = props
     this.addActions = [
-      {text: '照片', color: 'green', action: onImage, type: 'file'},
+      {text: '照片', color: 'green', action: onImage},
       {text: '文字', color: 'cyan', action: onText},
       {text: '链接', color: 'pink', action: onLink},
       {text: '视频', color: 'yellow', action: onVideo},
