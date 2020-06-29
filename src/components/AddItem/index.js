@@ -4,7 +4,7 @@ import './index.css'
 export default class AddItem extends PureComponent {
   constructor(props) {
     super(props)
-    const {onImage, onText, onLink, onVideo} = props
+    const {onImage, onText, onLink, onVideo, isOpen} = props
     this.addActions = [
       {text: '照片', color: 'green', action: onImage},
       {text: '文字', color: 'cyan', action: onText},
@@ -19,13 +19,13 @@ export default class AddItem extends PureComponent {
       <div
         className='add-row-open'
         onClick={onClick}
+        style={{opacity: isOpen ? 1 : 0, zIndex: isOpen ? 1 : 0}}
       >
         {this.addActions.map(({text, color, action}) => (
           <div
             className='add-item'
             key={text}
             onClick={action}
-            style={{backgroundColor: color}}
           >
             <p>icon</p>
             {text}
@@ -37,11 +37,11 @@ export default class AddItem extends PureComponent {
 
   _renderClose() {
     const {isOpen, onClick} = this.props
-
     return (
       <div
-        className='all-row-close'
+        className='add-row-close'
         onClick={onClick}
+        style={{opacity: isOpen ? 0 : 1, zIndex: isOpen ? 0 : 1}}
       >
         打开
       </div>
@@ -53,11 +53,10 @@ export default class AddItem extends PureComponent {
     return (
       <div
         className='add-row'
-        style={{backgroundColor: isOpen ? 'red' : 'blue'}}
+        // style={{backgroundColor: isOpen ? 'red' : 'blue'}}
       >
-        {isOpen
-          ? this._renderOpen()
-          : this._renderClose()}
+        {this._renderOpen()}
+        {this._renderClose()}
       </div>
     )
   }

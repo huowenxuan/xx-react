@@ -18,7 +18,7 @@ export default class DetailPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      openedAddItem: 0,
+      openedAddItem: -1,
       overlayType: OverlayTypes.None,
       overlayIndex: -1,
       post
@@ -31,13 +31,17 @@ export default class DetailPage extends Component {
     const {id} = this.props.match.params
   }
 
+  componentWillUnmount() {
+    this.fullOverlay.current.removeEventListener('click')
+  }
+
   _insertToMedia(index, data) {
     const {media} = this.state.post
     let arr1 = media.slice(0, index)
     let arr2 = media.slice(index, media.length + 1)
     arr1.push(data)
     let newMedia = arr1.concat(arr2)
-    this.setState((preState)=>({
+    this.setState((preState) => ({
       post: {
         ...preState.post,
         media: newMedia
@@ -88,7 +92,7 @@ export default class DetailPage extends Component {
   _renderOverlayText() {
     const {overlayIndex} = this.state
     return <AddTextOverlay
-      onChange={(data)=>{
+      onChange={(data) => {
         this._insertToMedia(overlayIndex, data)
       }}
     />
@@ -109,7 +113,7 @@ export default class DetailPage extends Component {
     return (
       <OpacityOverlay
         show={!!overlayType}
-        onHidden={()=>this.setState({overlayType: OverlayTypes.None})}
+        onHidden={() => this.setState({overlayType: OverlayTypes.None})}
       >
         {overlayView}
       </OpacityOverlay>
@@ -161,6 +165,7 @@ export default class DetailPage extends Component {
             })
           }}
         />
+
       </div>
     )
   }
