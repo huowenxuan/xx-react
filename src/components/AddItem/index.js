@@ -4,12 +4,12 @@ import './index.css'
 export default class AddItem extends PureComponent {
   constructor(props) {
     super(props)
-
+    const {onImage, onText, onLink, onVideo} = props
     this.addActions = [
-      {'text': '照片', color: 'green'},
-      {'text': '文字', color: 'cyan'},
-      {'text': '链接', color: 'pink'},
-      {'text': '视频', color: 'yellow'},
+      {text: '照片', color: 'green', action: onImage, type: 'file'},
+      {text: '文字', color: 'cyan', action: onText},
+      {text: '链接', color: 'pink', action: onLink},
+      {text: '视频', color: 'yellow', action: onVideo},
     ]
   }
 
@@ -20,11 +20,11 @@ export default class AddItem extends PureComponent {
         className='add-row-open'
         onClick={onClick}
       >
-        {this.addActions.map(({text, color}) => (
+        {this.addActions.map(({text, color, action}) => (
           <div
             className='add-item'
             key={text}
-            onClick={() => alert(text)}
+            onClick={action}
             style={{backgroundColor: color}}
           >
             <p>icon</p>
