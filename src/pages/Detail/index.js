@@ -60,13 +60,22 @@ export default class DetailPage extends Component {
         this.setState({
           overlayType: OverlayTypes.Text,
           overlayIndex: index
+        }, ()=>{
+          this.setState({
+            openedAddItem: -1
+          })
         })
       }}
       onImage={() => {
         this.setState({
           overlayIndex: index
+        }, ()=>{
+          this.setState({
+            openedAddItem: -1
+          })
         })
         this.imageUpload.current.click()
+
       }}
       onLink={() => {
         console.log('imag3')
