@@ -9,7 +9,7 @@ const post = require('../../tmp/post.json')
 const OverlayTypes = {
   None: null,
   Text: 'text',
-  Image: 'image',
+  Image: null,
   Link: 'link',
   Video: 'video'
 }
@@ -21,7 +21,7 @@ export default class DetailPage extends Component {
       openedAddItem: -1,
       post,
       overlay: {
-        type: OverlayTypes.Text,
+        type: OverlayTypes.None,
         index: -1, // 包含media的item和添加按钮
         data: null // 区分是修改item还是新增
       }
@@ -47,22 +47,27 @@ export default class DetailPage extends Component {
     }))
   }
 
-  _hiddenOverlayAndCloseAddItem = ()=> {
+  _hiddenOverlay = () => {
     this.setState({
       overlay: {
         type: OverlayTypes.None,
         index: -1,
         date: null,
       },
+    })
+  }
+
+  _closeAddItem = () => {
+    this.setState({
       openedAddItem: -1
     })
   }
 
   _updateMedia(newData) {
+    this._hiddenOverlay()
     const {index, data} = this.state.overlay
     if (newData.type === 'text') {
       if (!newData.body) {
-        this._hiddenOverlayAndCloseAddItem()
         return
       }
     }
@@ -83,7 +88,6 @@ export default class DetailPage extends Component {
       let newMedia = arr1.concat(arr2)
       this._setPostState('media', newMedia)
     }
-    this._hiddenOverlayAndCloseAddItem()
   }
 
   _enterTextEdit(index, data) {
@@ -97,6 +101,7 @@ export default class DetailPage extends Component {
   }
 
   _clickMedia(index, data) {
+    this._closeAddItem()
     switch (data.type) {
       case 'text':
         this._enterTextEdit(index, data)
@@ -107,6 +112,22 @@ export default class DetailPage extends Component {
     }
   }
 
+  _onAddClick(e, overlayType, index) {
+    e.stopPropagation()
+    setTimeout(this._closeAddItem, 300)
+    this.setState({
+      overlay: {
+        type: overlayType,
+        index,
+        data: null
+      }
+    })
+
+    if (overlayType === OverlayTypes.Image) {
+      this.imageUpload.current.click()
+    }
+  }
+
   _renderAddItem(index) {
     const {openedAddItem} = this.state
     return <AddItem
@@ -114,31 +135,10 @@ export default class DetailPage extends Component {
       onClick={() => {
         this.setState({openedAddItem: index})
       }}
-      onText={() => {
-        this.setState({
-          overlay:{
-            type: OverlayTypes.Text,
-            index,
-            data: null
-          }
-        })
-      }}
-      onImage={() => {
-        this.setState({
-          overlay: {
-            index,
-            type: OverlayTypes.None,
-            data: null
-          }
-        })
-        this.imageUpload.current.click()
-      }}
-      onLink={() => {
-        console.log('imag3')
-      }}
-      onVideo={() => {
-        console.log('image33')
-      }}
+      onText={(e) => this._onAddClick(e, OverlayTypes.Text, index)}
+      onImage={(e) => this._onAddClick(e, OverlayTypes.Image, index)}
+      onLink={(e) => this._onAddClick(e, OverlayTypes.Link, index)}
+      onVideo={(e) => this._onAddClick(e, OverlayTypes.Video, index)}
     />
   }
 
@@ -196,7 +196,7 @@ export default class DetailPage extends Component {
     return (
       <OpacityOverlay
         show={!!overlay.type}
-        onHidden={this._hiddenOverlayAndCloseAddItem}
+        onHidden={this._hiddenOverlay}
       >
         {overlayView}
       </OpacityOverlay>
