@@ -66,11 +66,7 @@ export default class DetailPage extends Component {
   _updateMedia(newData) {
     this._hiddenOverlay()
     const {index, data} = this.state.overlay
-    if (newData.type === 'text') {
-      if (!newData.body) {
-        return
-      }
-    }
+    if (!newData.body) return
 
     const {media} = this.state.post
     if (data) {
