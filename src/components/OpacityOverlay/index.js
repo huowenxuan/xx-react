@@ -44,7 +44,7 @@ export default class OpacityOverlay extends PureComponent {
           opacity,
           transition: `opacity ${Duration}ms ease-out`
         }}
-        onClick={this.hidden}>
+      >
         {this.props.children}
       </div>
     )

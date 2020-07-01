@@ -22,11 +22,10 @@
     transition: opacity .3s;
     /*background-color: red;*/
     display: flex;
-    /*justify-content: space-between;*/
-    /*align-items: center;*/
+    justify-content: space-between;
+    align-items: center;
 }
 .add-item {
-    height: 100%;
     flex: 1;
     text-align: center;
 }

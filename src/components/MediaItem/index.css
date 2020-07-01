@@ -1,3 +1,46 @@
+.item {
+    position: relative;
+}
 .image {
     width: 100%
+}
+
+.text-item {
+    padding: 40px 30px;
+    background-color: #E9E9E9;
+    color: #222;
+    line-height: 1.7;
+    font-size: 14px;
+}
+
+.item-btns {
+    position: absolute;
+    left: 0;
+    top:0;
+    right: 0;
+    bottom: 0;
+}
+
+.item-btn {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    background-color: rgba(255,255,255, .7);
+    border-radius: 50%;
+    margin: 5px;
+}
+
+.item-btn-del {
+    top: 0;
+    left: 0;
+}
+
+.item-btn-up {
+    top: 0;
+    right: 0
+}
+
+.item-btn-down {
+    top: 50px;
+    right: 0
 }

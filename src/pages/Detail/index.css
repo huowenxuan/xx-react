@@ -19,3 +19,7 @@ input {
     padding: 5px;
     font-weight: 700;
 }
+
+#imageUpload {
+    display: none;
+}

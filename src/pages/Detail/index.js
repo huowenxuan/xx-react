@@ -19,9 +19,12 @@ export default class DetailPage extends Component {
     super(props);
     this.state = {
       openedAddItem: -1,
-      overlayType: OverlayTypes.None,
-      overlayIndex: -1,
-      post
+      post,
+      overlay: {
+        type: OverlayTypes.Text,
+        index: -1, // 包含media的item和添加按钮
+        data: null // 区分是修改item还是新增
+      }
     }
 
     this.imageUpload = React.createRef()
@@ -35,18 +38,73 @@ export default class DetailPage extends Component {
     this.fullOverlay.current.removeEventListener('click')
   }
 
-  _insertToMedia(index, data) {
-    const {media} = this.state.post
-    let arr1 = media.slice(0, index)
-    let arr2 = media.slice(index, media.length + 1)
-    arr1.push(data)
-    let newMedia = arr1.concat(arr2)
+  _setPostState(field, data) {
     this.setState((preState) => ({
       post: {
         ...preState.post,
-        media: newMedia
+        [field]: data
       }
     }))
+  }
+
+  _hiddenOverlayAndCloseAddItem = ()=> {
+    this.setState({
+      overlay: {
+        type: OverlayTypes.None,
+        index: -1,
+        date: null,
+      },
+      openedAddItem: -1
+    })
+  }
+
+  _updateMedia(newData) {
+    const {index, data} = this.state.overlay
+    if (newData.type === 'text') {
+      if (!newData.body) {
+        this._hiddenOverlayAndCloseAddItem()
+        return
+      }
+    }
+
+    const {media} = this.state.post
+    if (data) {
+      // update
+      media[index] = {
+        ...data,
+        ...newData
+      }
+      this._setPostState('media', media)
+    } else {
+      // insert
+      let arr1 = media.slice(0, index)
+      let arr2 = media.slice(index, media.length + 1)
+      arr1.push(newData)
+      let newMedia = arr1.concat(arr2)
+      this._setPostState('media', newMedia)
+    }
+    this._hiddenOverlayAndCloseAddItem()
+  }
+
+  _enterTextEdit(index, data) {
+    this.setState({
+      overlay: {
+        type: OverlayTypes.Text,
+        index,
+        data
+      }
+    })
+  }
+
+  _clickMedia(index, data) {
+    switch (data.type) {
+      case 'text':
+        this._enterTextEdit(index, data)
+        break
+      case 'image':
+        console.log('点击图片')
+        break
+    }
   }
 
   _renderAddItem(index) {
@@ -58,24 +116,22 @@ export default class DetailPage extends Component {
       }}
       onText={() => {
         this.setState({
-          overlayType: OverlayTypes.Text,
-          overlayIndex: index
-        }, ()=>{
-          this.setState({
-            openedAddItem: -1
-          })
+          overlay:{
+            type: OverlayTypes.Text,
+            index,
+            data: null
+          }
         })
       }}
       onImage={() => {
         this.setState({
-          overlayIndex: index
-        }, ()=>{
-          this.setState({
-            openedAddItem: -1
-          })
+          overlay: {
+            index,
+            type: OverlayTypes.None,
+            data: null
+          }
         })
         this.imageUpload.current.click()
-
       }}
       onLink={() => {
         console.log('imag3')
@@ -88,41 +144,59 @@ export default class DetailPage extends Component {
 
   _renderMedia(media) {
     return media.map((data, index) => (
-      <div key={data.id}>
+      <ul key={data.id}>
         {this._renderAddItem(index)}
-        <MediaItem data={data}/>
+        <MediaItem
+          data={data}
+          onClick={() => this._clickMedia(index, data)}
+          onDelete={() => {
+            let media = this.state.post.media
+            media.splice(index, 1)
+            this._setPostState('media', media)
+          }}
+          onUp={() => {
+            let media = this.state.post.media
+            if (index === 0) return
+            [media[index - 1], media[index]] = [media[index], media[index - 1]]
+            this._setPostState('media', media)
+          }}
+          onDown={() => {
+            let media = this.state.post.media
+            if (index === media.length - 1) return
+            [media[index], media[index + 1]] = [media[index + 1], media[index]]
+            this._setPostState('media', media)
+          }}
+
+        />
         {index === media.length - 1
           ? this._renderAddItem(index + 1)
           : null}
-      </div>
+      </ul>
     ))
   }
 
   _renderOverlayText() {
-    const {overlayIndex} = this.state
+    const {overlay} = this.state
     return <AddTextOverlay
+      data={overlay.data}
       onChange={(data) => {
-        this._insertToMedia(overlayIndex, data)
+        this._updateMedia(data)
       }}
     />
   }
 
   _renderOverlay() {
-    const {overlayType} = this.state
+    const {overlay} = this.state
     let overlayView = null
-    switch (overlayType) {
+    switch (overlay.type) {
       case 'text':
         overlayView = this._renderOverlayText()
         break
-      default:
-        overlayView = <div style={{
-          height: '50px', width: '300px', backgroundColor: 'blue'
-        }}/>
     }
     return (
       <OpacityOverlay
-        show={!!overlayType}
-        onHidden={() => this.setState({overlayType: OverlayTypes.None})}
+        show={!!overlay.type}
+        onHidden={this._hiddenOverlayAndCloseAddItem}
       >
         {overlayView}
       </OpacityOverlay>
@@ -167,7 +241,7 @@ export default class DetailPage extends Component {
             let files = this.imageUpload.current.files
             let src = window.URL.createObjectURL(files[0]);
             console.log(src)
-            this._insertToMedia(this.state.overlayIndex, {
+            this._updateMedia({
               type: 'image',
               body: src,
               is_new: true
