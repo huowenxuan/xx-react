@@ -1,12 +1,13 @@
 import React, {PureComponent} from "react";
 import './index.css'
+import opacityWrapper from '../Wrappers/opacityWrapper'
 
 const Weights = ['normal', 'bold']
 const Colors = ['#222', 'red']
 const Aligns = ['left', 'center', 'right']
 const Sizes = ['16', '20', '13']
 
-export default class EditTextOverlay extends PureComponent {
+class EditTextOverlay extends PureComponent {
   constructor(props) {
     super(props)
     // style = fontWeight: "normal", textAlign: "left", fontSize: 16
@@ -21,7 +22,9 @@ export default class EditTextOverlay extends PureComponent {
   }
 
   componentDidMount() {
-    console.log(this.props.data)
+    setTimeout(() => {
+      console.log(this.props.data)
+    }, 1000)
   }
 
   _done = () => {
@@ -118,3 +121,4 @@ export default class EditTextOverlay extends PureComponent {
   }
 }
 
+export default opacityWrapper(EditTextOverlay)

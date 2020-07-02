@@ -7,7 +7,6 @@ export default class OpacityOverlay extends PureComponent {
     super(props)
     const {show} = props
     this.state = {
-      display: show ? 'inherit' : 'none',
       opacity: show ? 1 : 0
     }
   }

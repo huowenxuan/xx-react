@@ -1,6 +1,10 @@
 .add-image-wrapper {
     padding: 20px;
-    height: 100%;
+    position: fixed;
+    left: 0;
+    top:0;
+    right: 0;
+    bottom: 0;
     background-color: black;
 }
 .add-img {

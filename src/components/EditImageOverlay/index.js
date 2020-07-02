@@ -1,24 +1,26 @@
 import React, {PureComponent} from "react";
 import './index.css'
+import opacityWrapper from '../Wrappers/opacityWrapper'
 
 const Weights = ['normal', 'bold']
 const Colors = ['#222', 'red']
 const Aligns = ['left', 'center', 'right']
 const Sizes = ['16', '20', '13']
 
-export default class EditTextOverlay extends PureComponent {
+
+class EditTextOverlay extends PureComponent {
   constructor(props) {
     super(props)
     // info= format size height width
     // style= rotate:90
-    const {body, info = {}, style={}} = props.data || {}
+    const {body, info = {}, style = {}} = props.data || {}
     this.state = {
-      body
+      body,
     }
   }
 
   componentDidMount() {
-    setTimeout(()=>{
+    setTimeout(() => {
       console.log(this.props.data)
     }, 500)
   }
@@ -63,6 +65,7 @@ export default class EditTextOverlay extends PureComponent {
       textAlign = 'left'
     } = this.state
     const {onCancel} = this.props
+    console.log(body)
     return (
       <div
         className='add-image-wrapper'
@@ -77,3 +80,4 @@ export default class EditTextOverlay extends PureComponent {
   }
 }
 
+export default opacityWrapper(EditTextOverlay)

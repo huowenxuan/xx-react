@@ -21,7 +21,7 @@ export default class DetailPage extends Component {
     this.state = {
       openedAddItem: -1,
       post: null,
-      overlayType: MediaTypes.Image,
+      overlayType: MediaTypes.None,
       // 当前更新的media
       currentEdit: {
         index: 0, // 包含media的item和添加按钮
@@ -29,6 +29,7 @@ export default class DetailPage extends Component {
       }
     }
     this.imageUpload = React.createRef()
+    this.overlay = React.createRef()
   }
 
   componentDidMount() {
@@ -57,10 +58,6 @@ export default class DetailPage extends Component {
     this.setState({post})
   }
 
-  componentWillUnmount() {
-    this.fullOverlay.current.removeEventListener('click')
-  }
-
   _setPostState(field, data) {
     this.setState((preState) => ({
       post: {
@@ -70,7 +67,11 @@ export default class DetailPage extends Component {
     }))
   }
 
-  _hiddenOverlay = () => this.setState({overlayType: MediaTypes.None,})
+  _hiddenOverlay = () => {
+    this.overlay.current.hidden(() => {
+      this.setState({overlayType: MediaTypes.None})
+    })
+  }
 
   _closeAddItem = () => this.setState({openedAddItem: -1})
 
@@ -174,34 +175,26 @@ export default class DetailPage extends Component {
     const {overlayType} = this.state
     const {post, currentEdit} = this.state
     const {isNew, index} = currentEdit
-    let overlayView = null
     let curData = isNew ? null : post.media[index]
     switch (overlayType) {
       case 'text':
-        overlayView = (
+        return (
           <EditTextOverlay
+            ref={this.overlay}
             data={curData}
             onChange={(data) => this._updateMedia(isNew, data)}
           />
         )
-        break
-      case 'image' :
-        overlayView = (
+      case 'image':
+        return (
           <EditImageOverlay
+            ref={this.overlay}
             data={curData}
             onChange={(data) => this._updateMedia(isNew, data)}
             onCancel={this._hiddenOverlay}
           />
         )
     }
-    return (
-      <OpacityOverlay
-        show={!!overlayType}
-        onHidden={this._hiddenOverlay}
-      >
-        {overlayView}
-      </OpacityOverlay>
-    )
   }
 
   render() {

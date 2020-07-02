@@ -1,6 +1,7 @@
 import React, {PureComponent} from "react";
 import './index.css'
 
+const Duration = 300
 export default class AddItem extends PureComponent {
   constructor(props) {
     super(props)
@@ -11,15 +12,72 @@ export default class AddItem extends PureComponent {
       {text: '链接', color: 'pink', action: onLink},
       {text: '视频', color: 'yellow', action: onVideo},
     ]
+    this.state = {
+      openOpacity: 0,
+      closeOpacity: 1,
+      openDisplay: false,
+      closeDisplay: true,
+    }
+  }
+
+  open = () => {
+    this.setState({
+      closeDisplay: true,
+      openDisplay: true,
+    })
+    setTimeout(() => {
+      this.setState({
+        openOpacity: 1,
+        closeOpacity: 0,
+      })
+    })
+    setTimeout(() => {
+      this.setState({
+        closeDisplay: false
+      })
+    }, Duration)
+  }
+
+  close() {
+    this.setState({
+      closeDisplay: true,
+      openDisplay: true,
+    })
+    setTimeout(() => {
+      this.setState({
+        openOpacity: 0,
+        closeOpacity: 1,
+      })
+    })
+
+    setTimeout(() => {
+      this.setState({
+        openDisplay: false,
+      })
+    }, Duration)
+  }
+
+  componentWillReceiveProps(nextProps, nextContext) {
+    const {isOpen} = nextProps
+    if (isOpen !== this.props.isOpen) {
+      if (isOpen) this.open()
+      else this.close()
+    }
   }
 
   _renderOpen() {
-    const {isOpen, onClick} = this.props
+    const {onClick} = this.props
+    const {openOpacity, openDisplay} = this.state
+    let style = {
+      opacity: openOpacity,
+      transition: `opacity ${Duration}ms ease-out`
+    }
+    if (!openDisplay) style.display = 'none'
     return (
       <div
         className='add-row-open'
         onClick={onClick}
-        style={{opacity: isOpen ? 1 : 0, zIndex: isOpen ? 1 : 0}}
+        style={style}
       >
         {this.addActions.map(({text, color, action}) => (
           <div
@@ -36,12 +94,15 @@ export default class AddItem extends PureComponent {
   }
 
   _renderClose() {
-    const {isOpen, onClick} = this.props
+    const {onClick} = this.props
+    const {closeOpacity, closeDisplay} = this.state
+    let style = {opacity: closeOpacity, transition: `opacity ${Duration}ms ease-out`}
+    if (!closeDisplay) style.display = 'none'
     return (
       <div
         className='add-row-close'
         onClick={onClick}
-        style={{opacity: isOpen ? 0 : 1, zIndex: isOpen ? 0 : 1}}
+        style={style}
       >
         打开
       </div>
@@ -49,11 +110,9 @@ export default class AddItem extends PureComponent {
   }
 
   render() {
-    const {isOpen, onClick} = this.props
     return (
       <div
         className='add-row'
-        // style={{backgroundColor: isOpen ? 'red' : 'blue'}}
       >
         {this._renderOpen()}
         {this._renderClose()}
