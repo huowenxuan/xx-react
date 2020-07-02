@@ -3,6 +3,7 @@ import MediaItem from "../../components/MediaItem/";
 import AddItem from "../../components/AddItem/";
 import OpacityOverlay from '../../components/OpacityOverlay/'
 import EditTextOverlay from '../../components/EditTextOverlay/'
+import EditImageOverlay from '../../components/EditImageOverlay/'
 import './index.css'
 
 const post = require('../../tmp/post.json')
@@ -19,20 +20,41 @@ export default class DetailPage extends Component {
     super(props);
     this.state = {
       openedAddItem: -1,
-      post,
-      overlayType: MediaTypes.None,
+      post: null,
+      overlayType: MediaTypes.Image,
       // 当前更新的media
       currentEdit: {
-        index: -1, // 包含media的item和添加按钮
-        isNew: true  // 区分是修改item还是新增
+        index: 0, // 包含media的item和添加按钮
+        isNew: false  // 区分是修改item还是新增
       }
     }
-
     this.imageUpload = React.createRef()
   }
 
   componentDidMount() {
     const {id} = this.props.match.params
+
+    this._initData()
+  }
+
+  _toJson(data) {
+    try {
+      return JSON.parse(data)
+    } catch (e) {
+      return data
+    }
+  }
+
+  _initData() {
+    const {media} = post
+    for (let item of media) {
+      const {info, type, style} = item
+      if (type === 'image') {
+        item.info = this._toJson(info) || {}
+        item.style = this._toJson(style) || {}
+      }
+    }
+    this.setState({post})
   }
 
   componentWillUnmount() {
@@ -147,24 +169,30 @@ export default class DetailPage extends Component {
     ))
   }
 
-  _renderOverlayText() {
-    const {post, currentEdit} = this.state
-    const {isNew, index} = currentEdit
-    return <EditTextOverlay
-      data={isNew ? null : post.media[index]}
-      onChange={(data) => {
-        this._updateMedia(isNew, data)
-      }}
-    />
-  }
 
   _renderOverlay() {
     const {overlayType} = this.state
+    const {post, currentEdit} = this.state
+    const {isNew, index} = currentEdit
     let overlayView = null
+    let curData = isNew ? null : post.media[index]
     switch (overlayType) {
       case 'text':
-        overlayView = this._renderOverlayText()
+        overlayView = (
+          <EditTextOverlay
+            data={curData}
+            onChange={(data) => this._updateMedia(isNew, data)}
+          />
+        )
         break
+      case 'image' :
+        overlayView = (
+          <EditImageOverlay
+            data={curData}
+            onChange={(data) => this._updateMedia(isNew, data)}
+            onCancel={this._hiddenOverlay}
+          />
+        )
     }
     return (
       <OpacityOverlay
@@ -178,6 +206,10 @@ export default class DetailPage extends Component {
 
   render() {
     const {post} = this.state
+    if (!post) {
+      return '等待'
+    }
+
     return (
       <div>
         <a href='#/'>回到Home</a>

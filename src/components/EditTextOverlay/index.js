@@ -25,14 +25,16 @@ export default class EditTextOverlay extends PureComponent {
   }
 
   _done = () => {
-    const {onChange} = this.props
+    const {onChange, data} = this.props
     const {text, fontWeight, textAlign, fontSize, color} = this.state
     let style = {}
     if (fontWeight) style.fontWeight = fontWeight
     if (textAlign) style.textAlign = textAlign
     if (fontSize) style.fontSize = fontSize
     if (color) style.color = color
+    console.log(data)
     onChange && onChange({
+      ...data,
       type: 'text',
       body: text,
       style
