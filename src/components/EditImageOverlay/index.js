@@ -3,10 +3,6 @@ import './index.css'
 import opacityWrapper from '../Wrappers/opacityWrapper'
 
 const Weights = ['normal', 'bold']
-const Colors = ['#222', 'red']
-const Aligns = ['left', 'center', 'right']
-const Sizes = ['16', '20', '13']
-
 
 class EditTextOverlay extends PureComponent {
   constructor(props) {
@@ -71,10 +67,17 @@ class EditTextOverlay extends PureComponent {
         className='add-image-wrapper'
         onClick={onCancel}
       >
-        <img
-          className='add-img'
-          src={body}
-        />
+        <div style={{position: 'relative', height: '100%'}}>
+          <div className='add-img-box'>
+            <div
+              className='add-img'
+              style={{backgroundImage: `url(${body})`}}
+            />
+          </div>
+
+          <div className='add-img-bottom'>
+          </div>
+        </div>
       </div>
     )
   }

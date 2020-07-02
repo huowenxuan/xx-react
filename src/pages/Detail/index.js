@@ -68,7 +68,7 @@ export default class DetailPage extends Component {
   }
 
   _hiddenOverlay = () => {
-    this.overlay.current.hidden(() => {
+    this.overlay.current && this.overlay.current.hidden(() => {
       this.setState({overlayType: MediaTypes.None})
     })
   }
