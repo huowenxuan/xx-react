@@ -6,7 +6,7 @@ const Colors = ['#222', 'red']
 const Aligns = ['left', 'center', 'right']
 const Sizes = ['16', '20', '13']
 
-export default class AddTextOverlay extends PureComponent {
+export default class EditTextOverlay extends PureComponent {
   constructor(props) {
     super(props)
     // style = fontWeight: "normal", textAlign: "left", fontSize: 16
