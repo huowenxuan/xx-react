@@ -32,15 +32,27 @@ export default class MediaItem extends PureComponent {
   }
 
   _renderImage(item) {
-    const {style = {}} = item
+    const {style = {}, info = {}} = item
     const {rotate = 0} = style
-    return <img
-      className='image'
-      style={{
-        transform: `rotate(${rotate}deg)`
-      }}
-      src={item.body}
-    />
+    const {width, height} = info
+    let scale = 1
+    // 旋转后缩放以尽可能适应容器大小
+    if (width && height && (rotate === 90 || rotate === 270)) {
+      scale =  width / height
+    }
+    return (
+      <div
+        className='image-box'
+      >
+        <img
+          className='image'
+          style={{
+            transform: `rotate(${rotate}deg) scale(${scale}, ${scale})`,
+          }}
+          src={item.body}
+        />
+      </div>
+    )
   }
 
   _renderBtns() {
