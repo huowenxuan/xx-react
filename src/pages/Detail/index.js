@@ -21,10 +21,10 @@ export default class DetailPage extends Component {
     this.state = {
       openedAddItem: -1,
       post: null,
-      overlayType: MediaTypes.Image,
+      overlayType: MediaTypes.None,
       // 当前更新的media
       currentEdit: {
-        index: 0, // 包含media的item和添加按钮
+        index: -1, // 包含media的item和添加按钮
         isNew: false  // 区分是修改item还是新增
       }
     }
@@ -154,7 +154,7 @@ export default class DetailPage extends Component {
 
   _renderMedia(media) {
     return media.map((data, index) => (
-      <ul key={data.id}>
+      <ul key={`${data._id}-${index}`}>
         {this._renderAddItem(index)}
         <MediaItem
           data={data}
@@ -197,29 +197,36 @@ export default class DetailPage extends Component {
     }
   }
 
+  _renderCover() {
+    const {post} = this.state
+    const {coverKeyUrl} = post
+    return (
+      <div
+        id='cover'
+        style={{backgroundImage: `url(${coverKeyUrl})`}}
+      >
+      </div>
+    )
+  }
+
   render() {
     const {post} = this.state
-    if (!post) {
-      return '等待'
-    }
+    if (!post) return '等待'
 
     return (
       <div>
         <a href='#/'>回到Home</a>
         <button onClick={() => this.props.history.goBack()}>back</button>
 
+        {this._renderCover()}
         <div id='wrapper'>
           <div id='title-box'>
             <input
               id='title-input'
-              className='btn btn-primary btn-block'
-              // onFocus='StartEditTitle(this)'
-              // onBlur='ResetTitleStyle(this)'
               placeholder="输入标题"
               defaultValue={post.title}
             />
           </div>
-
           <p>{post.description}</p>
           {this._renderMedia(post.media)}
         </div>
