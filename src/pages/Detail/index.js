@@ -244,20 +244,24 @@ export default class DetailPage extends Component {
           }}
           onChange={(e) => {
             let files = this.imageUpload.current.files
-            let file = files[0]
-            let src = window.URL.createObjectURL(file);
-            console.log(file)
-            let image = new Image()
-            image.src = src
-            image.onload = ()=>{
-              this._updateMedia(true, {
-                type: 'image',
-                body: src,
-                is_new: true,
-                info: {width: image.width, height: image.height}
-              })
+            for (let file of files) {
+              let src = window.URL.createObjectURL(file);
+              console.log(file)
+              let image = new Image()
+              image.src = src
+              image.onload = ()=>{
+                this._updateMedia(true, {
+                  type: 'image',
+                  body: src,
+                  is_new: true,
+                  info: {
+                    width: image.width,
+                    height: image.height,
+                    size: file.size
+                  }
+                })
+              }
             }
-
           }}
         />
 

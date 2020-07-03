@@ -41,9 +41,7 @@ export default class MediaItem extends PureComponent {
       scale =  width / height
     }
     return (
-      <div
-        className='image-box'
-      >
+      <div className='image-box'>
         <img
           className='image'
           style={{
