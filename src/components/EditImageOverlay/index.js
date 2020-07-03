@@ -2,16 +2,18 @@ import React, {PureComponent} from "react";
 import './index.css'
 import opacityWrapper from '../Wrappers/opacityWrapper'
 
-const Weights = ['normal', 'bold']
+const Rotates = ['0', '90', '180', '270']
 
 class EditTextOverlay extends PureComponent {
   constructor(props) {
     super(props)
     // info= format size height width
     // style= rotate:90
-    const {body, info = {}, style = {}} = props.data || {}
+    const {body, style = {}} = props.data || {}
+    const {rotate} = style
     this.state = {
       body,
+      rotate
     }
   }
 
@@ -23,16 +25,12 @@ class EditTextOverlay extends PureComponent {
 
   _done = () => {
     const {onChange, data} = this.props
-    const {text, fontWeight, textAlign, fontSize, color} = this.state
+    const {rotate} = this.state
     let style = {}
-    if (fontWeight) style.fontWeight = fontWeight
-    if (textAlign) style.textAlign = textAlign
-    if (fontSize) style.fontSize = fontSize
-    if (color) style.color = color
+    if (rotate) style.rotate = rotate
     onChange && onChange({
       ...data,
       type: 'image',
-      body: text,
       style,
     })
   }
@@ -55,13 +53,9 @@ class EditTextOverlay extends PureComponent {
   render() {
     const {
       body,
-      fontWeight = Weights[0],
-      color = '#222',
-      fontSize = '16',
-      textAlign = 'left'
+      rotate = Rotates[0],
     } = this.state
     const {onCancel} = this.props
-    console.log(body)
     return (
       <div
         className='add-image-wrapper'
@@ -71,11 +65,34 @@ class EditTextOverlay extends PureComponent {
           <div className='add-img-box'>
             <div
               className='add-img'
-              style={{backgroundImage: `url(${body})`}}
+              style={{
+                backgroundImage: `url(${body})`,
+                transform: `rotate(${rotate}deg)`
+              }}
             />
           </div>
 
-          <div className='add-img-bottom'>
+          <div
+            className='add-img-bottom'
+            onClick={e=>e.stopPropagation()}
+          >
+            <div className='add-img-bottom-btns'>
+              <div>
+
+              </div>
+              <div onClick={()=>this.change('rotate', Rotates)}>
+                旋转
+              </div>
+            </div>
+
+            <div className='add-img-confirm-box'>
+              <div onClick={onCancel}>
+                取消
+              </div>
+              <div onClick={this._done}>
+                确认
+              </div>
+            </div>
           </div>
         </div>
       </div>

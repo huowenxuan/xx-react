@@ -9,7 +9,7 @@
 }
 .add-img-box {
     height: 100%;
-    padding-bottom: 200px;
+    padding-bottom: 80px;
     box-sizing: border-box;
 }
 .add-img {
@@ -21,20 +21,24 @@
 }
 
 .add-img-bottom {
+    color: white;
     position: absolute;
     bottom: 0;
     left: 0;
     right: 0;
-    height: 200px;
-    background-color: red;
+    height: 80px;
+    /*background-color: red;*/
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
-.add-text-btns {
+
+.add-img-bottom-btns {
     display: flex;
     justify-content: space-between;
 }
-.add-text-left-btns {
+
+.add-img-confirm-box {
     display: flex;
-}
-.add-text-left-btns {
-    padding: 0 10px 0 0 ;
+    justify-content: space-around;
 }

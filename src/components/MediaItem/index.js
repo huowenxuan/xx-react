@@ -12,8 +12,8 @@ export default class MediaItem extends PureComponent {
   }
 
   _renderText(item) {
-    const {style={}, body} = item
-    const {fontSize=16, fontWeight='normal', color='#222', textAlign='left'} = style
+    const {style = {}, body} = item
+    const {fontSize = 16, fontWeight = 'normal', color = '#222', textAlign = 'left'} = style
     return (
       <div className='text-item'>
         <p
@@ -32,7 +32,15 @@ export default class MediaItem extends PureComponent {
   }
 
   _renderImage(item) {
-    return <img className='image' src={item.body}/>
+    const {style = {}} = item
+    const {rotate = 0} = style
+    return <img
+      className='image'
+      style={{
+        transform: `rotate(${rotate}deg)`
+      }}
+      src={item.body}
+    />
   }
 
   _renderBtns() {
@@ -41,19 +49,19 @@ export default class MediaItem extends PureComponent {
       <div className='item-btns'>
         <button
           className='item-btn item-btn-del'
-          onClick={e=>this._action(e, onDelete)}
+          onClick={e => this._action(e, onDelete)}
         >
           X
         </button>
         <button
           className='item-btn item-btn-up'
-          onClick={e=>this._action(e, onUp)}
+          onClick={e => this._action(e, onUp)}
         >
           ↑
         </button>
         <button
           className='item-btn item-btn-down'
-          onClick={e=>this._action(e, onDown)}
+          onClick={e => this._action(e, onDown)}
         >
           ↓
         </button>
