@@ -2,8 +2,6 @@ import React, {PureComponent} from "react";
 import './index.css'
 import opacityWrapper from '../Wrappers/opacityWrapper'
 
-const Rotates = ['0', '90', '180', '270']
-
 class EditTextOverlay extends PureComponent {
   constructor(props) {
     super(props)
@@ -27,7 +25,8 @@ class EditTextOverlay extends PureComponent {
     const {onChange, data} = this.props
     const {rotate} = this.state
     let style = {}
-    if (rotate) style.rotate = rotate
+    // 归到0、90、180、270度
+    if (rotate) style.rotate = (rotate / 90) % 4 * 90
     onChange && onChange({
       ...data,
       type: 'image',
@@ -35,25 +34,16 @@ class EditTextOverlay extends PureComponent {
     })
   }
 
-  change = (type, all) => {
-    this.setState((preState) => {
-      let cur = preState[type]
-      let index = all.indexOf(cur)
-      let next
-      if (index === -1) next = all[1]
-      else if (index === all.length - 1) next = all[0]
-      else next = all[index + 1]
-
-      return {
-        [type]: next
-      }
+  _rotate(nowRotate) {
+    this.setState({
+      rotate: nowRotate + 90
     })
   }
 
   render() {
     const {
       body,
-      rotate = Rotates[0],
+      rotate = 0
     } = this.state
     const {onCancel} = this.props
     return (
@@ -80,7 +70,7 @@ class EditTextOverlay extends PureComponent {
               <div>
 
               </div>
-              <div onClick={()=>this.change('rotate', Rotates)}>
+              <div onClick={()=>this._rotate(rotate)}>
                 旋转
               </div>
             </div>
