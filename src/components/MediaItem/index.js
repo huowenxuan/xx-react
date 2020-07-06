@@ -53,6 +53,23 @@ export default class MediaItem extends PureComponent {
     )
   }
 
+  _renderSortVideo(item) {
+    return (
+      <div
+        onClick={e=>{
+          // e.stopPropagation()
+          console.log('onclick')
+        }}
+        className='image-box'>
+        <video
+          controls={true}
+          className='video'
+          src={item.body}
+        />
+      </div>
+    )
+  }
+
   _renderBtns() {
     const {onDelete, onUp, onDown} = this.props
     return (
@@ -79,8 +96,13 @@ export default class MediaItem extends PureComponent {
     )
   }
 
-  render() {
+  _onClick = ()=> {
     const {data, onClick} = this.props
+    onClick && onClick()
+  }
+
+  render() {
+    const {data} = this.props
     const {type} = data
     let _renderItem = null
     switch (type) {
@@ -89,11 +111,14 @@ export default class MediaItem extends PureComponent {
         break
       case 'image':
         _renderItem = this._renderImage(data)
+        break
+      case 'sortvideo':
+        _renderItem = this._renderSortVideo(data)
     }
     return (
       <li
         className='item'
-        onClick={onClick}
+        onClick={this._onClick}
       >
         {_renderItem}
         {this._renderBtns()}
