@@ -6,6 +6,7 @@ import EditTextOverlay from '../../components/EditTextOverlay/'
 import EditImageOverlay from '../../components/EditImageOverlay/'
 import EditLinkOverlay from '../../components/EditLinkOverlay/'
 import './index.css'
+import overlay from "../../components/overlays";
 
 const post = require('../../tmp/post.json')
 const MediaTypes = {
@@ -38,7 +39,7 @@ export default class DetailPage extends Component {
 
     this._initData()
 
-    setTimeout(()=>{
+    setTimeout(() => {
       console.log(this.props.a)
     }, 2000)
 
@@ -138,7 +139,24 @@ export default class DetailPage extends Component {
       currentEdit: {index, isNew: true}
     })
     if (type === MediaTypes.Image) {
+      this.imageUpload.current.accept = '.jpg, .jpeg, .png, .gif'
       this.imageUpload.current.click()
+    } else if (type === MediaTypes.Video) {
+      overlay.showActionSheet([
+        {
+          text: '本地', onPress: () => {
+            console.log('本地')
+            this.imageUpload.current.accept = '.mp4, .mov'
+            this.imageUpload.current.click()
+          }
+        },
+        {
+          text: '网络', onPress: () => {
+            console.log('网络')
+            this.setState({overlayType: type})
+          }
+        },
+      ])
     } else {
       this.setState({overlayType: type})
     }
@@ -176,7 +194,6 @@ export default class DetailPage extends Component {
     ))
   }
 
-
   _renderOverlay() {
     const {overlayType} = this.state
     const {post, currentEdit} = this.state
@@ -196,7 +213,6 @@ export default class DetailPage extends Component {
       default:
         return null
     }
-
 
     return (
       <OverlayView
@@ -258,19 +274,38 @@ export default class DetailPage extends Component {
             for (let file of files) {
               let src = window.URL.createObjectURL(file);
               console.log(file)
-              let image = new Image()
-              image.src = src
-              image.onload = ()=>{
-                this._updateMedia(true, {
-                  type: 'image',
-                  body: src,
-                  is_new: true,
-                  info: {
-                    width: image.width,
-                    height: image.height,
-                    size: file.size
-                  }
-                })
+              if (file.type === 'video/mp4') {
+                let video = document.createElement('video')
+                video.src = src
+                video.addEventListener('loadedmetadata', (e) => {
+                  const {videoWidth, videoHeight} = video
+                  this._updateMedia(true, {
+                    type: 'sortvideo',
+                    body: src,
+                    is_new: true,
+                    info: {
+                      width: videoWidth,
+                      height: videoHeight,
+                      size: file.size
+                    }
+                  })
+                });
+              } else {
+                let image = new Image()
+                image.src = src
+                image.onload = () => {
+                  console.log(image)
+                  this._updateMedia(true, {
+                    type: 'image',
+                    body: src,
+                    is_new: true,
+                    info: {
+                      width: image.width,
+                      height: image.height,
+                      size: file.size
+                    }
+                  })
+                }
               }
             }
           }}

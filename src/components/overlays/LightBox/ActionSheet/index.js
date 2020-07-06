@@ -16,10 +16,7 @@ export default class ActionSheet extends PureComponent {
   }
 
   static defaultProps = {
-    buttons: [
-      {text: '打开'},
-      {text: '关闭'},
-    ]
+    buttons:[]
   }
 
   static propTypes = {
