@@ -146,7 +146,7 @@ export default class DetailPage extends Component {
         {
           text: '本地', onPress: () => {
             console.log('本地')
-            this.imageUpload.current.accept = '.mp4, .mov'
+            this.imageUpload.current.accept = 'video/*'
             this.imageUpload.current.click()
           }
         },
@@ -278,17 +278,21 @@ export default class DetailPage extends Component {
                 let video = document.createElement('video')
                 video.src = src
                 video.addEventListener('loadedmetadata', (e) => {
-                  const {videoWidth, videoHeight} = video
-                  this._updateMedia(true, {
-                    type: 'sortvideo',
-                    body: src,
-                    is_new: true,
-                    info: {
-                      width: videoWidth,
-                      height: videoHeight,
-                      size: file.size
-                    }
-                  })
+                  const {videoWidth, videoHeight, duration} = video
+                  if (duration > 60) {
+                    alert('视频最长60秒')
+                  } else {
+                    this._updateMedia(true, {
+                      type: 'sortvideo',
+                      body: src,
+                      is_new: true,
+                      info: {
+                        width: videoWidth,
+                        height: videoHeight,
+                        size: file.size
+                      }
+                    })
+                  }
                 });
               } else {
                 let image = new Image()
