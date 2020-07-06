@@ -4,6 +4,8 @@ import AddItem from "../../components/AddItem/";
 import OpacityOverlay from '../../components/OpacityOverlay/'
 import EditTextOverlay from '../../components/EditTextOverlay/'
 import EditImageOverlay from '../../components/EditImageOverlay/'
+import EditLinkOverlay from '../../components/EditLinkOverlay/'
+import BottomSelect from '../../components/models/BottomSelect'
 import './index.css'
 
 const post = require('../../tmp/post.json')
@@ -176,25 +178,30 @@ export default class DetailPage extends Component {
     const {post, currentEdit} = this.state
     const {isNew, index} = currentEdit
     let curData = isNew ? null : post.media[index]
+    let OverlayView = null
     switch (overlayType) {
       case 'text':
-        return (
-          <EditTextOverlay
-            ref={this.overlay}
-            data={curData}
-            onChange={(data) => this._updateMedia(isNew, data)}
-          />
-        )
+        OverlayView = EditTextOverlay
+        break
       case 'image':
-        return (
-          <EditImageOverlay
-            ref={this.overlay}
-            data={curData}
-            onChange={(data) => this._updateMedia(isNew, data)}
-            onCancel={this._hiddenOverlay}
-          />
-        )
+        OverlayView = EditImageOverlay
+        break
+      case 'link':
+        OverlayView = EditLinkOverlay
+        break
+      default:
+        return null
     }
+
+
+    return (
+      <OverlayView
+        ref={this.overlay}
+        data={curData}
+        onChange={(data) => this._updateMedia(isNew, data)}
+        onCancel={this._hiddenOverlay}
+      />
+    )
   }
 
   _renderCover() {
@@ -264,6 +271,32 @@ export default class DetailPage extends Component {
             }
           }}
         />
+
+        <BottomSelect
+          // 自定义的style
+          style={{
+            color:"#666",
+            padding:10,
+            paddingTop:0,
+            borderRadius:8,
+            display:"block"
+          }}
+          visible={true}
+          // hide={this.hide}
+          // onOK={this.ok}
+          // onCancel={this.cancel}
+          title="温馨提示"
+        >
+          <p>快乐每一天</p>
+          <p>我是小白</p>
+
+          <button onClick={()=>{
+            alert(this.state.hello)
+          }}>
+            say hello
+          </button>
+
+        </BottomSelect>
 
       </div>
     )
