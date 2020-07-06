@@ -1,18 +1,17 @@
 'use strict'
 
 import React, {PureComponent} from 'react';
-
+import eventEmitter from './events'
 export default class OverlayView extends PureComponent {
   constructor(props) {
     super(props)
-    this.emitter = props.emitter
 
     this.hideWithKey = this.hideWithKey.bind(this)
     this.hideTop = this.hideTop.bind(this)
     this.disappear = this.disappear.bind(this)
-    this.emitter.addListener("hideOverlayWithKey", this.hideWithKey);
-    this.emitter.addListener("hideOverlayTop", this.hideTop);
-    this.emitter.addListener("hideAllOverlay", this.disappear);
+    eventEmitter.addListener("hideOverlayWithKey", this.hideWithKey);
+    eventEmitter.addListener("hideOverlayTop", this.hideTop);
+    eventEmitter.addListener("hideAllOverlay", this.disappear);
 
     this.onBackAndroidDisappear = this.onBackAndroidDisappear.bind(this)
     this.onBackAndroidNothing = this.onBackAndroidNothing.bind(this)
@@ -33,9 +32,9 @@ export default class OverlayView extends PureComponent {
   }
 
   componentWillUnmount() {
-    this.emitter.removeListener("hideOverlayWithKey", this.hideWithKey);
-    this.emitter.removeListener("hideOverlayTop", this.hideTop);
-    this.emitter.removeListener("hideAllOverlay", this.disappear);
+    eventEmitter.removeListener("hideOverlayWithKey", this.hideWithKey);
+    eventEmitter.removeListener("hideOverlayTop", this.hideTop);
+    eventEmitter.removeListener("hideAllOverlay", this.disappear);
 
     // if (this.props.shouldBackPressDisappear) {
     //   BackHandler.removeEventListener('hardwareBackPress', this.onBackAndroidDisappear);

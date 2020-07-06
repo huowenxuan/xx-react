@@ -30,11 +30,12 @@ export default class ActionSheet extends PureComponent {
     return (
       <button
         onClick={() => this._onButtonPress(data.onPress)}
-        style={styles.button}
+        style={{
+          ...styles.button,
+          color: data.textColor || '#0076FF'
+        }}
       >
-        <p style={{...styles.buttonText, color: data.textColor || '#0076FF'}}>
-          {data.text}
-        </p>
+        {data.text}
       </button>
     )
   }
@@ -44,11 +45,10 @@ export default class ActionSheet extends PureComponent {
     onPress && onPress()
   }
 
-  _dismiss = ()=> {
+  _dismiss = () => {
     // Router.dismissLightBox()
-    const {dismiss} = this.props
-    dismiss && dismiss()
-    console.log('aaaa')
+    const {onDismiss} = this.props
+    onDismiss && onDismiss()
   }
 
   render() {
@@ -66,8 +66,6 @@ export default class ActionSheet extends PureComponent {
                 <div style={styles.line}/>
               </div>
             ))}
-
-
           </div>
 
           <div style={styles.cancelButtonBox}>
@@ -109,9 +107,7 @@ let styles = {
   button: {
     height: 50,
     textAlign: 'center',
-    width: '100%'
-  },
-  buttonText: {
+    width: '100%',
     fontSize: 17,
     color: '#0076FF',
   }

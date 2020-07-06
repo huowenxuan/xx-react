@@ -1,5 +1,6 @@
 import React, {Children, Component, PureComponent} from 'react'
 import md5 from 'md5'
+import eventEmitter from './events'
 
 function randomString() {
   let str = new Date() + Math.random().toString(36).substr(2)
@@ -23,39 +24,38 @@ export default class TopView extends PureComponent {
     this.state = {
       elements: [],
     };
-    this.emitter = props.emitter
     this._show = this._show.bind(this)
     this._update = this._update.bind(this)
     // 必须在willMount中，如果开始运行后马上显示，在didMount中就无法显示出来，需要延迟显示
-    this.emitter.addListener("showOverlay", this._show);
-    this.emitter.addListener("updateOverlay", this._update);
+    eventEmitter.addListener("showOverlay", this._show);
+    eventEmitter.addListener("updateOverlay", this._update);
   }
 
   componentWillUnmount() {
-    this.emitter.removeListener("showOverlay", this._show);
-    this.emitter.removeListener("updateOverlay", this._update);
+    eventEmitter.removeListener("showOverlay", this._show);
+    eventEmitter.removeListener("updateOverlay", this._update);
   }
 
-  static show(emitter, element) {
+  static show(element) {
     let _key = randomString()
-    setImmediate(() => emitter.emit("showOverlay", {_key, element}))
+    setImmediate(() => eventEmitter.emit("showOverlay", {_key, element}))
     return _key;
   }
 
-  static update(emitter, key, element) {
-    setImmediate(() => emitter.emit("updateOverlay", {key, element}))
+  static update(key, element) {
+    setImmediate(() => eventEmitter.emit("updateOverlay", {key, element}))
   }
 
-  static hideTop(emitter) {
-    setImmediate(() => emitter.emit("hideOverlayTop", {}))
+  static hideTop() {
+    setImmediate(() => eventEmitter.emit("hideOverlayTop", {}))
   }
 
-  static hideWithKey(emitter, _key) {
-    setImmediate(() => emitter.emit("hideOverlayWithKey", {_key}))
+  static hideWithKey(_key) {
+    setImmediate(() => eventEmitter.emit("hideOverlayWithKey", {_key}))
   }
 
-  static hideAll(emitter) {
-    setImmediate(() => emitter.emit("hideAllOverlay", {}))
+  static hideAll() {
+    setImmediate(() => eventEmitter.emit("hideAllOverlay", {}))
   }
 
   _show(e) {

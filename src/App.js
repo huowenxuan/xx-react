@@ -11,7 +11,6 @@ import ActionSheet from "./components/overlays/LightBox/ActionSheet/"
 import OverlayViewPopup from "./components/overlays/OverlayViewPopup";
 import {EventEmitter} from 'events';
 import ReactDOM from "react-dom";
-import eventEmitter from './components/overlays/events'
 
 let node = document.createElement("div")
 document.body.appendChild(node);
@@ -29,9 +28,9 @@ ReactDOM.render(
 export default class extends PureComponent {
   componentDidMount() {
     setTimeout(() => {
-      TopView.show(emitter,
-        <OverlayViewPopup emitter={emitter}>
-          <ActionSheet dismiss={()=>TopView.hideTop(emitter)}/>
+      TopView.show(
+        <OverlayViewPopup>
+          <ActionSheet onDismiss={TopView.hideTop}/>
         </OverlayViewPopup>
       )
     }, 2000)
