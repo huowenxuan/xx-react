@@ -1,7 +1,6 @@
 import React, {Component} from 'react'
 import MediaItem from "../../components/MediaItem/";
 import AddItem from "../../components/AddItem/";
-import OpacityOverlay from '../../components/OpacityOverlay/'
 import EditTextOverlay from '../../components/EditTextOverlay/'
 import EditImageOverlay from '../../components/EditImageOverlay/'
 import EditLinkOverlay from '../../components/EditLinkOverlay/'
@@ -280,7 +279,7 @@ export default class DetailPage extends Component {
                 video.addEventListener('loadedmetadata', (e) => {
                   const {videoWidth, videoHeight, duration} = video
                   if (duration > 60) {
-                    alert('视频最长60秒')
+                    overlay.showDialog('视频最长60秒')
                   } else {
                     this._updateMedia(true, {
                       type: 'sortvideo',

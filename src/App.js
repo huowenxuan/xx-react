@@ -2,11 +2,10 @@ import React, {PureComponent} from 'react';
 import logo from './logo.svg';
 import './App.css';
 import Router from './Router'
-import Overlay from './components/overlays/Overlay'
 import TopView from "./components/overlays/TopView";
-import ActionSheet from "./components/overlays/LightBox/ActionSheet/"
-import overlay from "./components/overlays/";
 import ReactDOM from "react-dom";
+
+import overlay from "./components/overlays";
 
 let node = document.createElement("div")
 document.body.appendChild(node);

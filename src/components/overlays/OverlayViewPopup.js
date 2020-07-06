@@ -56,7 +56,7 @@ export default class OverlayViewPopup extends OverlayView {
         <div style={{
           ...styles.main,
           transition: `transform ${Duration}ms ease-in-out`,
-          // transform: `translate(0, ${upTop}px)`
+          transform: `translate(0, ${upTop}px)`
         }}>
           {this.props.children}
         </div>
@@ -73,6 +73,7 @@ let styles = {
     top: 0,
     right: 0,
     bottom: 0,
+    pointerEvents: 'auto'
   },
   main: {
     backgroundColor: 'transparent',
