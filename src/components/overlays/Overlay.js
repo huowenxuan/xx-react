@@ -1,8 +1,9 @@
 import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
 import TopView from './TopView'
+import App from "../../App";
 
-export default class extends Component {
+export default class Overlay extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -19,10 +20,16 @@ export default class extends Component {
   render() {
     if (!this.state.node) return null
     return (
-      ReactDOM.createPortal(
+      ReactDOM.render(
         <TopView emitter={this.emitter}/>,
         this.state.node
       )
     )
+    // return (
+    //   ReactDOM.createPortal(
+    //     <TopView emitter={this.emitter}/>,
+    //     this.state.node
+    //   )
+    // )
   }
 }

@@ -1,14 +1,13 @@
-import React, {Children, PureComponent} from 'react'
+import React, {Children, Component, PureComponent} from 'react'
 import md5 from 'md5'
-import {EventEmitter} from 'events';
 
 function randomString() {
   let str = new Date() + Math.random().toString(36).substr(2)
   return md5(str)
 }
 
-class StaticContainer extends PureComponent {
-  shouldComponentUpdate(nextProps) {
+class StaticContainer extends Component {
+  shouldComponentUpdate(nextProps, nextState, nextContext) {
     return nextProps.shouldUpdate;
   }
 
@@ -125,7 +124,7 @@ export default class TopView extends PureComponent {
 let styles = {
   overlay: {
     backgroundColor: 'rgba(0, 0, 0, 0)',
-    position: 'absolute',
+    position: 'fixed',
     top: 0,
     left: 0,
     right: 0,

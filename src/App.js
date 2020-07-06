@@ -2,12 +2,23 @@ import React, {PureComponent} from 'react';
 import logo from './logo.svg';
 import './App.css';
 import Router from './Router'
-import Portal from './components/models/Portal'
-import TopView from "./components/models/TopView";
-import OverlayView from "./components/models/OverlayView";
+import Overlay from './components/overlays/Overlay'
+import TopView from "./components/overlays/TopView";
+import OverlayViewFade from "./components/overlays/OverlayViewFade";
+import OverlayViewFadeReduce from "./components/overlays/OverlayViewFadeReduce";
+import OverlayViewDrapDown from "./components/overlays/OverlayViewDrapDown";
+import ActionSheet from "./components/overlays/LightBox/ActionSheet/"
+import OverlayViewPopup from "./components/overlays/OverlayViewPopup";
 import {EventEmitter} from 'events';
-const emitter = new EventEmitter();
+import ReactDOM from "react-dom";
+import eventEmitter from './components/overlays/events'
 
+let node = document.createElement("div")
+document.body.appendChild(node);
+ReactDOM.render(
+  <TopView/>,
+  node
+)
 // export default () => (
 //   <div>
 //     <Router/>
@@ -19,51 +30,18 @@ export default class extends PureComponent {
   componentDidMount() {
     setTimeout(() => {
       TopView.show(emitter,
-        <OverlayView emitter={emitter}>
-          <div style={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            width: 300,
-            height: 300,
-            backgroundColor: 'blue'
-          }}>
-            实话实说
-          </div>
-        </OverlayView>
+        <OverlayViewPopup emitter={emitter}>
+          <ActionSheet dismiss={()=>TopView.hideTop(emitter)}/>
+        </OverlayViewPopup>
       )
-
-      setTimeout(()=>{
-        TopView.show(emitter,
-          <OverlayView emitter={emitter}>
-            <div style={{
-              position: 'absolute',
-              left: 0,
-              bottom: 0,
-              top: 0,
-              right: 0,
-              backgroundColor: 'red'
-            }}>
-              实话实说
-            </div>
-          </OverlayView>
-        )
-
-        setTimeout(() => {
-          TopView.hideTop(emitter)
-          setTimeout(()=>{
-            TopView.hideTop(emitter)
-          }, 1000)
-        }, 1000)
-      }, 1000)
-    }, 1000)
+    }, 2000)
   }
 
   render() {
     return (
       <div>
         <Router/>
-        <Portal emitter={emitter}/>
+        {/*<Overlay emitter={emitter}/>*/}
       </div>
     )
   }

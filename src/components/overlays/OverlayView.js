@@ -28,7 +28,7 @@ export default class OverlayView extends PureComponent {
     shouldBackPressDisappear: true
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this.appear()
   }
 
@@ -61,7 +61,8 @@ export default class OverlayView extends PureComponent {
   }
 
   hideTop() {
-    console.log('sbbbb')
+    // hideTop两次隐藏的间隔一定要小于消失动画的间隔
+    // 否则第一个还没销毁，第二个就要隐藏，隐藏的都是第一个，导致第二个隐藏不掉
     const {_key, allKeys} = this.props
     if (allKeys[allKeys.length - 1] === _key) {
       this.disappear()
