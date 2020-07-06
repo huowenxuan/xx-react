@@ -5,7 +5,6 @@ import OpacityOverlay from '../../components/OpacityOverlay/'
 import EditTextOverlay from '../../components/EditTextOverlay/'
 import EditImageOverlay from '../../components/EditImageOverlay/'
 import EditLinkOverlay from '../../components/EditLinkOverlay/'
-import BottomSelect from '../../components/models/BottomSelect'
 import './index.css'
 
 const post = require('../../tmp/post.json')
@@ -38,6 +37,11 @@ export default class DetailPage extends Component {
     const {id} = this.props.match.params
 
     this._initData()
+
+    setTimeout(()=>{
+      console.log(this.props.a)
+    }, 2000)
+
   }
 
   _toJson(data) {
@@ -271,32 +275,6 @@ export default class DetailPage extends Component {
             }
           }}
         />
-
-        <BottomSelect
-          // 自定义的style
-          style={{
-            color:"#666",
-            padding:10,
-            paddingTop:0,
-            borderRadius:8,
-            display:"block"
-          }}
-          visible={true}
-          // hide={this.hide}
-          // onOK={this.ok}
-          // onCancel={this.cancel}
-          title="温馨提示"
-        >
-          <p>快乐每一天</p>
-          <p>我是小白</p>
-
-          <button onClick={()=>{
-            alert(this.state.hello)
-          }}>
-            say hello
-          </button>
-
-        </BottomSelect>
 
       </div>
     )
