@@ -7,7 +7,6 @@ import EditLinkOverlay from '../../components/EditLinkOverlay/'
 import EditWebVideoOverlay from '../../components/EditWebVideoOverlay/'
 import NavBar from '../../components/NavBar/'
 import './index.css'
-import '../../index.css'
 import overlay from "../../components/overlays";
 
 const post = require('../../tmp/post.json')
@@ -295,7 +294,7 @@ export default class DetailPage extends Component {
     if (!post) return '等待'
 
     return (
-      <div className='nav-container'>
+      <div>
         <NavBar/>
         <a href='#/'>回到Home</a>
         <button onClick={() => this.props.history.goBack()}>back</button>

@@ -34,7 +34,3 @@ textarea {
   outline: none;
 }
 
-/* 包含导航栏的容器，需要预留出导航栏的位置 */
-.nav-container {
-  /*padding-top: 44px;*/
-}

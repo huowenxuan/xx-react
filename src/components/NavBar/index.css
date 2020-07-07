@@ -1,10 +1,50 @@
 .nav-wrapper {
-    background-color: red;
-    height: 44px;
+    background-color: #F4F4F4;
     width: 100%;
     position: fixed;
     z-index: 999;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
-.nav-height {
+
+.title-box {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.title {
+    font-size: 16px;
+    color: black;
+}
+
+.center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.text-button {
+    padding-left: 8px;
+    padding-right: 8px;
     height: 44px;
+}
+
+.button-text {
+    font-size: 13px;
+    color: black;
+}
+
+.icon-button {
+    width: 44px;
+}
+.back-button {
+    width: 22px;
+    height: 22px;
 }
