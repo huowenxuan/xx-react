@@ -4,6 +4,7 @@ import AddItem from "../../components/AddItem/";
 import EditTextOverlay from '../../components/EditTextOverlay/'
 import EditImageOverlay from '../../components/EditImageOverlay/'
 import EditLinkOverlay from '../../components/EditLinkOverlay/'
+import EditWebVideoOverlay from '../../components/EditWebVideoOverlay/'
 import './index.css'
 import overlay from "../../components/overlays";
 
@@ -22,7 +23,7 @@ export default class DetailPage extends Component {
     this.state = {
       openedAddItem: -1,
       post: null,
-      overlayType: MediaTypes.None,
+      overlayType: MediaTypes.Video,
       // 当前更新的media
       currentEdit: {
         index: -1, // 包含media的item和添加按钮
@@ -108,7 +109,6 @@ export default class DetailPage extends Component {
       currentEdit: {index, isNew: false}
     })
   }
-
 
   _del(index) {
     let media = this.state.post.media
@@ -238,7 +238,7 @@ export default class DetailPage extends Component {
     ))
   }
 
-  _renderOverlay() {
+  _renderAddOverlay() {
     const {overlayType} = this.state
     const {post, currentEdit} = this.state
     const {isNew, index} = currentEdit
@@ -253,6 +253,9 @@ export default class DetailPage extends Component {
         break
       case 'link':
         OverlayView = EditLinkOverlay
+        break
+      case 'video':
+        OverlayView = EditWebVideoOverlay
         break
       default:
         return null
@@ -302,7 +305,7 @@ export default class DetailPage extends Component {
           {this._renderMedia(post.media)}
         </div>
 
-        {this._renderOverlay()}
+        {this._renderAddOverlay()}
         <input
           ref={this.imageUpload}
           id='imageUpload'
