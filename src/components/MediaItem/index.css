@@ -61,3 +61,14 @@
     top: 50px;
     right: 0
 }
+
+.web-video-box {
+    padding: 25% 0;
+}
+.web-video {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0
+}

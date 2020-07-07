@@ -161,6 +161,51 @@ export default class DetailPage extends Component {
     }
   }
 
+  _onFilePick = ()=>{
+    let files = this.imageUpload.current.files
+    for (let file of files) {
+      let src = window.URL.createObjectURL(file);
+      console.log(file)
+      if (file.type === 'video/mp4') {
+        let video = document.createElement('video')
+        video.src = src
+        video.addEventListener('loadedmetadata', (e) => {
+          const {videoWidth, videoHeight, duration} = video
+          if (duration > 60) {
+            overlay.showDialog('视频最长60秒')
+          } else {
+            this._updateMedia(true, {
+              type: 'sortvideo',
+              body: src,
+              is_new: true,
+              info: {
+                width: videoWidth,
+                height: videoHeight,
+                size: file.size
+              }
+            })
+          }
+        });
+      } else {
+        let image = new Image()
+        image.src = src
+        image.onload = () => {
+          console.log(image)
+          this._updateMedia(true, {
+            type: 'image',
+            body: src,
+            is_new: true,
+            info: {
+              width: image.width,
+              height: image.height,
+              size: file.size
+            }
+          })
+        }
+      }
+    }
+  }
+
   _renderAddItem(index) {
     const {openedAddItem} = this.state
     return <AddItem
@@ -268,50 +313,7 @@ export default class DetailPage extends Component {
           onClick={(event) => {
             event.target.value = null
           }}
-          onChange={(e) => {
-            let files = this.imageUpload.current.files
-            for (let file of files) {
-              let src = window.URL.createObjectURL(file);
-              console.log(file)
-              if (file.type === 'video/mp4') {
-                let video = document.createElement('video')
-                video.src = src
-                video.addEventListener('loadedmetadata', (e) => {
-                  const {videoWidth, videoHeight, duration} = video
-                  if (duration > 60) {
-                    overlay.showDialog('视频最长60秒')
-                  } else {
-                    this._updateMedia(true, {
-                      type: 'sortvideo',
-                      body: src,
-                      is_new: true,
-                      info: {
-                        width: videoWidth,
-                        height: videoHeight,
-                        size: file.size
-                      }
-                    })
-                  }
-                });
-              } else {
-                let image = new Image()
-                image.src = src
-                image.onload = () => {
-                  console.log(image)
-                  this._updateMedia(true, {
-                    type: 'image',
-                    body: src,
-                    is_new: true,
-                    info: {
-                      width: image.width,
-                      height: image.height,
-                      size: file.size
-                    }
-                  })
-                }
-              }
-            }
-          }}
+          onChange={this._onFilePick}
         />
 
       </div>

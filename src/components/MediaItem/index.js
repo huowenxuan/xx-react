@@ -1,5 +1,6 @@
 import React, {PureComponent} from "react";
 import './index.css'
+import * as utils from '../../utils/'
 
 export default class MediaItem extends PureComponent {
   constructor(props) {
@@ -55,17 +56,29 @@ export default class MediaItem extends PureComponent {
 
   _renderSortVideo(item) {
     return (
-      <div
-        onClick={e=>{
-          // e.stopPropagation()
-          console.log('onclick')
-        }}
-        className='image-box'>
+      <div className='image-box'>
         <video
           controls={true}
           className='video'
           src={item.body}
         />
+      </div>
+    )
+  }
+
+  _renderVideo(item) {
+    return (
+      <div className='web-video-box'>
+        <iframe
+          className='web-video'
+          src={utils.getWebVideoUrl(item.body)}
+          frameBorder="0"
+          width="100%"
+          height="100%"
+          allowFullScreen
+        />
+        {/*禁止点击*/}
+        <div className='web-video'/>
       </div>
     )
   }
@@ -114,6 +127,10 @@ export default class MediaItem extends PureComponent {
         break
       case 'sortvideo':
         _renderItem = this._renderSortVideo(data)
+        break
+      case 'video':
+        _renderItem = this._renderVideo(data)
+        break
     }
     return (
       <li
