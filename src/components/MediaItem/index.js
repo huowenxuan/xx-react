@@ -77,8 +77,6 @@ export default class MediaItem extends PureComponent {
           height="100%"
           allowFullScreen
         />
-        {/*禁止点击*/}
-        <div className='web-video'/>
       </div>
     )
   }
