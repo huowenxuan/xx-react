@@ -31,6 +31,7 @@ export default function opacityWrapper(Container) {
       return (
         <div
           style={{
+
             opacity: __opacity,
             transition: `opacity 300ms ease-out`
           }}

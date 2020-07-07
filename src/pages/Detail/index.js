@@ -5,7 +5,9 @@ import EditTextOverlay from '../../components/EditTextOverlay/'
 import EditImageOverlay from '../../components/EditImageOverlay/'
 import EditLinkOverlay from '../../components/EditLinkOverlay/'
 import EditWebVideoOverlay from '../../components/EditWebVideoOverlay/'
+import NavBar from '../../components/NavBar/'
 import './index.css'
+import '../../index.css'
 import overlay from "../../components/overlays";
 
 const post = require('../../tmp/post.json')
@@ -23,7 +25,7 @@ export default class DetailPage extends Component {
     this.state = {
       openedAddItem: -1,
       post: null,
-      overlayType: MediaTypes.Video,
+      overlayType: MediaTypes.None,
       // 当前更新的media
       currentEdit: {
         index: -1, // 包含media的item和添加按钮
@@ -161,7 +163,7 @@ export default class DetailPage extends Component {
     }
   }
 
-  _onFilePick = ()=>{
+  _onFilePick = () => {
     let files = this.imageUpload.current.files
     for (let file of files) {
       let src = window.URL.createObjectURL(file);
@@ -262,12 +264,17 @@ export default class DetailPage extends Component {
     }
 
     return (
-      <OverlayView
-        ref={this.overlay}
-        data={curData}
-        onChange={(data) => this._updateMedia(isNew, data)}
-        onCancel={this._hiddenOverlay}
-      />
+      <div style={{
+        // 防止被navbar遮挡
+        position: 'relative', zIndex: 999
+      }}>
+        <OverlayView
+          ref={this.overlay}
+          data={curData}
+          onChange={(data) => this._updateMedia(isNew, data)}
+          onCancel={this._hiddenOverlay}
+        />
+      </div>
     )
   }
 
@@ -288,7 +295,8 @@ export default class DetailPage extends Component {
     if (!post) return '等待'
 
     return (
-      <div>
+      <div className='nav-container'>
+        <NavBar/>
         <a href='#/'>回到Home</a>
         <button onClick={() => this.props.history.goBack()}>back</button>
 

@@ -1,0 +1,10 @@
+.nav-wrapper {
+    background-color: red;
+    height: 44px;
+    width: 100%;
+    position: fixed;
+    z-index: 999;
+}
+.nav-height {
+    height: 44px;
+}
