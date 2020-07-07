@@ -32,12 +32,14 @@ class EditTextOverlay extends PureComponent {
     const {onCancel} = this.props
     return (
       <div className='wrapper'>
-        <input
-          className='input'
-          placeholder='url'
-          value={body || ''}
-          onChange={(v) => this.setState({body: v.target.value})}
-        />
+        <div>
+          <input
+            className='input'
+            placeholder='url'
+            value={body || ''}
+            onChange={(v) => this.setState({body: v.target.value})}
+          />
+        </div>
         <button onClick={onCancel}>
           取消
         </button>

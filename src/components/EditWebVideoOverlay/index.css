@@ -9,5 +9,9 @@
 }
 
 .input {
-
+    padding: 10px;
+    height: 100px;
+    border: #F4F4F4 1px solid;
+    width: 100%;
+    box-sizing: border-box;
 }
