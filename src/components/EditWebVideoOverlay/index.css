@@ -5,6 +5,8 @@
     right: 0;
     bottom: 0;
     background-color: white;
+    /* 让absolute可滚动 */
+    overflow: auto;
 }
 
 .web-video-container {

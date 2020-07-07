@@ -36,9 +36,6 @@ class EditTextOverlay extends PureComponent {
         <NavBar
           title='视频链接'
           onBack={onCancel}
-          rightButtons={[
-            {text: '确定', textStyle: {color: 'red'}}
-          ]}
         />
 
         <div className='web-video-container'>
@@ -53,10 +50,40 @@ class EditTextOverlay extends PureComponent {
           }}>
             清空
           </button>
-          <button >
+          <button onClick={this._done}>
             确定
           </button>
         </div>
+
+        <p>啥</p>
+        <p>啥</p>
+        <p>啥</p>
+        <p>啥</p>
+        <p>啥</p>
+        <p>啥</p>
+        <p>啥</p>
+        <p>啥</p>
+        <p>啥</p>
+        <p>啥</p>
+        <p>啥</p>
+        <p>啥</p>
+        <p>啥</p>
+        <p>啥</p>
+        <p>啥</p>
+        <p>啥</p>
+        <p>啥</p>
+        <p>啥</p>
+        <p>啥</p>
+        <p>啥</p>
+        <p>啥</p>
+        <p>啥</p>
+        <p>啥</p>
+        <p>啥</p>
+        <p>啥</p>
+        <p>啥</p>
+        <p>啥</p>
+        <p>啥</p>
+        <p>啥</p>
       </div>
     )
   }
