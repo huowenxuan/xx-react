@@ -24,7 +24,7 @@ export default class DetailPage extends Component {
     this.state = {
       openedAddItem: -1,
       post: null,
-      overlayType: MediaTypes.None,
+      overlayType: MediaTypes.Video,
       // 当前更新的media
       currentEdit: {
         index: -1, // 包含media的item和添加按钮
@@ -295,7 +295,9 @@ export default class DetailPage extends Component {
 
     return (
       <div>
-        <NavBar/>
+        <NavBar
+          title={post.title}
+        />
         <a href='#/'>回到Home</a>
         <button onClick={() => this.props.history.goBack()}>back</button>
 

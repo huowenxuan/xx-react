@@ -25,14 +25,15 @@ export default class NavBar extends PureComponent {
     const {onBack} = this.props
     return [{
       custom: (
-        <button className='icon-button'>
+        <div className='icon-button'>
           <img className='back-button' src={images.BACK}/>
-        </button>
+        </div>
       ),
       onClick: () => onBack
         ? onBack()
         // : Router.pop()
-        : ()=>{}
+        : () => {
+        }
     }]
   }
 
@@ -114,9 +115,11 @@ export default class NavBar extends PureComponent {
     return (
       <nav style={{height: navHeight}} className='nav-wrapper'>
         <div className='title-box'>
-          {titleView || <p className='title'>
-            {this._showTitle(title)}
-          </p>}
+          <div style={{pointerEvents: 'auto'}}>
+            {titleView || <p className='title'>
+              {this._showTitle(title)}
+            </p>}
+          </div>
         </div>
 
         {this._renderButtons(leftButtons || this.backButton(), {marginLeft: 8})}

@@ -1,6 +1,7 @@
 import React, {PureComponent} from "react";
 import './index.css'
 import opacityWrapper from '../Wrappers/opacityWrapper'
+import NavBar from '../NavBar/'
 
 class EditTextOverlay extends PureComponent {
   constructor(props) {
@@ -31,21 +32,34 @@ class EditTextOverlay extends PureComponent {
     const {body} = this.state
     const {onCancel} = this.props
     return (
-      <div className='wrapper'>
-        <div>
+      <div className='web-video-wrapper'>
+        <NavBar
+          title='视频链接'
+          onBack={onCancel}
+          rightButtons={[
+            {text: '确定', textStyle: {color: 'red'}}
+          ]}
+        />
+
+        <div className='web-video-container'>
           <input
             className='input'
-            placeholder='url'
+            placeholder='输入或粘贴视频链接（腾讯视频、优酷视频）'
             value={body || ''}
             onChange={(v) => this.setState({body: v.target.value})}
           />
+          <button onClick={() => {
+            this.setState({body: ''})
+          }}>
+            清空
+          </button>
+          <button onClick={async () => {
+            // let text = await navigator.clipboard.readText()
+            // if (text) this.setState({body: text})
+          }}>
+            粘贴
+          </button>
         </div>
-        <button onClick={onCancel}>
-          取消
-        </button>
-        <button>
-          确认
-        </button>
       </div>
     )
   }
