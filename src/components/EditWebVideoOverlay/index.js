@@ -53,11 +53,8 @@ class EditTextOverlay extends PureComponent {
           }}>
             清空
           </button>
-          <button onClick={async () => {
-            // let text = await navigator.clipboard.readText()
-            // if (text) this.setState({body: text})
-          }}>
-            粘贴
+          <button >
+            确定
           </button>
         </div>
       </div>
