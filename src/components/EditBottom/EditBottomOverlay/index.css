@@ -6,6 +6,5 @@
     transition: bottom .3s, height .3s;
     flex-direction: column;
     display: flex;
-    box-sizing: content-box;
 }
 

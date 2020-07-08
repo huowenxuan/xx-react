@@ -89,7 +89,12 @@ export default class OverlayViewFade extends OverlayView {
 
   _renderPermission() {
     return (
-      <div style={{backgroundColor: 'black', height: '100%', width: '100%'}}>
+      <div
+        onClick={(e) => {
+          e.stopPropagation()
+          console.log(true)
+        }}
+        style={{backgroundColor: 'black', height: '100%', width: '100%'}}>
         <img
           style={{width: '100%', height: '100%'}}
           src={file2}
@@ -108,11 +113,13 @@ export default class OverlayViewFade extends OverlayView {
       view = this._renderPermission()
 
     return (
-      <div style={{
-        ...styles.container,
-        transition: `opacity ${Duration}ms`,
-        opacity: this.state.fadeOpacity
-      }}>
+      <div
+        onClick={() => console.log('收回')}
+        style={{
+          ...styles.container,
+          transition: `opacity ${Duration}ms`,
+          opacity: this.state.fadeOpacity
+        }}>
 
         <div
           style={{
@@ -146,5 +153,6 @@ let styles = {
     right: 0,
     bottom: 0,
     overflow: 'auto',
+    pointerEvents: 'auto'
   }
 }
