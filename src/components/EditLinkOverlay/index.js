@@ -1,47 +1,79 @@
 import React, {PureComponent} from "react";
 import './index.css'
 import opacityWrapper from '../Wrappers/opacityWrapper'
+import NavBar from "../NavBar";
+import * as utils from '../../utils/'
+import overlays from '../overlays/'
 
 class EditTextOverlay extends PureComponent {
   constructor(props) {
     super(props)
-    const {body} = props.data || {}
+    const {body, data} = props.data || {}
     this.state = {
-      body
+      text: body || '',
+      url: data || ''
     }
   }
 
   componentDidMount() {
-    setTimeout(() => {
-      console.log(this.props.data)
-    }, 500)
   }
 
   _done = () => {
     const {onChange, data} = this.props
-    const {rotate} = this.state
-    let style = {}
-    // 归到0、90、180、270度
-    if (rotate) style.rotate = (rotate / 90) % 4 * 90
+    const {url, text} = this.state
+    if (!url) {
+      overlays.showDialog('请输入网址')
+      return
+    }
+    if (!text) {
+      overlays.showDialog('请输入文字')
+      return
+    }
+    if (!utils.checkUrl(url)) {
+      overlays.showDialog('请输入正确的网址')
+      return
+    }
     onChange && onChange({
       ...data,
-      type: 'image',
-      style,
+      type: 'link',
+      data: url,
+      body: text,
     })
   }
 
   render() {
-    const {
-      body,
-    } = this.state
+    const {url, text} = this.state
     const {onCancel} = this.props
     return (
       <div className='add-link-wrapper'>
-        <input
-          className='input-link-url'
-          placeholder='url'
+        <NavBar
+          title='网址链接'
+          onBack={onCancel}
+          rightButtons={[
+            {
+              text: '确定',
+              textStyle: {color: '#E97462'},
+              onClick: this._done
+            }
+          ]}
         />
+
+        <div className='add-link-container'>
+          <input
+            className='input-link-url'
+            placeholder='添加网址(如:https://www.baidu.com)'
+            value={url}
+            onChange={e => this.setState({url: e.target.value})}
+          />
+          <input
+            className='input-link-url'
+            placeholder='显示文字(如:百度)'
+            value={text}
+            onChange={e => this.setState({text: e.target.value})}
+          />
+        </div>
       </div>
+
     )
   }
 }

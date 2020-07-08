@@ -25,6 +25,10 @@ class EditTextOverlay extends PureComponent {
   _done = () => {
     const {onChange, data} = this.props
     const {body} = this.state
+    if (!body) {
+      overlays.showDialog('请输入视频链接')
+      return
+    }
     if (!utils.checkUrl(body)) {
       overlays.showDialog('请输入正确的链接')
       return

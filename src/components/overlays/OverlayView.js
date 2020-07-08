@@ -1,5 +1,3 @@
-'use strict'
-
 import React, {PureComponent} from 'react';
 import eventEmitter from './events'
 export default class OverlayView extends PureComponent {

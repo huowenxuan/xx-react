@@ -66,6 +66,16 @@ export default class MediaItem extends PureComponent {
     )
   }
 
+  _renderLink(item) {
+    const {body, data} = item
+    return (
+      <div className='text-item'>
+        <p>{data}</p>
+        <p>{body}</p>
+      </div>
+    )
+  }
+
   _renderVideo(item) {
     return (
       <div className='web-video-box'>
@@ -128,6 +138,9 @@ export default class MediaItem extends PureComponent {
         break
       case 'video':
         _renderItem = this._renderVideo(data)
+        break
+      case 'link':
+        _renderItem = this._renderLink(data)
         break
     }
     return (

@@ -1,5 +1,4 @@
 .add-link-wrapper {
-    padding: 20px;
     position: fixed;
     left: 0;
     top:0;
@@ -8,6 +7,13 @@
     background-color: white;
 }
 
-.input-link-url {
+.add-link-container {
+    padding: 20px;
+}
 
+.input-link-url {
+    display: block;
+    border-bottom: lightgray 1px solid;
+    height: 60px;
+    width: 100%;
 }

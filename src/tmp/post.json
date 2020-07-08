@@ -38,6 +38,11 @@
   "status": "public",
   "media": [
     {
+      "type": "link",
+      "body": "baidu",
+      "data": "http://www.baidu.com"
+    },
+    {
       "type": "image",
       "body": "https://imgssl.tangshui.net/RcdPC2Vi68lmMnYXoVWw1A6F1Jk%3D?imageView2/2/w/800/interlace/1",
       "exif": "",
