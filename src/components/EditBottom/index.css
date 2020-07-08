@@ -1,0 +1,9 @@
+#edit-bottom {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: red;
+    height: 100px;
+    transition: height .3s ease-out;
+}

@@ -113,7 +113,7 @@ export default class NavBar extends PureComponent {
     const {title, leftButtons, rightButtons, style, titleView} = this.props;
 
     return (
-      <nav style={{height: navHeight}} className='nav-wrapper'>
+      <nav style={{height: navHeight, ...style}} className='nav-wrapper'>
         <div className='title-box'>
           <div style={{pointerEvents: 'auto'}}>
             {titleView || <p className='title'>

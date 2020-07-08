@@ -16,5 +16,8 @@ export default {
     TopView.show(
       <OverlayViewDialog text={text} duration={duration}/>
     )
+  },
+  show: (element)=>{
+    TopView.show(element)
   }
 }

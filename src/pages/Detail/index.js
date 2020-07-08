@@ -8,6 +8,7 @@ import EditWebVideoOverlay from '../../components/EditWebVideoOverlay/'
 import NavBar from '../../components/NavBar/'
 import './index.css'
 import overlay from "../../components/overlays";
+import EditBottom from "../../components/EditBottom";
 
 const post = require('../../tmp/post.json')
 const MediaTypes = {
@@ -39,11 +40,6 @@ export default class DetailPage extends Component {
     const {id} = this.props.match.params
 
     this._initData()
-
-    setTimeout(() => {
-      console.log(this.props.a)
-    }, 2000)
-
   }
 
   _toJson(data) {
@@ -145,14 +141,12 @@ export default class DetailPage extends Component {
       overlay.showActionSheet([
         {
           text: '本地', onPress: () => {
-            console.log('本地')
             this.imageUpload.current.accept = 'video/*'
             this.imageUpload.current.click()
           }
         },
         {
           text: '网络', onPress: () => {
-            console.log('网络')
             this.setState({overlayType: type})
           }
         },
@@ -328,6 +322,7 @@ export default class DetailPage extends Component {
           onChange={this._onFilePick}
         />
 
+        <EditBottom onClick={()=>console.log('click bottom')}/>
       </div>
     )
   }

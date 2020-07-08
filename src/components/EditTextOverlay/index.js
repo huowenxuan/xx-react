@@ -22,9 +22,6 @@ class EditTextOverlay extends PureComponent {
   }
 
   componentDidMount() {
-    setTimeout(() => {
-      console.log(this.props.data)
-    }, 1000)
   }
 
   _done = () => {
@@ -35,7 +32,6 @@ class EditTextOverlay extends PureComponent {
     if (textAlign) style.textAlign = textAlign
     if (fontSize) style.fontSize = fontSize
     if (color) style.color = color
-    console.log(data)
     onChange && onChange({
       ...data,
       type: 'text',

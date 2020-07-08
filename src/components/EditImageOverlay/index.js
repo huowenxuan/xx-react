@@ -16,9 +16,6 @@ class EditTextOverlay extends PureComponent {
   }
 
   componentDidMount() {
-    setTimeout(() => {
-      console.log(this.props.data)
-    }, 500)
   }
 
   _done = () => {
