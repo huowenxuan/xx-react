@@ -5,17 +5,20 @@ import './index.css'
 
 const windowHeight = window.screen.height
 const Duration = 1000
+const file1 = require('./1.png')
+const file2 = require('./2.png')
 export default class OverlayViewFade extends OverlayView {
   constructor(props) {
     super(props)
 
     // permission music
-    let status= 'permission'
+    let status = 'permission'
     this.state = {
       fadeOpacity: 1,
       permissionBottom: -windowHeight,
       status,
       height: this.getHeight(status),
+      x: this.getX(status),
     }
   }
 
@@ -27,24 +30,27 @@ export default class OverlayViewFade extends OverlayView {
     }
   }
 
+  getX(status) {
+    if (status === 'music') {
+      return '0'
+    } else if (status === 'permission') {
+      return '-50%'
+    }
+  }
+
   componentDidMount() {
     super.componentDidMount()
 
-    // setInterval(()=>{
-    //   this.setState((prevState)=>{
-    //     const {status: prevStatus} = prevState
-    //     let status = ''
-    //     if (prevStatus === 'permission') {
-    //       status = 'music'
-    //     } else {
-    //       status = 'permission'
-    //     }
-    //     return {
-    //       status,
-    //       height: this.getHeight(status)
-    //     }
-    //   })
-    // }, 1000)
+  }
+
+  _update(status) {
+    this.setState((prevState) => {
+      return {
+        status,
+        height: this.getHeight(status),
+        x: this.getX(status),
+      }
+    })
   }
 
   componentWillUnmount() {
@@ -72,45 +78,61 @@ export default class OverlayViewFade extends OverlayView {
 
   _renderMusic() {
     return (
-      <div style={{backgroundColor: 'blue', height: '100%'}}>
-        <p>哈哈</p>
-        <p>haha</p>
+      <div style={{backgroundColor: 'white', height: '100%', width: '50%'}}>
+        <img
+          style={{width: '100%'}}
+          src={file1}
+        />
       </div>
     )
   }
 
   _renderPermission() {
     return (
-      <div style={{backgroundColor: 'red', height: '100%'}}>
-        <p>扇上生花是</p>
-        <p>xoodjjjfj</p>
-        <p>非佛二级坡</p>
+      <div style={{backgroundColor: 'white', height: '100%', width: '50%'}}>
+        <img
+          style={{width: '100%'}}
+          src={file2}
+        />
       </div>
     )
   }
 
   render() {
-    const {permissionBottom, height ,status} = this.state
-    let view = null
-    if (status === 'permission') {
-      view = this._renderPermission()
-    } else {
-      view = this._renderMusic()
-    }
+    const {permissionBottom, height, status, x} = this.state
     return (
       <div style={{
         ...styles.container,
         transition: `opacity ${Duration}ms`,
         opacity: this.state.fadeOpacity
       }}>
+
         <div
-          style={{bottom: permissionBottom, height}}
-          className="bottom-overlay-container"
+          className='test'
+          style={{
+            height
+          }}
         >
-          {view}
+          <div
+            style={{
+              bottom: permissionBottom,
+              transform: `translate(${x}, 0)`
+            }}
+            className="bottom-overlay-container"
+          >
+            {this._renderMusic()}
+            {this._renderPermission()}
+          </div>
         </div>
 
-        {/*<EditBottom/>*/}
+        <EditBottom
+          onLeftClick={() => {
+            this._update('music')
+          }}
+          onRightClick={() => {
+            this._update('permission')
+          }}
+        />
       </div>
     )
   }
@@ -124,7 +146,7 @@ let styles = {
     top: 0,
     right: 0,
     bottom: 0,
-    pointerEvents: 'auto',
+    overflow: 'auto',
     padding: 200
   }
 }

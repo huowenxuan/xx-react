@@ -6,4 +6,13 @@
     background-color: red;
     height: 100px;
     transition: height .3s ease-out;
+    display: flex;
+    justify-content: space-around;
+    pointer-events: auto;
+}
+
+.edit-btn {
+    height: 100%;
+    width: 100%;
+    color: white;
 }

@@ -23,9 +23,19 @@ export default class EditBottom extends PureComponent {
 
   render() {
     const {extend} = this.state
-    const {onClick} = this.props
+    const {onLeftClick, onRightClick} = this.props
     return (
-      <div id='edit-bottom' onClick={this._show}>
+      <div id='edit-bottom'>
+        <button
+          onClick={onLeftClick}
+          className='edit-btn'>
+          左边
+        </button>
+        <button
+          onClick={onRightClick}
+          className='edit-btn'>
+          右边
+        </button>
       </div>
     )
   }
