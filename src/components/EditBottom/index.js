@@ -3,6 +3,7 @@ import './index.css'
 import overlays from '../overlays/'
 import EditBottomOverlay from './EditBottomOverlay/'
 
+export const EditBottomHeight = 100
 export default class EditBottom extends PureComponent {
   constructor(props) {
     super(props);
@@ -25,7 +26,7 @@ export default class EditBottom extends PureComponent {
     const {extend} = this.state
     const {onLeftClick, onRightClick} = this.props
     return (
-      <div id='edit-bottom'>
+      <div id='edit-bottom' style={{height: EditBottomHeight}}>
         <button
           onClick={onLeftClick}
           className='edit-btn'>

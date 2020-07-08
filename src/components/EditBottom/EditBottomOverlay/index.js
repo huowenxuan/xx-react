@@ -1,6 +1,6 @@
 import React, {PureComponent} from 'react';
 import OverlayView from '../../overlays/OverlayView'
-import EditBottom from '../../EditBottom'
+import EditBottom, {EditBottomHeight} from '../../EditBottom'
 import './index.css'
 
 const windowHeight = window.screen.height
@@ -24,7 +24,7 @@ export default class OverlayViewFade extends OverlayView {
 
   getHeight(status) {
     if (status === 'music') {
-      return '100%'
+      return `calc(100% - ${EditBottomHeight}px)`
     } else if (status === 'permission') {
       return '300px'
     }
@@ -78,9 +78,9 @@ export default class OverlayViewFade extends OverlayView {
 
   _renderMusic() {
     return (
-      <div style={{backgroundColor: 'white', height: '100%', width: '100%'}}>
+      <div style={{backgroundColor: 'blue', height: '100%', width: '100%'}}>
         <img
-          style={{width: '100%'}}
+          style={{width: '100%', height: '100%'}}
           src={file1}
         />
       </div>
@@ -89,9 +89,9 @@ export default class OverlayViewFade extends OverlayView {
 
   _renderPermission() {
     return (
-      <div style={{backgroundColor: 'white', height: '100%', width: '100%'}}>
+      <div style={{backgroundColor: 'black', height: '100%', width: '100%'}}>
         <img
-          style={{width: '100%'}}
+          style={{width: '100%', height: '100%'}}
           src={file2}
         />
       </div>
@@ -116,13 +116,12 @@ export default class OverlayViewFade extends OverlayView {
 
         <div
           style={{
-            bottom: permissionBottom,
-            height
+            bottom: permissionBottom + EditBottomHeight,
+            height,
           }}
           className="bottom-overlay-container"
         >
           {view}
-          <div style={{height: '100px', width: '100%'}}/>
         </div>
 
         <EditBottom
@@ -147,6 +146,5 @@ let styles = {
     right: 0,
     bottom: 0,
     overflow: 'auto',
-    padding: 200
   }
 }
