@@ -47,7 +47,7 @@ export function getWebVideoUrl(srcValue) {
 }
 
 //检测文字链接格式
-function checkUrl(telAndWord) {
+export function checkUrl(telAndWord) {
   let check;
   if (telAndWord === '') {
     return 3; // 为空

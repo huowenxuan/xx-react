@@ -2,6 +2,10 @@ import React, {PureComponent} from "react";
 import './index.css'
 import opacityWrapper from '../Wrappers/opacityWrapper'
 import NavBar from '../NavBar/'
+import * as utils from '../../utils/'
+import overlays from '../overlays'
+
+const tutorialUrl = 'http://static.tangshui.net/tangshui_qqyouku.jpeg'
 
 class EditTextOverlay extends PureComponent {
   constructor(props) {
@@ -21,6 +25,10 @@ class EditTextOverlay extends PureComponent {
   _done = () => {
     const {onChange, data} = this.props
     const {body} = this.state
+    if (!utils.checkUrl(body)) {
+      overlays.showDialog('请输入正确的链接')
+      return
+    }
     onChange && onChange({
       ...data,
       type: 'video',
@@ -45,45 +53,27 @@ class EditTextOverlay extends PureComponent {
             value={body || ''}
             onChange={(v) => this.setState({body: v.target.value})}
           />
-          <button onClick={() => {
-            this.setState({body: ''})
-          }}>
-            清空
-          </button>
-          <button onClick={this._done}>
-            确定
-          </button>
+          <div className='web-video-btns'>
+            <button
+              className='web-video-btn web-video-btn-clear'
+              onClick={() => {
+              this.setState({body: ''})
+            }}>
+              清空
+            </button>
+            <button
+              className='web-video-btn web-video-btn-confirm'
+              onClick={this._done}>
+              确定
+            </button>
+          </div>
+
         </div>
 
-        <p>啥</p>
-        <p>啥</p>
-        <p>啥</p>
-        <p>啥</p>
-        <p>啥</p>
-        <p>啥</p>
-        <p>啥</p>
-        <p>啥</p>
-        <p>啥</p>
-        <p>啥</p>
-        <p>啥</p>
-        <p>啥</p>
-        <p>啥</p>
-        <p>啥</p>
-        <p>啥</p>
-        <p>啥</p>
-        <p>啥</p>
-        <p>啥</p>
-        <p>啥</p>
-        <p>啥</p>
-        <p>啥</p>
-        <p>啥</p>
-        <p>啥</p>
-        <p>啥</p>
-        <p>啥</p>
-        <p>啥</p>
-        <p>啥</p>
-        <p>啥</p>
-        <p>啥</p>
+        <img
+          src={tutorialUrl}
+          style={{width: '100%'}}
+        />
       </div>
     )
   }
