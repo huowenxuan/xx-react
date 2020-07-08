@@ -8,3 +8,8 @@
     display: flex;
 }
 
+.permission-item {
+    height: 60px;
+    width: 100%;
+}
+

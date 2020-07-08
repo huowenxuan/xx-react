@@ -26,7 +26,7 @@ export default class OverlayViewFade extends OverlayView {
     if (status === 'music') {
       return `calc(100% - ${EditBottomHeight}px)`
     } else if (status === 'permission') {
-      return '300px'
+      return '200px'
     }
   }
 
@@ -40,7 +40,6 @@ export default class OverlayViewFade extends OverlayView {
 
   componentDidMount() {
     super.componentDidMount()
-
   }
 
   _update(status) {
@@ -88,17 +87,27 @@ export default class OverlayViewFade extends OverlayView {
   }
 
   _renderPermission() {
+    const permissions = [
+      {text: '公开'},
+      {text: '保护'},
+      {text: '私密'},
+    ]
     return (
       <div
         onClick={(e) => {
           e.stopPropagation()
           console.log(true)
         }}
-        style={{backgroundColor: 'black', height: '100%', width: '100%'}}>
-        <img
-          style={{width: '100%', height: '100%'}}
-          src={file2}
-        />
+        style={{backgroundColor: 'white', height: '100%', width: '100%'}}
+      >
+        <ul>
+          {permissions.map(({text}) => (
+            <li key={text} className='permission-item'>
+              {text}
+            </li>
+          ))}
+
+        </ul>
       </div>
     )
   }

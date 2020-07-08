@@ -3,7 +3,7 @@ import './index.css'
 import overlays from '../overlays/'
 import EditBottomOverlay from './EditBottomOverlay/'
 
-export const EditBottomHeight = 100
+export const EditBottomHeight = 63
 export default class EditBottom extends PureComponent {
   constructor(props) {
     super(props);
