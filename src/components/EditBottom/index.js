@@ -12,15 +12,13 @@ export default class EditBottom extends PureComponent {
   }
 
   componentDidMount() {
-    // setInterval(() => {
-    //   this.setState((prevState) => ({
-    //     extend: !prevState.extend
-    //   }))
+    // setTimeout(() => {
+    //   this._show()
     // }, 1000)
   }
 
   _show = ()=> {
-    overlays.show(<EditBottomOverlay/>)
+    // overlays.show(<EditBottomOverlay/>)
   }
 
   render() {

@@ -9,6 +9,8 @@ import NavBar from '../../components/NavBar/'
 import './index.css'
 import overlay from "../../components/overlays";
 import EditBottom from "../../components/EditBottom";
+import overlays from "../../components/overlays";
+import EditBottomOverlay from "../../components/EditBottom/EditBottomOverlay";
 
 const post = require('../../tmp/post.json')
 const MediaTypes = {
@@ -40,6 +42,9 @@ export default class DetailPage extends Component {
     const {id} = this.props.match.params
 
     this._initData()
+    setTimeout(() => {
+      overlays.show(<EditBottomOverlay/>)
+    }, 500)
   }
 
   _toJson(data) {
@@ -322,7 +327,7 @@ export default class DetailPage extends Component {
           onChange={this._onFilePick}
         />
 
-        <EditBottom onClick={()=>console.log('click bottom')}/>
+        <EditBottom onClick={() => console.log('click bottom')}/>
       </div>
     )
   }

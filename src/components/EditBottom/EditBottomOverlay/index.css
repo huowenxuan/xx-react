@@ -1,5 +1,11 @@
-.test {
-    height: 300px;
+.permission-container {
+    position: absolute;
+    left: 0;
+    bottom: 0;
     width: 100%;
-    background-color: black;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    color: white;
+    transition: bottom .3s, height .3s;
 }
