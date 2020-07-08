@@ -30,21 +30,21 @@ export default class OverlayViewFade extends OverlayView {
   componentDidMount() {
     super.componentDidMount()
 
-    setInterval(()=>{
-      this.setState((prevState)=>{
-        const {status: prevStatus} = prevState
-        let status = ''
-        if (prevStatus === 'permission') {
-          status = 'music'
-        } else {
-          status = 'permission'
-        }
-        return {
-          status,
-          height: this.getHeight(status)
-        }
-      })
-    }, 1000)
+    // setInterval(()=>{
+    //   this.setState((prevState)=>{
+    //     const {status: prevStatus} = prevState
+    //     let status = ''
+    //     if (prevStatus === 'permission') {
+    //       status = 'music'
+    //     } else {
+    //       status = 'permission'
+    //     }
+    //     return {
+    //       status,
+    //       height: this.getHeight(status)
+    //     }
+    //   })
+    // }, 1000)
   }
 
   componentWillUnmount() {
@@ -105,7 +105,7 @@ export default class OverlayViewFade extends OverlayView {
       }}>
         <div
           style={{bottom: permissionBottom, height}}
-          className="permission-container"
+          className="bottom-overlay-container"
         >
           {view}
         </div>
