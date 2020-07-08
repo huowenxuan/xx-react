@@ -78,7 +78,7 @@ export default class OverlayViewFade extends OverlayView {
 
   _renderMusic() {
     return (
-      <div style={{backgroundColor: 'white', height: '100%', width: '50%'}}>
+      <div style={{backgroundColor: 'white', height: '100%', width: '100%'}}>
         <img
           style={{width: '100%'}}
           src={file1}
@@ -89,7 +89,7 @@ export default class OverlayViewFade extends OverlayView {
 
   _renderPermission() {
     return (
-      <div style={{backgroundColor: 'white', height: '100%', width: '50%'}}>
+      <div style={{backgroundColor: 'white', height: '100%', width: '100%'}}>
         <img
           style={{width: '100%'}}
           src={file2}
@@ -100,6 +100,13 @@ export default class OverlayViewFade extends OverlayView {
 
   render() {
     const {permissionBottom, height, status, x} = this.state
+
+    let view
+    if (status === 'music')
+      view = this._renderMusic()
+    else
+      view = this._renderPermission()
+
     return (
       <div style={{
         ...styles.container,
@@ -108,21 +115,14 @@ export default class OverlayViewFade extends OverlayView {
       }}>
 
         <div
-          className='test'
           style={{
+            bottom: permissionBottom,
             height
           }}
+          className="bottom-overlay-container"
         >
-          <div
-            style={{
-              bottom: permissionBottom,
-              transform: `translate(${x}, 0)`
-            }}
-            className="bottom-overlay-container"
-          >
-            {this._renderMusic()}
-            {this._renderPermission()}
-          </div>
+          {view}
+          <div style={{height: '100px', width: '100%'}}/>
         </div>
 
         <EditBottom

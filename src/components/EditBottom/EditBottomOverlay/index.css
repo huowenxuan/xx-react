@@ -1,20 +1,10 @@
 .bottom-overlay-container {
     position: absolute;
     left: 0;
-    bottom: 0;
-    width: 200%;
-    height: 100%;
-    display: flex;
+    width: 100%;
     color: black;
-    transition: bottom .3s, transform .3s;
+    transition: bottom .3s, height .3s;
+    flex-direction: column;
+    display: flex;
 }
 
-.test {
-    position: absolute;
-    left: 0;
-    bottom: 0;
-    width: 100%;
-    /*height: 100%;*/
-    transition:  height .3s;
-    text-align: center;
-}
