@@ -9,9 +9,24 @@
 #edit-music-box{
     padding-left: 20px;
 }
-#audio-types {
-    height: 66px;
+#audio-types-box {
+    width: 100%;
+    margin: 20px 0;
+    height: 60px;
+    overflow: auto;
 }
+#audio-types {
+    width: max-content;
+}
+.audio-type-btn {
+    display: inline-block;
+    width: 60px;
+    font-size: 12px;
+    padding: 3px 12px;
+    margin-right: 20px;
+    background-color: #F2F2F2;
+}
+
 #music-hot-text {
     font-size: 12px;
     color: #9b9b9b;
