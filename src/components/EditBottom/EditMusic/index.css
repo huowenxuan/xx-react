@@ -42,3 +42,9 @@
     font-size: 12px;
     color: #9b9b9b;
 }
+
+.music-item {
+    height: 80px;
+    display: flex;
+    align-items: center;
+}

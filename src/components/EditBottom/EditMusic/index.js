@@ -76,7 +76,7 @@ export default class EditMusic extends PureComponent {
   _renderMusic = (music)=> {
     const {_id, cover, url, filename} = music
     return (
-      <div key={_id}>
+      <div className='music-item' key={_id}>
         {filename}
       </div>
     )

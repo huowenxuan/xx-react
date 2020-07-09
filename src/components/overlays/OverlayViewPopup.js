@@ -5,7 +5,7 @@ import OverlayView from './OverlayView'
  * 从下弹出，再掉落
  */
 const windowHeight = window.screen.height
-const Duration = 300
+const Duration = 250
 export default class OverlayViewPopup extends OverlayView {
   constructor(props) {
     super(props)
