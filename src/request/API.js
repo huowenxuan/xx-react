@@ -1,7 +1,8 @@
 
 'use strict'
 
-const baseUrl = 'http://a.tangshui.net'
+const baseUrl = '/api'
+// const baseUrl = 'http://a.tangshui.net'
 // const baseUrl = 'http://testenjoy.tangshui.net'
 
 const route = {
