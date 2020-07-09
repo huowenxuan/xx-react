@@ -18,24 +18,37 @@ export default class EditBottom extends PureComponent {
     // }, 1000)
   }
 
-  _show = ()=> {
+  show = () => {
     // overlays.show(<EditBottomOverlay/>)
+  }
+
+  onLeftClick = (e) => {
+    const {onLeftClick, onRightClick} = this.props
+    e.stopPropagation()
+    onLeftClick && onLeftClick()
+  }
+
+  onRightClick = (e) => {
+    const {onLeftClick, onRightClick} = this.props
+    e.stopPropagation()
+    onRightClick && onRightClick()
   }
 
   render() {
     const {extend} = this.state
-    const {onLeftClick, onRightClick} = this.props
     return (
       <div id='edit-bottom' style={{height: EditBottomHeight}}>
         <button
-          onClick={onLeftClick}
-          className='edit-btn'>
-          左边
+          onClick={this.onLeftClick}
+          className='edit-btn'
+        >
+          音乐
         </button>
         <button
-          onClick={onRightClick}
-          className='edit-btn'>
-          右边
+          onClick={this.onRightClick}
+          className='edit-btn'
+        >
+          权限
         </button>
       </div>
     )

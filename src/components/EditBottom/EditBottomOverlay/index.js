@@ -5,16 +5,16 @@ import './index.css'
 import EditMusic from '../EditMusic/'
 
 const windowHeight = window.screen.height
-const Duration = 1000
+const Duration = 300
 export default class OverlayViewFade extends OverlayView {
   constructor(props) {
     super(props)
 
     // permission music
-    let status = 'music'
+    let status = props.status || 'music'
     this.state = {
       fadeOpacity: 1,
-      permissionBottom: -windowHeight,
+      bottom: -windowHeight,
       status,
       height: this.getHeight(status),
       x: this.getX(status),
@@ -60,7 +60,7 @@ export default class OverlayViewFade extends OverlayView {
   appear() {
     setTimeout(() => {
       this.setState({
-        permissionBottom: 0,
+        bottom: 0,
         fadeOpacity: 1
       })
     }, 20)
@@ -68,18 +68,21 @@ export default class OverlayViewFade extends OverlayView {
 
   disappear() {
     this.setState({
-      fadeOpacity: 0
+      fadeOpacity: 0,
+      bottom: -windowHeight,
     })
     setTimeout(() => {
       super.onDisappearCompleted()
+      console.log('done')
     }, Duration)
-
   }
 
   _renderMusic() {
     return (
       <div style={{height: '100%', width: '100%'}}>
-        <EditMusic/>
+        <EditMusic
+          onBack={this.disappear}
+        />
       </div>
     )
   }
@@ -129,8 +132,7 @@ export default class OverlayViewFade extends OverlayView {
   }
 
   render() {
-    const {permissionBottom, height, status, x} = this.state
-
+    const {bottom, height, status, x} = this.state
     let view
     if (status === 'music')
       view = this._renderMusic()
@@ -139,7 +141,7 @@ export default class OverlayViewFade extends OverlayView {
 
     return (
       <div
-        onClick={() => console.log('收回')}
+        onClick={this.disappear}
         style={{
           ...styles.container,
           transition: `opacity ${Duration}ms`,
@@ -148,7 +150,7 @@ export default class OverlayViewFade extends OverlayView {
 
         <div
           style={{
-            bottom: permissionBottom + EditBottomHeight,
+            bottom: bottom + EditBottomHeight,
             height,
           }}
           className="bottom-overlay-container"
@@ -157,10 +159,10 @@ export default class OverlayViewFade extends OverlayView {
         </div>
 
         <EditBottom
-          onLeftClick={() => {
+          onLeftClick={(e) => {
             this._update('music')
           }}
-          onRightClick={() => {
+          onRightClick={(e) => {
             this._update('permission')
           }}
         />

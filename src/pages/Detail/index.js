@@ -43,8 +43,13 @@ export default class DetailPage extends Component {
 
     this._initData()
     setTimeout(() => {
-      overlays.show(<EditBottomOverlay/>)
+      this._showBottomEdit()
     }, 500)
+  }
+
+  // 弹出选择图片和权限遮罩
+  _showBottomEdit(status) {
+    overlays.show(<EditBottomOverlay status={status}/>)
   }
 
   _toJson(data) {
@@ -327,7 +332,10 @@ export default class DetailPage extends Component {
           onChange={this._onFilePick}
         />
 
-        <EditBottom onClick={() => console.log('click bottom')}/>
+        <EditBottom
+          onLeftClick={() => this._showBottomEdit('music')}
+          onRightClick={() => this._showBottomEdit('permission')}
+        />
       </div>
     )
   }
