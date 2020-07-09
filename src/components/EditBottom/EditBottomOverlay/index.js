@@ -2,23 +2,24 @@ import React, {PureComponent} from 'react';
 import OverlayView from '../../overlays/OverlayView'
 import EditBottom, {EditBottomHeight} from '../../EditBottom'
 import './index.css'
+import EditMusic from '../EditMusic/'
 
 const windowHeight = window.screen.height
 const Duration = 1000
-const file1 = require('./1.png')
-const file2 = require('./2.png')
 export default class OverlayViewFade extends OverlayView {
   constructor(props) {
     super(props)
 
     // permission music
-    let status = 'permission'
+    let status = 'music'
     this.state = {
       fadeOpacity: 1,
       permissionBottom: -windowHeight,
       status,
       height: this.getHeight(status),
       x: this.getX(status),
+
+      permission: 'public',
     }
   }
 
@@ -77,33 +78,48 @@ export default class OverlayViewFade extends OverlayView {
 
   _renderMusic() {
     return (
-      <div style={{backgroundColor: 'blue', height: '100%', width: '100%'}}>
-        <img
-          style={{width: '100%', height: '100%'}}
-          src={file1}
-        />
+      <div style={{height: '100%', width: '100%'}}>
+        <EditMusic/>
       </div>
     )
   }
 
   _renderPermission() {
     const permissions = [
-      {text: '公开'},
-      {text: '保护'},
-      {text: '私密'},
+      {title: '公开', type: 'public', description: '任何用户都可见，首次发布时自动推送到好友动态'},
+      {title: '保护', type: 'protect', description: '设置密码问题，只有回答正确才能打开'},
+      {title: '私密', type: 'private', description: '仅自己可见'},
     ]
     return (
       <div
         onClick={(e) => {
           e.stopPropagation()
-          console.log(true)
         }}
         style={{backgroundColor: 'white', height: '100%', width: '100%'}}
       >
         <ul>
-          {permissions.map(({text}) => (
-            <li key={text} className='permission-item'>
-              {text}
+          {permissions.map(({type, title, description}) => (
+            <li
+              onClick={(e) => {
+                this.setState({permission: type})
+              }}
+              key={type}
+              className='permission-item'
+            >
+              <input
+                className='permission-item-radio'
+                type="radio"
+                checked={this.state.permission === type}
+              />
+              <div>
+                <p className='permission-item-title'>
+                  {title}
+                </p>
+                <p className='permission-item-description'>
+                  {description}
+                </p>
+              </div>
+
             </li>
           ))}
 

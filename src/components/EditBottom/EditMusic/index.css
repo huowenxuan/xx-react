@@ -1,0 +1,18 @@
+#edit-music-container {
+    height: 100%;
+    background-color: white;
+}
+#music-img-bg {
+    width: 100%;
+    height: 80px;
+}
+#edit-music-box{
+    padding-left: 20px;
+}
+#audio-types {
+    height: 66px;
+}
+#music-hot-text {
+    font-size: 12px;
+    color: #9b9b9b;
+}
