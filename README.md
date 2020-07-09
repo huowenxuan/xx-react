@@ -14,8 +14,14 @@ item删除、上下移 √
 编辑文字、视频、链接、图片的弹出使用overlay来实现 0.5
 上传（主要处理图片上传）1
 引入icon 0.2
-无状态组件 + 简单hooks 1
-sass/less 1
+压缩图片并上传
+
+无状态组件 + hooks
+sass/less
+webpack （proxy本地开发跨域）
+typescript
+打包发布
+
 
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
