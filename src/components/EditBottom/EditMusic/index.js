@@ -170,7 +170,11 @@ export default class EditMusic extends PureComponent {
 
   _onTypeClick(e, type) {
     e.stopPropagation()
+    const {curType} = this.state
+    if (curType && curType._id === type._id)
+      return
     this.setState({curType: type})
+    this._updateMusicsByType(type)
   }
 
   _chooseMusic(music) {
@@ -314,6 +318,10 @@ export default class EditMusic extends PureComponent {
           <p id='music-hot-text'>共有 {allCount} 首乐曲</p>
           {this._renderMusics()}
         </div>
+
+        <p id='more-music-text'>
+          - 更多背景音乐，请到糖水App中设置 -
+        </p>
 
         <audio autoPlay={true} ref={this.audio}/>
       </div>
