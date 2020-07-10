@@ -1,6 +1,7 @@
 import React, {Component} from 'react'
 import MediaItem from "../../components/MediaItem/";
 import AddItem from "../../components/AddItem/";
+import EditAdd from "../../components/EditAdd/";
 import EditTextOverlay from '../../components/EditTextOverlay/'
 import EditImageOverlay from '../../components/EditImageOverlay/'
 import EditLinkOverlay from '../../components/EditLinkOverlay/'
@@ -11,6 +12,7 @@ import overlay from "../../components/overlays";
 import EditBottomButtons from "../../components/EditBottom/EditBottomButtons/";
 import overlays from "../../components/overlays";
 import EditBottomOverlay from "../../components/EditBottom/EditBottomOverlay";
+import OverlayViewFade from "../../components/overlays/OverlayViewFade";
 
 const post = require('../../tmp/post.json')
 const MediaTypes = {
@@ -36,6 +38,7 @@ export default class DetailPage extends Component {
     }
     this.imageUpload = React.createRef()
     this.overlay = React.createRef()
+    this.addBtn = React.createRef()
   }
 
   componentDidMount() {
@@ -133,9 +136,22 @@ export default class DetailPage extends Component {
     this._setPostState('media', media)
   }
 
+  _onAddOpen = (index) => {
+    this.setState({openedAddItem: index}, () => {
+      let rect = this.addBtn.current.getBoundingClientRect()
+      let key = overlays.show(
+          <EditAdd
+            onDismiss={() => overlays.dismiss(key)}
+            rect={rect}
+          />
+      )
+    })
+  }
+
   _onAddClick(e, type, index) {
     e.stopPropagation()
     setTimeout(this._closeAddItem, 300)
+
 
     this.setState({
       currentEdit: {index, isNew: true}
@@ -209,16 +225,18 @@ export default class DetailPage extends Component {
 
   _renderAddItem(index) {
     const {openedAddItem} = this.state
-    return <AddItem
-      isOpen={openedAddItem === index}
-      onClick={() => {
-        this.setState({openedAddItem: index})
-      }}
-      onText={(e) => this._onAddClick(e, MediaTypes.Text, index)}
-      onImage={(e) => this._onAddClick(e, MediaTypes.Image, index)}
-      onLink={(e) => this._onAddClick(e, MediaTypes.Link, index)}
-      onVideo={(e) => this._onAddClick(e, MediaTypes.Video, index)}
-    />
+    return (
+      <div ref={openedAddItem === index ? this.addBtn : null}>
+        <AddItem
+          isOpen={openedAddItem === index}
+          onClick={() => this._onAddOpen(index)}
+          onText={(e) => this._onAddClick(e, MediaTypes.Text, index)}
+          onImage={(e) => this._onAddClick(e, MediaTypes.Image, index)}
+          onLink={(e) => this._onAddClick(e, MediaTypes.Link, index)}
+          onVideo={(e) => this._onAddClick(e, MediaTypes.Video, index)}
+        />
+      </div>
+    )
   }
 
   _renderMedia(media) {
