@@ -191,6 +191,7 @@ export default class EditMusic extends PureComponent {
 
   _onPlay = () => {
     const {choose} = this.state
+    if (!choose) return
     if (this.audio.current.src !== choose.url) {
       this.audio.current.src = choose.url
     }
@@ -216,8 +217,12 @@ export default class EditMusic extends PureComponent {
   _onCancel = () => {
     this.audio.current.pause()
     this.setState({
-      choose: {}
+      choose: null
     })
+  }
+
+  _done = () => {
+    console.log(this.state.choose)
   }
 
   _renderTypes() {
@@ -247,7 +252,7 @@ export default class EditMusic extends PureComponent {
         onClick={() => this._chooseMusic(music)}
         className='music-item'
         key={_id}
-        style={choose._id === _id ? {color: '#FF4542'} : {}}
+        style={choose && choose._id === _id ? {color: '#FF4542'} : {}}
       >
         <img
           className='music-cover'
@@ -271,7 +276,7 @@ export default class EditMusic extends PureComponent {
 
   _renderHeader() {
     const {choose, playState} = this.state
-    if (!choose._id) return null
+    if (!choose) return null
     return (
       <div
         id='music-img-bg'
@@ -310,6 +315,10 @@ export default class EditMusic extends PureComponent {
         <NavBar
           title='背景音乐'
           onBack={onBack}
+          rightButtons={[{
+            text: '确认',
+            onClick: this._done
+          }]}
         />
         {this._renderHeader()}
 
