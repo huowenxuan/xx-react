@@ -6,7 +6,7 @@ import PropTypes from "prop-types";
  * 轻提示，一段时间后隐藏
  */
 const AnimDuration = 200
-export default class OverlayViewPopup extends OverlayView {
+export default class OverlayViewToast extends OverlayView {
   constructor(props) {
     super(props)
     this.state = {

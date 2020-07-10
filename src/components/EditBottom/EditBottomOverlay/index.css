@@ -6,27 +6,5 @@
     transition: bottom .3s, height .3s;
     flex-direction: column;
     display: flex;
-}
-
-.permission-item {
-    height: 60px;
-    width: 100%;
-    display: flex;
-    align-items: center;
-}
-.permission-item-radio {
-    width: 20px;
-    height: 20px;
-    margin-right: 14px;
-    margin-left: 20px;
-}
-
-.permission-item-title {
-    color: #191919;
-    font-size: 14px;
-}
-
-.permission-item-description {
-    color: #9B9B9B;
-    font-size: 12px;
+    background-color: white;
 }

@@ -22,15 +22,15 @@ class EditTextOverlay extends PureComponent {
     const {onChange, data} = this.props
     const {url, text} = this.state
     if (!url) {
-      overlays.showDialog('请输入网址')
+      overlays.showToast('请输入网址')
       return
     }
     if (!text) {
-      overlays.showDialog('请输入文字')
+      overlays.showToast('请输入文字')
       return
     }
     if (!utils.checkUrl(url)) {
-      overlays.showDialog('请输入正确的网址')
+      overlays.showToast('请输入正确的网址')
       return
     }
     onChange && onChange({

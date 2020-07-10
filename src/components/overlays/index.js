@@ -1,23 +1,26 @@
 import React from "react";
 import TopView from "./TopView";
 import OverlayViewPopup from "./OverlayViewPopup";
-import OverlayViewDialog from "./OverlayViewDialog";
+import OverlayViewToast from "./OverlayViewToast";
 import ActionSheet from "./LightBox/ActionSheet";
 
 export default {
-  showActionSheet: (buttons)=>{
+  showActionSheet: (buttons) => {
     TopView.show(
-      <OverlayViewPopup >
+      <OverlayViewPopup>
         <ActionSheet buttons={buttons} onDismiss={TopView.hideTop}/>
       </OverlayViewPopup>
     )
   },
-  showDialog: (text, duration)=>{
+  showToast: (text, duration) => {
     TopView.show(
-      <OverlayViewDialog text={text} duration={duration}/>
+      <OverlayViewToast text={text} duration={duration}/>
     )
   },
-  show: (element)=>{
-    TopView.show(element)
+  show: (element) => {
+    return TopView.show(element)
+  },
+  dismiss: (key) => {
+    TopView.hideWithKey(key)
   }
 }

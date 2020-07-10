@@ -177,7 +177,7 @@ export default class DetailPage extends Component {
         video.addEventListener('loadedmetadata', (e) => {
           const {videoWidth, videoHeight, duration} = video
           if (duration > 60) {
-            overlay.showDialog('视频最长60秒')
+            overlay.showToast('视频最长60秒')
           } else {
             this._updateMedia(true, {
               type: 'sortvideo',
