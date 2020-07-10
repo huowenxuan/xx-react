@@ -5,4 +5,5 @@ export default {
   music_play_white: require('./img/music_play_white.png'),
   arrow_right: require('./img/arrow_right.png'),
   check_icon: require('./img/check_icon.png'),
+  add_spe_icon: require('./img/add_spe_icon.png'),
 }

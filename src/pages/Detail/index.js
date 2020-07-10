@@ -1,6 +1,5 @@
 import React, {Component} from 'react'
 import MediaItem from "../../components/MediaItem/";
-import AddItem from "../../components/AddItem/";
 import EditAdd from "../../components/EditAdd/";
 import EditTextOverlay from '../../components/EditTextOverlay/'
 import EditImageOverlay from '../../components/EditImageOverlay/'
@@ -12,7 +11,7 @@ import overlay from "../../components/overlays";
 import EditBottomButtons from "../../components/EditBottom/EditBottomButtons/";
 import overlays from "../../components/overlays";
 import EditBottomOverlay from "../../components/EditBottom/EditBottomOverlay";
-import OverlayViewFade from "../../components/overlays/OverlayViewFade";
+import images from '../../assets/images'
 
 const post = require('../../tmp/post.json')
 const MediaTypes = {
@@ -88,8 +87,6 @@ export default class DetailPage extends Component {
     })
   }
 
-  _closeAddItem = () => this.setState({openedAddItem: -1})
-
   _updateMedia(isNew, newData) {
     const {index} = this.state.currentEdit
     this._hiddenOverlay()
@@ -111,7 +108,6 @@ export default class DetailPage extends Component {
   }
 
   _clickMedia(data, index) {
-    this._closeAddItem()
     this.setState({
       overlayType: data.type,
       currentEdit: {index, isNew: false}
@@ -142,19 +138,19 @@ export default class DetailPage extends Component {
     this.setState({openedAddItem: index}, () => {
       let rect = this.addBtn.current.getBoundingClientRect()
       let key = overlays.show(
-          <EditAdd
-            onDismiss={() => overlays.dismiss(key)}
-            rect={rect}
-          />
+        <EditAdd
+          onDismiss={() => overlays.dismiss(key)}
+          rect={rect}
+          onText={() => this._onAddClick(MediaTypes.Text, index)}
+          onImage={() => this._onAddClick(MediaTypes.Image, index)}
+          onLink={() => this._onAddClick(MediaTypes.Link, index)}
+          onVideo={() => this._onAddClick(MediaTypes.Video, index)}
+        />
       )
     })
   }
 
-  _onAddClick(e, type, index) {
-    e.stopPropagation()
-    setTimeout(this._closeAddItem, 300)
-
-
+  _onAddClick(type, index) {
     this.setState({
       currentEdit: {index, isNew: true}
     })
@@ -228,14 +224,14 @@ export default class DetailPage extends Component {
   _renderAddItem(index) {
     const {openedAddItem} = this.state
     return (
-      <div ref={openedAddItem === index ? this.addBtn : null}>
-        <AddItem
-          isOpen={openedAddItem === index}
-          onClick={() => this._onAddOpen(index)}
-          onText={(e) => this._onAddClick(e, MediaTypes.Text, index)}
-          onImage={(e) => this._onAddClick(e, MediaTypes.Image, index)}
-          onLink={(e) => this._onAddClick(e, MediaTypes.Link, index)}
-          onVideo={(e) => this._onAddClick(e, MediaTypes.Video, index)}
+      <div
+        ref={openedAddItem === index ? this.addBtn : null}
+        className='add-row'
+        onClick={() => this._onAddOpen(index)}
+      >
+        <img
+          className='add-icon'
+          src={images.add_spe_icon}
         />
       </div>
     )

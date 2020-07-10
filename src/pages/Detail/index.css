@@ -30,3 +30,14 @@ input {
 #imageUpload {
     display: none;
 }
+
+.add-row {
+    height: 58px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.add-icon {
+    width: 20px;
+    height: 20px;
+}
