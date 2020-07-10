@@ -43,7 +43,8 @@ export default class OverlayViewFade extends OverlayView {
       <div style={{
         ...styles.container,
         transition: `opacity ${Duration}ms`,
-        opacity: this.state.fadeOpacity
+        opacity: this.state.fadeOpacity,
+        ...(this.props.style || {})
       }}>
         {this.props.children}
       </div>

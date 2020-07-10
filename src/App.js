@@ -13,23 +13,9 @@ ReactDOM.render(
   <TopView/>,
   node
 )
-// export default () => (
-//   <div>
-//     <Router/>
-//     <Portal/>
-//   </div>
-// )
 
-export default class extends PureComponent {
-  componentDidMount() {
-  }
-
-  render() {
-    return (
-      <div>
-        <Router/>
-        {/*<Overlay emitter={emitter}/>*/}
-      </div>
-    )
-  }
-}
+export default () => (
+  <div>
+    <Router/>
+  </div>
+)
