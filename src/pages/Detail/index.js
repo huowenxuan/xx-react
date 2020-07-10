@@ -8,7 +8,7 @@ import EditWebVideoOverlay from '../../components/EditWebVideoOverlay/'
 import NavBar from '../../components/NavBar/'
 import './index.css'
 import overlay from "../../components/overlays";
-import EditBottom from "../../components/EditBottom";
+import EditBottomButtons from "../../components/EditBottom/EditBottomButtons/";
 import overlays from "../../components/overlays";
 import EditBottomOverlay from "../../components/EditBottom/EditBottomOverlay";
 
@@ -332,7 +332,7 @@ export default class DetailPage extends Component {
           onChange={this._onFilePick}
         />
 
-        <EditBottom
+        <EditBottomButtons
           onLeftClick={() => this._showBottomEdit('music')}
           onRightClick={() => this._showBottomEdit('permission')}
         />

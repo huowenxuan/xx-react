@@ -1,7 +1,5 @@
 import React, {PureComponent} from "react";
 import './index.css'
-import overlays from '../overlays/'
-import EditBottomOverlay from './EditBottomOverlay/'
 
 export const EditBottomHeight = 63
 export default class EditBottom extends PureComponent {

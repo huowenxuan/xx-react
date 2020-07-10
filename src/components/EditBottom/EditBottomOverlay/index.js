@@ -1,6 +1,6 @@
 import React, {PureComponent} from 'react';
 import OverlayView from '../../overlays/OverlayView'
-import EditBottom, {EditBottomHeight} from '../../EditBottom'
+import EditBottomButtons, {EditBottomHeight} from '../../EditBottom/EditBottomButtons/'
 import './index.css'
 import EditMusic from '../EditMusic/'
 import EditPermission from '../EditPermission/'
@@ -117,7 +117,7 @@ export default class OverlayViewFade extends OverlayView {
           {view}
         </div>
 
-        <EditBottom
+        <EditBottomButtons
           onLeftClick={(e) => {
             this._update('music')
           }}
