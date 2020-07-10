@@ -40,11 +40,7 @@ export default class DetailPage extends Component {
 
   componentDidMount() {
     const {id} = this.props.match.params
-
     this._initData()
-    setTimeout(() => {
-      this._showBottomEdit()
-    }, 500)
   }
 
   // 弹出选择图片和权限遮罩
