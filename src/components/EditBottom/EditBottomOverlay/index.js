@@ -122,7 +122,6 @@ export default class OverlayViewFade extends OverlayView {
           onLeftClick={() => this._update('music')}
           onRightClick={() => this._update('permission')}
         />
-
       </div>
     )
   }
