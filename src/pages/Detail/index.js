@@ -1,16 +1,16 @@
 import React, {Component} from 'react'
-import MediaItem from "../../components/MediaItem/";
-import EditAdd from "../../components/EditAdd/";
+import MediaItem from "../../components/MediaItem/"
+import EditAdd from "../../components/EditAdd/"
 import EditTextOverlay from '../../components/EditTextOverlay/'
 import EditImageOverlay from '../../components/EditImageOverlay/'
 import EditLinkOverlay from '../../components/EditLinkOverlay/'
 import EditWebVideoOverlay from '../../components/EditWebVideoOverlay/'
 import NavBar from '../../components/NavBar/'
 import './index.css'
-import overlay from "../../components/overlays";
-import EditBottomButtons from "../../components/EditBottom/EditBottomButtons/";
-import overlays from "../../components/overlays";
-import EditBottomOverlay from "../../components/EditBottom/EditBottomOverlay";
+import overlay from "../../components/overlays"
+import EditBottomButtons from "../../components/EditBottom/EditBottomButtons/"
+import overlays from "../../components/overlays"
+import EditBottomOverlay from "../../components/EditBottom/EditBottomOverlay"
 import images from '../../assets/images'
 
 const post = require('../../tmp/post.json')
@@ -24,7 +24,7 @@ const MediaTypes = {
 
 export default class DetailPage extends Component {
   constructor(props) {
-    super(props);
+    super(props)
     this.state = {
       openedAddItem: -1,
       post: null,
@@ -177,7 +177,7 @@ export default class DetailPage extends Component {
   _onFilePick = () => {
     let files = this.imageUpload.current.files
     for (let file of files) {
-      let src = window.URL.createObjectURL(file);
+      let src = window.URL.createObjectURL(file)
       console.log(file)
       if (file.type === 'video/mp4') {
         let video = document.createElement('video')
@@ -198,7 +198,7 @@ export default class DetailPage extends Component {
               }
             })
           }
-        });
+        })
       } else {
         let image = new Image()
         image.src = src

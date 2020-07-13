@@ -4,15 +4,15 @@ import OverlayView from './OverlayView'
 /**
  * 渐现缩小，类似iOS
  */
-const Duration = 300
 export default class OverlayViewFadeReduce extends OverlayView {
   constructor(props) {
     super(props)
 
     this.state = {
       fadeOpacity: 0,
-      scale: 1.2
+      scale: 1.2,
     }
+    this.duration = props.duration || 300
   }
 
   componentDidMount() {
@@ -39,7 +39,7 @@ export default class OverlayViewFadeReduce extends OverlayView {
     })
     setTimeout(() => {
       super.onDisappearCompleted()
-    }, Duration)
+    }, this.duration)
 
   }
 
@@ -48,7 +48,7 @@ export default class OverlayViewFadeReduce extends OverlayView {
     return (
       <div style={{
         ...styles.container,
-        transition: `opacity ${Duration}ms, transform ${Duration}ms`,
+        transition: `opacity ${this.duration}ms ease-in-out, transform ${this.duration + 100}ms ease-in-out`,
         opacity: fadeOpacity,
         transform: `scale(${scale}, ${scale})`
       }}>

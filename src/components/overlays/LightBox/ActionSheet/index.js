@@ -49,8 +49,11 @@ export default class ActionSheet extends PureComponent {
   render() {
     const {buttons} = this.props
     return (
-      <div className='container'>
-        <div style={{flex: 1}} onClick={this._dismiss}/>
+      <div className='actionsheet-container'>
+        <div
+          style={{flex: 1}}
+          onTouchStart={this._dismiss}
+          onClick={this._dismiss}/>
         <div>
           <div style={styles.main}>
             {buttons.map((button, i) => (
