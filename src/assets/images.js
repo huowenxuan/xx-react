@@ -10,4 +10,6 @@ export default {
   add_line_icon: require('./img/add_line_icon.png'),
   add_video_icon: require('./img/add_video_icon.png'),
   add_text_icon: require('./img/add_text_icon.png'),
+  post_set_music: require('./img/post_set_music.png'),
+  post_set_status: require('./img/post_set_status.png'),
 }

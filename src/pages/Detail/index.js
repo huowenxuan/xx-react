@@ -12,6 +12,7 @@ import EditBottomButtons from "../../components/EditBottom/EditBottomButtons/"
 import overlays from "../../components/overlays"
 import EditBottomOverlay from "../../components/EditBottom/EditBottomOverlay"
 import images from '../../assets/images'
+import {get} from '../../request'
 
 const post = require('../../tmp/post.json')
 const MediaTypes = {
@@ -43,6 +44,32 @@ export default class DetailPage extends Component {
   componentDidMount() {
     const {id} = this.props.match.params
     this._initData()
+  }
+
+  async _testJSSDK(){
+    let url = encodeURIComponent('http://m.tripcity.cn/')
+    let result = await get('/bookapi/weixin/jsconfig?url=' + url)
+
+    window.wx.config({
+      ...result.data,
+      debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+    })
+
+    setTimeout(()=>{
+      window.wx.chooseImage({
+        count: 1, // 默认9
+        sizeType: ['original', 'compressed'], // 可以指定是原图还是压缩图，默认二者都有
+        sourceType: ['album', 'camera'], // 可以指定来源是相册还是相机，默认二者都有
+        success: function (res) {
+          var localIds = res.localIds; // 返回选定照片的本地ID列表，localId可以作为img标签的src属性显示图片
+          alert(JSON.stringify(localIds))
+        },
+        fail: function (res) {
+          alert(res)
+        }
+      });
+    }, 2000)
+
   }
 
   // 弹出选择图片和权限遮罩

@@ -9,4 +9,12 @@ module.exports = function (app) {
       '^/api': '', // rewrite path
     },
   }))
+
+  app.use('/bookapi', createProxyMiddleware({
+    target: 'http://book.tripcity.cn/',
+    changeOrigin: true,
+    pathRewrite: {
+      '^/bookapi': '', // rewrite path
+    },
+  }))
 }
