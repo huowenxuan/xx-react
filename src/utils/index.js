@@ -1,10 +1,4 @@
-
-/**
- * 选择图片/视频
- * @param isImage true为图片。false为视频
- * @param max 最大数量
- */
-export function pickPhoto(isImage, max) {
+function pickPhotoBrowser(isImage, max) {
   const handleVideo = async (src) => {
     let video = document.createElement('video')
     document.body.appendChild(video)
@@ -60,7 +54,7 @@ export function pickPhoto(isImage, max) {
             item = await handleVideo(src)
           item.size = file.size
           result.push(item)
-        } catch(e) {
+        } catch (e) {
           return reject(e)
         } finally {
           document.body.removeChild(input)
@@ -70,9 +64,9 @@ export function pickPhoto(isImage, max) {
     }
     input.click()
   })
+}
 
-
-
+function pickPhotoWx(isImage, max) {
   // window.wx.chooseImage({
   //   count: 1, // 默认9
   //   sizeType: ['original', 'compressed'], // 可以指定是原图还是压缩图，默认二者都有
@@ -85,6 +79,19 @@ export function pickPhoto(isImage, max) {
   //     alert(res)
   //   }
   // })
+}
+
+/**
+ * 选择图片/视频
+ * @param isImage true为图片。false为视频
+ * @param max 最大数量
+ */
+export function pickPhoto(isImage, max) {
+  if (false) {
+    return pickPhotoWx(isImage, max)
+  } else {
+    return pickPhotoBrowser(isImage, max)
+  }
 }
 
 /* 转换从浏览器赋值或者客户端分享出来的优酷、腾讯视频 */
