@@ -57,8 +57,8 @@ export default (props) => {
           <div className='permission-item-radio-and-title'>
 
             {permission === type
-              ? <img className='permission-item-radio' src={images.check_icon}/>
-              : <div className='permission-item-radio permission-item-radio-nocheck'/>
+              ? <img className='permission-item-radio' src={images.icon_check}/>
+              : <img className='permission-item-radio' src={images.icon_check_un}/>
             }
 
             <div>

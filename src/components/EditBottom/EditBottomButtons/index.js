@@ -1,13 +1,11 @@
-import React, {PureComponent} from "react";
+import React, {PureComponent} from "react"
 import './index.css'
+import images from "../../../assets/images"
 
 export const EditBottomHeight = 63
 export default class EditBottom extends PureComponent {
   constructor(props) {
-    super(props);
-    this.state = {
-      extend: false
-    }
+    super(props)
   }
 
   componentDidMount() {
@@ -32,22 +30,45 @@ export default class EditBottom extends PureComponent {
     onRightClick && onRightClick()
   }
 
+  _renderBtn = (text, isActive, activeImg, unActiveImg, action, desc, style) => {
+    // 设置权限永远居中，音乐：没音乐则居中，有音乐就居左，设置marinleft
+    return (
+      <div className='edit-btn-box'>
+        <button
+          onClick={action}
+          className='edit-btn'
+          style={style}
+        >
+          <img className='edit-btn-img' src={isActive ? activeImg : unActiveImg}/>
+          <p className={`edit-btn-title ${isActive ? 'edit-btn-active' : ''}`}>{text}</p>
+          <p className='edit-btn-desc'>{desc}</p>
+        </button>
+      </div>
+
+    )
+  }
+
   render() {
-    const {extend} = this.state
+    const {active} = this.props
     return (
       <div id='edit-bottom' style={{height: EditBottomHeight}}>
-        <button
-          onClick={this.onLeftClick}
-          className='edit-btn'
-        >
-          音乐
-        </button>
-        <button
-          onClick={this.onRightClick}
-          className='edit-btn'
-        >
-          权限
-        </button>
+        {this._renderBtn(
+          '背景音频',
+          active === 'music',
+          images.icon_music_red,
+          images.icon_music,
+          this.onLeftClick,
+          '残影月 - faded钢琴独奏版',
+          {marginLeft: 50}
+        )}
+        {this._renderBtn(
+          '谁可以看',
+          active === 'permission',
+          images.icon_limit_red,
+          images.icon_limit,
+          this.onRightClick,
+          '公开'
+        )}
       </div>
     )
   }
