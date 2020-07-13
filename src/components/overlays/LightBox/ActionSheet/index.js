@@ -2,8 +2,6 @@ import React, {PureComponent} from 'react'
 import PropTypes from 'prop-types'
 import './index.css'
 
-const windowHeight = window.screen.height
-const windowWidth = window.screen.width
 export default class ActionSheet extends PureComponent {
   constructor(props) {
     super(props)
@@ -27,7 +25,7 @@ export default class ActionSheet extends PureComponent {
         onClick={() => this._onButtonPress(data.onPress)}
         style={{
           ...styles.button,
-          color: data.textColor || '#0076FF'
+          color: data.textColor || '#191919'
         }}
       >
         {data.text}
@@ -55,7 +53,7 @@ export default class ActionSheet extends PureComponent {
           onTouchStart={this._dismiss}
           onClick={this._dismiss}/>
         <div>
-          <div style={styles.main}>
+          <div>
             {buttons.map((button, i) => (
               <div key={i}>
                 <div style={styles.buttonBox}>
@@ -77,36 +75,29 @@ export default class ActionSheet extends PureComponent {
 }
 
 let styles = {
-  main: {
-    backgroundColor: 'white',
-    borderRadius: 15,
-    margin: 10,
-  },
   line: {
-    backgroundColor: '#D8D8D8',
-    height: 0.5,
-    width: windowWidth
+    backgroundColor: '#F8F8F8',
+    height: 1,
+    width: '100%'
   },
   buttonBox: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    height: 50,
   },
   cancelButtonBox: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    height: 50,
-    backgroundColor: 'white',
-    borderRadius: 15,
-    margin: '0 10px 10px 10px'
+    backgroundColor: '#F8F8F8',
+    paddingTop: 10,
   },
   button: {
-    height: 50,
+    height: 40,
     textAlign: 'center',
     width: '100%',
-    fontSize: 17,
-    color: '#0076FF',
+    fontSize: 12,
+    color: '#191919',
+    backgroundColor: 'white'
   }
 }
