@@ -13,6 +13,7 @@ import overlays from "../../components/overlays"
 import EditBottomOverlay from "../../components/EditBottom/EditBottomOverlay"
 import images from '../../assets/images'
 import {get} from '../../request'
+import * as utils from '../../utils'
 
 const post = require('../../tmp/post.json')
 const MediaTypes = {
@@ -44,33 +45,19 @@ export default class DetailPage extends Component {
   componentDidMount() {
     const {id} = this.props.match.params
     this._initData()
+
+    this.initWxConfig()
   }
 
-  async _testJSSDK(){
+  async initWxConfig() {
     let url = encodeURIComponent('http://m.tripcity.cn/')
     let result = await get('/bookapi/weixin/jsconfig?url=' + url)
-
     window.wx.config({
       ...result.data,
-      debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+      debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
     })
-
-    setTimeout(()=>{
-      window.wx.chooseImage({
-        count: 1, // 默认9
-        sizeType: ['original', 'compressed'], // 可以指定是原图还是压缩图，默认二者都有
-        sourceType: ['album', 'camera'], // 可以指定来源是相册还是相机，默认二者都有
-        success: function (res) {
-          var localIds = res.localIds; // 返回选定照片的本地ID列表，localId可以作为img标签的src属性显示图片
-          alert(JSON.stringify(localIds))
-        },
-        fail: function (res) {
-          alert(res)
-        }
-      });
-    }, 2000)
-
   }
+
 
   // 弹出选择图片和权限遮罩
   _showBottomEdit(status) {
@@ -175,74 +162,43 @@ export default class DetailPage extends Component {
     })
   }
 
-  _onAddClick(type, index) {
-    this.setState({
-      currentEdit: {index, isNew: true}
-    })
-    if (type === MediaTypes.Image) {
-      this.imageUpload.current.accept = '.jpg, .jpeg, .png, .gif'
-      this.imageUpload.current.click()
-    } else if (type === MediaTypes.Video) {
-      overlay.showActionSheet([
-        {
-          text: '本地', onPress: () => {
-            this.imageUpload.current.accept = 'video/*'
-            this.imageUpload.current.click()
-          }
-        },
-        {
-          text: '网络', onPress: () => {
-            this.setState({overlayType: type})
-          }
-        },
-      ])
-    } else {
-      this.setState({overlayType: type})
-    }
-  }
-
-  _onFilePick = () => {
-    let files = this.imageUpload.current.files
-    for (let file of files) {
-      let src = window.URL.createObjectURL(file)
-      console.log(file)
-      if (file.type === 'video/mp4') {
-        let video = document.createElement('video')
-        video.src = src
-        video.addEventListener('loadedmetadata', (e) => {
-          const {videoWidth, videoHeight, duration} = video
-          if (duration > 60) {
-            overlay.showToast('视频最长60秒')
-          } else {
-            this._updateMedia(true, {
-              type: 'sortvideo',
-              body: src,
-              is_new: true,
-              info: {
-                width: videoWidth,
-                height: videoHeight,
-                size: file.size
-              }
-            })
-          }
-        })
-      } else {
-        let image = new Image()
-        image.src = src
-        image.onload = () => {
-          console.log(image)
+  async _pickPhoto(isImage) {
+    try {
+      let data = await utils.pickPhoto(isImage, 1)
+      for (let item of data) {
+        const {width, height, size, src, duration} = item
+        if (isImage) {
           this._updateMedia(true, {
             type: 'image',
             body: src,
             is_new: true,
-            info: {
-              width: image.width,
-              height: image.height,
-              size: file.size
-            }
+            info: {width, height, size, duration}
+          })
+        } else {
+          this._updateMedia(true, {
+            type: 'sortvideo',
+            body: src,
+            is_new: true,
+            info: {width, height, size}
           })
         }
       }
+    } catch(e) {
+      overlays.showToast(e.message)
+    }
+  }
+
+  _onAddClick(type, index) {
+    this.setState({currentEdit: {index, isNew: true}})
+    if (type === MediaTypes.Image) {
+      this._pickPhoto(true)
+    } else if (type === MediaTypes.Video) {
+      overlay.showActionSheet([
+        {text: '本地', onPress: () => this._pickPhoto(false)},
+        {text: '网络', onPress: () => this.setState({overlayType: type})},
+      ])
+    } else {
+      this.setState({overlayType: type})
     }
   }
 
@@ -254,10 +210,7 @@ export default class DetailPage extends Component {
         className='add-row'
         onClick={() => this._onAddOpen(index)}
       >
-        <img
-          className='add-icon'
-          src={images.add_spe_icon}
-        />
+        <img className='add-icon' src={images.add_spe_icon}/>
       </div>
     )
   }
@@ -356,18 +309,6 @@ export default class DetailPage extends Component {
         </div>
 
         {this._renderAddOverlay()}
-        <input
-          ref={this.imageUpload}
-          id='imageUpload'
-          type='file'
-          multiple={true}
-          // accept='.xlsx, .xls'
-          // onChange事件触发的条件为其value发生变化，将value置空可重复选择同一个文件，否则第二次选择相同文件没有反应
-          onClick={(event) => {
-            event.target.value = null
-          }}
-          onChange={this._onFilePick}
-        />
 
         <EditBottomButtons
           onLeftClick={() => this._showBottomEdit('music')}

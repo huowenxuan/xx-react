@@ -27,10 +27,6 @@ input {
     font-weight: 700;
 }
 
-#imageUpload {
-    display: none;
-}
-
 .add-row {
     height: 58px;
     display: flex;
