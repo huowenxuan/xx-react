@@ -14,7 +14,7 @@ export default class OverlayViewFade extends OverlayView {
     // permission music
     let status = props.status || 'permission'
     this.state = {
-      fadeOpacity: 1,
+      fadeOpacity: 0,
       bottom: -windowHeight,
       status,
       height: this.getHeight(status),
