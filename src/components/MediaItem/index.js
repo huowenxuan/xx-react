@@ -61,6 +61,7 @@ export default class MediaItem extends PureComponent {
           controls={true}
           className='video'
           src={item.body}
+          preload='metadata'
         />
       </div>
     )

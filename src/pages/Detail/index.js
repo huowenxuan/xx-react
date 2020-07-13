@@ -1,4 +1,4 @@
-import React, {Component} from 'react'
+import React, {PureComponent} from 'react'
 import MediaItem from "../../components/MediaItem/"
 import EditAdd from "../../components/EditAdd/"
 import EditTextOverlay from '../../components/EditTextOverlay/'
@@ -24,7 +24,7 @@ const MediaTypes = {
   Video: 'video'
 }
 
-export default class DetailPage extends Component {
+export default class DetailPage extends PureComponent {
   constructor(props) {
     super(props)
     this.state = {
@@ -217,7 +217,8 @@ export default class DetailPage extends Component {
 
   _renderMedia(media) {
     return media.map((data, index) => (
-      <ul key={`${data._id}-${index}`}>
+      // 每个item的key不变可保证每次修改元素后所有的视频不重新加载
+      <ul key={`${data._id}-${data.body}`}>
         {this._renderAddItem(index)}
         <MediaItem
           data={data}
