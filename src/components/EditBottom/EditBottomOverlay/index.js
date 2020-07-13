@@ -119,12 +119,8 @@ export default class OverlayViewFade extends OverlayView {
 
         <EditBottomButtons
           active={status}
-          onLeftClick={(e) => {
-            this._update('music')
-          }}
-          onRightClick={(e) => {
-            this._update('permission')
-          }}
+          onLeftClick={() => this._update('music')}
+          onRightClick={() => this._update('permission')}
         />
 
       </div>
