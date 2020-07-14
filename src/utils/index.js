@@ -118,6 +118,7 @@ export async function uploadPhoto({file, path}) {
     let token = await get(API.qiniuToken)
     token = token.qiniutoken
     let key = qiniu.uploadKey(path)
+    console.log(key)
     qiniu.upload(file, key, token)
   }
 }
