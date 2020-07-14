@@ -50,13 +50,6 @@ class EditTextOverlay extends PureComponent {
       >
         <div style={{position: 'relative', height: '100%'}}>
           <div className='add-img-box'>
-            {/*<div*/}
-            {/*  className='add-img'*/}
-            {/*  style={{*/}
-            {/*    backgroundImage: `url(${body})`,*/}
-            {/*    transform: `rotate(${rotate}deg)`*/}
-            {/*  }}*/}
-            {/*/>*/}
             <img
               className='add-img'
               src={body}
