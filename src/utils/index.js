@@ -71,48 +71,32 @@ function pickPhotoBrowser(isImage, max) {
 
 function pickPhotoWx(isImage, max) {
   const handleImage = (src) => {
-    let image = new Image()
+    let image = document.createElement('img')
+    document.body.appendChild(image)
     image.src = src
     return new Promise((resolve, reject) => {
       image.onload = () => {
         resolve({src, width: image.width, height: image.height})
+        document.body.removeChild(image)
       }
-      image.oncomplete = () => {
-        alert('comp')
+      image.onerror = () => {
+        reject()
+        document.body.removeChild(image)
       }
     })
   }
   return new Promise((resolve, reject) => {
     window.wx.chooseImage({
-      count: 1, // 默认9
-      sizeType: ['original', 'compressed'], // 可以指定是原图还是压缩图，默认二者都有
+      count: 9, // 默认9
+      sizeType: ['original'], // 原图 original 压缩 compressed
       sourceType: ['album', 'camera'], // 可以指定来源是相册还是相机，默认二者都有
       success: async function (res) {
         let result = []
         var localIds = res.localIds // 返回选定照片的本地ID列表，localId可以作为img标签的src属性显示图片
         for (let localId of localIds) {
-          window.wx.getLocalImgData({
-            localId,
-            success: function (res) {
-              var localData = res.localData // localData是图片的base64数据，可以用img标签显示
-              alert(localData.length)
-              let image = new Image()
-              image.src = localData
-              image.onload = () => {
-                // alert(localData.length)
-              }
-              image.onerror = () => {
-                // alert(localData)
-              }
-              resolve([{
-                src: localData,
-                width: 100,
-                height: 100,
-              }])
-            }
-          })
-
+          result.push(await handleImage(localId))
         }
+        resolve(result)
       },
       fail: function (res) {
         alert(res)
@@ -129,7 +113,7 @@ function pickPhotoWx(isImage, max) {
  * @param max 最大数量
  */
 export function pickPhoto(isImage, max) {
-  if (false) {
+  if (true) {
     return pickPhotoWx(isImage, max)
   } else {
     return pickPhotoBrowser(isImage, 100)
