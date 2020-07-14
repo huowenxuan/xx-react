@@ -1,4 +1,6 @@
 import * as wechat from './wechat'
+import qiniu from './Qiniu'
+import {get, API} from "../request"
 
 function choosePhotoBrowser(isImage, max) {
   const handleVideo = async (src) => {
@@ -59,6 +61,7 @@ function choosePhotoBrowser(isImage, max) {
           else
             item = await handleVideo(src)
           item.size = file.size
+          item.file = file
           result.push(item)
         } catch (e) {
           return reject(e)
@@ -101,17 +104,23 @@ async function choosePhotoWx(isImage, max) {
  * @param max 最大数量
  */
 export function choosePhoto(isImage, max) {
-  if (isImage) {
-    return choosePhotoWx(isImage, max)
-  } else {
+  // if (isImage) {
+  //   return choosePhotoWx(isImage, max)
+  // } else {
     return choosePhotoBrowser(isImage, 100)
-  }
+  // }
 }
 
-export async function uploadPhoto(path) {
+export async function uploadPhoto(file, path) {
   if (path.startsWith('weixin') || path.startsWith('wx')) {
     let data = await wechat.uploadImage(path)
     return data
+  } else {
+    let token = await get(API.qiniuToken)
+    token = token.qiniutoken
+    let key = qiniu.uploadKey(path)
+    qiniu.upload(file, key, token)
+    console.log(key)
   }
 }
 
