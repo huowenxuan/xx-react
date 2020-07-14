@@ -21,26 +21,30 @@
 
 .edit-btn {
     height: 100%;
+    width: 100%;
     color: #231815;
     font-size: 12px;
     display: flex;
     align-items: center;
     justify-content: center;
 }
+
 .edit-btn-img {
+    flex: 0 0 20px; /* 防止宽度被挤压 */
     height: 20px;
-    width: 20px;
-    background-color: red;
     margin-right: 6px;
 }
+
 .edit-btn-title {
     font-size: 12px;
     white-space: nowrap;
     margin-right: 12px;
 }
+
 .edit-btn-active {
     color: #FF4542
 }
+
 .edit-btn-desc {
     color: #9B9B9B;
     font-size: 12px;
