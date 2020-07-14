@@ -1,18 +1,18 @@
-import React, {PureComponent} from "react";
-import images from "../../../assets/images";
+import React, {PureComponent} from "react"
+import images from "../../../assets/images"
 import './index.css'
-import NavBar from "../../NavBar";
+import NavBar from "../../NavBar"
 import {get, post, API} from '../../../request'
 
 export default class EditMusic extends PureComponent {
   constructor(props) {
-    super(props);
+    super(props)
     this.state = {
       types: [],
       curType: null,
       allCount: '',
       musics: [],
-      choose: {},
+      choose: null,
       playState: {
         isPlaying: false,
         url: ''
@@ -266,17 +266,16 @@ export default class EditMusic extends PureComponent {
   _renderMusics() {
     const {musics} = this.state
     return (
-      <div>
-        <ul>
-          {musics.map(this._renderMusic)}
-        </ul>
-      </div>
+      <ul>
+        {musics.map(this._renderMusic)}
+      </ul>
     )
   }
 
   _renderHeader() {
     const {choose, playState} = this.state
     if (!choose) return null
+    console.log(choose)
     return (
       <div
         id='music-img-bg'
