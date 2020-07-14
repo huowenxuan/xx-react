@@ -37,7 +37,6 @@ export default class DetailPage extends PureComponent {
         isNew: false  // 区分是修改item还是新增
       }
     }
-    this.imageUpload = React.createRef()
     this.overlay = React.createRef()
     this.addBtn = React.createRef()
   }
@@ -45,17 +44,6 @@ export default class DetailPage extends PureComponent {
   componentDidMount() {
     const {id} = this.props.match.params
     this._initData()
-
-    this.initWxConfig()
-  }
-
-  async initWxConfig() {
-    let url = encodeURIComponent('http://m.tripcity.cn/')
-    let result = await get('/bookapi/weixin/jsconfig?url=' + url)
-    window.wx.config({
-      ...result.data,
-      debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
-    })
   }
 
 
@@ -147,8 +135,6 @@ export default class DetailPage extends PureComponent {
   }
 
   _onAddOpen = (index) => {
-    this._pickPhoto(true, 1)
-    return
     this.setState({openedAddItem: index}, () => {
       let rect = this.addBtn.current.getBoundingClientRect()
       let key = overlays.show(
@@ -164,39 +150,44 @@ export default class DetailPage extends PureComponent {
     })
   }
 
-  async _pickPhoto(isImage) {
+  async _choosePhoto(isImage) {
+    let data = null
     try {
-      let data = await utils.pickPhoto(isImage, 1)
-      for (let item of data) {
-        const {width, height, size, src, duration} = item
-        if (isImage) {
-          this._updateMedia(true, {
-            type: 'image',
-            body: src,
-            is_new: true,
-            info: {width, height, size, duration}
-          })
-        } else {
-          this._updateMedia(true, {
-            type: 'sortvideo',
-            body: src,
-            is_new: true,
-            info: {width, height, size}
-          })
-        }
-      }
+      data = await utils.choosePhoto(isImage, 1)
     } catch (e) {
       overlays.showToast(e.message)
+      return
     }
+
+    for (let item of data) {
+      const {width, height, size, src, duration} = item
+      if (isImage) {
+        this._updateMedia(true, {
+          type: 'image',
+          body: src,
+          is_new: true,
+          info: {width, height, size, duration}
+        })
+        utils.uploadPhoto(src)
+      } else {
+        this._updateMedia(true, {
+          type: 'sortvideo',
+          body: src,
+          is_new: true,
+          info: {width, height, size}
+        })
+      }
+    }
+
   }
 
   _onAddClick(type, index) {
     this.setState({currentEdit: {index, isNew: true}})
     if (type === MediaTypes.Image) {
-      this._pickPhoto(true)
+      this._choosePhoto(true)
     } else if (type === MediaTypes.Video) {
       overlay.showActionSheet([
-        {text: '本地', onPress: () => this._pickPhoto(false)},
+        {text: '本地', onPress: () => this._choosePhoto(false)},
         {text: '网络', onPress: () => this.setState({overlayType: type})},
       ])
     } else {

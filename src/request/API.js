@@ -1,7 +1,8 @@
 
 'use strict'
 
-const baseUrl = '/api'
+// const baseUrl = '/api'
+const baseUrl = '/testapi'
 // const baseUrl = 'http://a.tangshui.net'
 // const baseUrl = 'http://testenjoy.tangshui.net'
 
@@ -143,6 +144,8 @@ const route = {
   getConversationList: baseUrl + "/conversation/list/", //获取私信列表
   getConversationDetailList: baseUrl + "/letter/list/", //获取私信列表
   testText: baseUrl + "/letter/text", //创建前文本检测
+
+  mediaToQiniu: baseUrl + '/youth/weixin/mediatoqiniu?media_id='
 };
 export { route }
 export default route

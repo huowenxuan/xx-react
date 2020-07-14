@@ -1,4 +1,6 @@
-function pickPhotoBrowser(isImage, max) {
+import * as wechat from './wechat'
+
+function choosePhotoBrowser(isImage, max) {
   const handleVideo = async (src) => {
     let video = document.createElement('video')
     document.body.appendChild(video)
@@ -68,56 +70,29 @@ function pickPhotoBrowser(isImage, max) {
   })
 }
 
-function pickPhotoWx(isImage, max) {
+async function choosePhotoWx(isImage, max) {
   const handleImage = (src) => {
-    // 微信的localId图片在iOS端不支持backgroundImage，不支持Image API，只支持img
+    // 微信的localId图片在iOS端不支持Image API，只支持img，不支持backgroundImage
     let image = document.createElement('img')
     document.body.appendChild(image)
     image.src = src
+    const done = () => document.body.removeChild(image)
     return new Promise((resolve, reject) => {
+      image.onerror = () => done() && reject()
       image.onload = () => {
         resolve({src, width: image.width, height: image.height})
-        document.body.removeChild(image)
-      }
-      image.onerror = () => {
-        reject()
-        document.body.removeChild(image)
+        done()
       }
     })
   }
-  return new Promise((resolve, reject) => {
-    window.wx.chooseImage({
-      count: max, // 默认9
-      sizeType: ['original'], // 原图 original 压缩 compressed
-      sourceType: ['album', 'camera'], // 可以指定来源是相册还是相机，默认二者都有
-      success: async function (res) {
-        let result = []
-        var localIds = res.localIds // 返回选定照片的本地ID列表，localId可以作为img标签的src属性显示图片
-        for (let localId of localIds) {
-          let item = await handleImage(localId)
 
-          window.wx.uploadImage({
-            localId: localId,
-            isShowProgressTips: 1,
-            success: (res) => {
-              let {mediaUrl, serverId} = res
-              alert('upload success.' + JSON.stringify(res))
-            },
-            fail: (res) => {
-              alert('upload fail.'+ JSON.stringify(res))
-            }
-          })
-
-          result.push(item)
-        }
-        resolve(result)
-      },
-      fail: function (res) {
-        reject(res)
-      }
-    })
-  })
-
+  let localIds = await wechat.chooseImage(max)
+  let result = []
+  for (let localId of localIds) {
+    let item = await handleImage(localId)
+    result.push(item)
+  }
+  return result
 }
 
 /**
@@ -125,12 +100,27 @@ function pickPhotoWx(isImage, max) {
  * @param isImage true为图片。false为视频
  * @param max 最大数量
  */
-export function pickPhoto(isImage, max) {
-  if (true) {
-    return pickPhotoWx(isImage, max)
+export function choosePhoto(isImage, max) {
+  if (isImage) {
+    return choosePhotoWx(isImage, max)
   } else {
-    return pickPhotoBrowser(isImage, 100)
+    return choosePhotoBrowser(isImage, 100)
   }
+}
+
+export async function uploadPhoto(path) {
+  if (path.startsWith('weixin') || path.startsWith('wx')) {
+    let data = await wechat.uploadImage(path)
+    return data
+  }
+}
+
+export async function uploadPhotos(paths) {
+  let data = []
+  for (let path of paths) {
+    data.push(await uploadPhoto(path))
+  }
+  return data
 }
 
 /* 转换从浏览器赋值或者客户端分享出来的优酷、腾讯视频 */
