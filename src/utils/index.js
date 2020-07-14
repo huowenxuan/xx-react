@@ -40,7 +40,6 @@ function pickPhotoBrowser(isImage, max) {
   input.accept = isImage
     ? 'image/gif, image/jpeg, image/png'
     : 'video/mp4'
-
   input.onclick = function (event) {
     event.target.value = null
   }
@@ -71,6 +70,7 @@ function pickPhotoBrowser(isImage, max) {
 
 function pickPhotoWx(isImage, max) {
   const handleImage = (src) => {
+    // 微信的localId图片在iOS端不支持backgroundImage，不支持Image API，只支持img
     let image = document.createElement('img')
     document.body.appendChild(image)
     image.src = src
@@ -87,19 +87,32 @@ function pickPhotoWx(isImage, max) {
   }
   return new Promise((resolve, reject) => {
     window.wx.chooseImage({
-      count: 9, // 默认9
+      count: max, // 默认9
       sizeType: ['original'], // 原图 original 压缩 compressed
       sourceType: ['album', 'camera'], // 可以指定来源是相册还是相机，默认二者都有
       success: async function (res) {
         let result = []
         var localIds = res.localIds // 返回选定照片的本地ID列表，localId可以作为img标签的src属性显示图片
         for (let localId of localIds) {
-          result.push(await handleImage(localId))
+          let item = await handleImage(localId)
+
+          window.wx.uploadImage({
+            localId: localId,
+            isShowProgressTips: 1,
+            success: (res) => {
+              let {mediaUrl, serverId} = res
+              alert('upload success.' + JSON.stringify(res))
+            },
+            fail: (res) => {
+              alert('upload fail.'+ JSON.stringify(res))
+            }
+          })
+
+          result.push(item)
         }
         resolve(result)
       },
       fail: function (res) {
-        alert(res)
         reject(res)
       }
     })

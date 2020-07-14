@@ -147,6 +147,8 @@ export default class DetailPage extends PureComponent {
   }
 
   _onAddOpen = (index) => {
+    this._pickPhoto(true, 1)
+    return
     this.setState({openedAddItem: index}, () => {
       let rect = this.addBtn.current.getBoundingClientRect()
       let key = overlays.show(
@@ -183,7 +185,7 @@ export default class DetailPage extends PureComponent {
           })
         }
       }
-    } catch(e) {
+    } catch (e) {
       overlays.showToast(e.message)
     }
   }
