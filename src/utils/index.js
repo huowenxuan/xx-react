@@ -111,16 +111,14 @@ export function choosePhoto(isImage, max) {
   // }
 }
 
-export async function uploadPhoto(file, path) {
+export async function uploadPhoto({file, path}) {
   if (path.startsWith('weixin') || path.startsWith('wx')) {
-    let data = await wechat.uploadImage(path)
-    return data
-  } else {
+    return await wechat.uploadImage(path)
+  } else if (file) {
     let token = await get(API.qiniuToken)
     token = token.qiniutoken
     let key = qiniu.uploadKey(path)
     qiniu.upload(file, key, token)
-    console.log(key)
   }
 }
 

@@ -168,7 +168,7 @@ export default class DetailPage extends PureComponent {
           is_new: true,
           info: {width, height, size, duration}
         })
-        utils.uploadPhoto(item.file, src)
+        utils.uploadPhoto({file: item.file, path: src})
       } else {
         this._updateMedia(true, {
           type: 'sortvideo',
