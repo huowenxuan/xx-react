@@ -26,7 +26,7 @@
     font-weight: bold;
 }
 
-.center {
+.nav-center {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -44,7 +44,7 @@
 }
 
 .icon-button {
-    width: 44px;
+    width: 32px;
 }
 .back-button {
     width: 22px;

@@ -72,7 +72,7 @@ export default class NavBar extends PureComponent {
     let button
     if (data.text) {
       button = (
-        <div className='center text-button' style={data.style}>
+        <div className='nav-center text-button' style={data.style}>
           <div className='button-text' style={data.textStyle}>
             {data.text}
           </div>
@@ -80,7 +80,7 @@ export default class NavBar extends PureComponent {
       )
     } else if (data.icon) {
       button = (
-        <div className='center icon-button' style={data.style}>
+        <div className='nav-center icon-button' style={data.style}>
           {data.icon}
         </div>
       )
@@ -92,7 +92,7 @@ export default class NavBar extends PureComponent {
       <button
         onClick={data.onClick}
         key={key}
-        className='center'
+        className='nav-center'
       >
         {button}
       </button>
@@ -101,7 +101,7 @@ export default class NavBar extends PureComponent {
 
   _renderButtons(buttons, style) {
     return (
-      <div className='center' style={style}>
+      <div className='nav-center' style={style}>
         {buttons
           ? buttons.map((item, idx) => this._renderButton(item, idx))
           : null}
@@ -111,7 +111,6 @@ export default class NavBar extends PureComponent {
 
   _renderNavBar(navHeight) {
     const {title, leftButtons, rightButtons, style, titleView} = this.props;
-
     return (
       <nav style={{height: navHeight, ...style}} className='nav-wrapper'>
         <div className='title-box'>
@@ -122,8 +121,8 @@ export default class NavBar extends PureComponent {
           </div>
         </div>
 
-        {this._renderButtons(leftButtons || this.backButton(), {marginLeft: 8})}
-        {this._renderButtons(rightButtons, {marginRight: 8})}
+        {this._renderButtons(leftButtons || this.backButton())}
+        {this._renderButtons(rightButtons)}
       </nav>
     )
   }
