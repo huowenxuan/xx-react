@@ -34,8 +34,8 @@ export async function uploadImage(localId, fakeOnProgress, fakeMaxDuration) {
   obj.start = () => new Promise((resolve, reject) => {
     // 假的进度
     let fakePercent = 0
-    let maxDuration = fakeMaxDuration || 3 * 1000 // 假设上传最大时间
-    let duration = 300
+    let maxDuration = fakeMaxDuration || 10 * 1000 // 假设上传最大时间
+    let duration = 100
     let maxTimes = Math.ceil(maxDuration / duration)
     let curTimes = 0
     let timer = setInterval(() => {
