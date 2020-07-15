@@ -28,19 +28,46 @@ export async function chooseImage(max) {
   })
 }
 
-export async function uploadImage(localId) {
+export async function uploadImage(localId, fakeOnProgress, fakeMaxDuration) {
   let wx = await getWechat()
-  return new Promise((resolve, reject) => {
+  let obj = {}
+  obj.start = () => new Promise((resolve, reject) => {
+    // 假的进度
+    let fakePercent = 0
+    let maxDuration = fakeMaxDuration || 3 * 1000 // 假设上传最大时间
+    let duration = 300
+    let maxTimes = Math.ceil(maxDuration / duration)
+    let curTimes = 0
+    let timer = setInterval(() => {
+      curTimes ++
+      fakePercent = ((curTimes * duration) / maxDuration) * 100
+      fakeOnProgress && fakeOnProgress(fakePercent)
+      // 最后一次不再增加（不会加到100%）
+      if (curTimes === maxTimes - 1)
+        clearInterval(timer)
+    }, duration)
+
     wx.uploadImage({
       localId,
       isShowProgressTips: 0,
       success: async (res) => {
         let {serverId} = res
         let result = await get(API.mediaToQiniu + serverId)
+        fakeOnProgress && fakeOnProgress(100)
+        clearInterval(timer)
         resolve(result.data.key)
       },
-      fail: reject
+      fail: ()=>{
+        fakeOnProgress && fakeOnProgress(0)
+        clearInterval(timer)
+        reject()
+      }
+
     })
+
   })
+  obj.cancel = () => {
+  }
+  return obj
 
 }

@@ -121,27 +121,11 @@ export function choosePhoto(isImage, max) {
 export async function uploadPhoto(path, file, onProgress) {
   let data = null
   if (path.startsWith('weixin') || path.startsWith('wx')) {
-    // 假的进度
-    let fakePercent = 0
-    let maxDuration =  3 * 1000 // 假设上传最大时间
-    let duration = 300
-    let maxTimes = Math.ceil(maxDuration / duration)
-    let curTimes = 0
-    let timer = setInterval(() => {
-      curTimes ++
-      fakePercent = ((curTimes * duration) / maxDuration) * 100
-      onProgress && onProgress(fakePercent)
-      // 最后一次不再增加（不会加到100%）
-      if (curTimes === maxTimes - 1)
-        clearInterval(timer)
-    }, duration)
-    data = await wechat.uploadImage(path)
-    onProgress && onProgress(100)
-    clearInterval(timer)
+    return await wechat.uploadImage(path, onProgress, 3000)
   } else if (file) {
     let key = qiniu.generateKey(path)
     let observable = await qiniu.uploadFile(file, key, onProgress)
-    data = await observable.start()
+    return await observable.start()
   }
   return data
 }
