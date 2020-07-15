@@ -13,10 +13,10 @@ class Qiniu {
 
   async _getToken() {
     const {expired_at, token} = _token
-    // 缓存token，一小时过期
+    // 缓存token
     if (!expired_at || expired_at < Date.now()) {
-      _token.expired_at = Date.now() + 60 * 1000
       let result = await get(API.qiniuToken)
+      _token.expired_at = Date.now() + 10 * 1000
       _token.token = result.qiniutoken
     }
     return _token.token
@@ -34,7 +34,7 @@ class Qiniu {
       // TODO qiniu-js的bug
       // 在取消时会报错，但不影响正常运行
       // 但是禁用后依然会出错误，等待修复
-      disableStatisticsReport: false,
+      disableStatisticsReport: true,
     })
     let subscription
     observable.start = () => new Promise((resolve, reject) => {
@@ -43,7 +43,10 @@ class Qiniu {
         ({total}) => {
           onProgress && onProgress(total.percent)
         },
-        reject,
+        (e) => {
+          reject(e)
+          console.error('上传失败:', e)
+        },
         () => resolve(key))
     })
     observable.cancel = () => subscription.unsubscribe()

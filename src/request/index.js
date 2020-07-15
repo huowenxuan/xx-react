@@ -35,7 +35,7 @@ async function _request(method, url, data = {}, token) {
   try {
     return (await axios(config)).data
   } catch (e) {
-    return {error: _handleError(e, config)}
+    throw e
   }
 }
 

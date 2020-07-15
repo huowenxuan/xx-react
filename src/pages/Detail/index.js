@@ -107,14 +107,13 @@ export default class DetailPage extends PureComponent {
   }
 
   async _uploadFiles(media) {
-    let uploading = null
     this._uploadCancel = false
 
     let uploadMedias = []
     for (let i = 0; i < media.length; i++) {
       let item = media[i]
       let {type, body} = item
-      if (type === 'image' || type === 'shortvideo') {
+      if (type === 'image' || type === 'sortvideo') {
         if (body.startsWith('blob') ||
           body.startsWith('wx') ||
           body.startsWith('weixin')
@@ -137,38 +136,53 @@ export default class DetailPage extends PureComponent {
       })
     }
     for (let i = 0; i < uploadMedias.length; i++) {
-      let {index, item}  = uploadMedias[i]
-      this.setState((prev)=>({
+      let {index, item} = uploadMedias[i]
+      this.setState((prev) => ({
         upload: {
           ...prev.upload,
-          currentIndex: index,
-          currentPercent: 0
+          currentIndex: i,
+          currentPercent: 0,
+          percent: (i / uploadCount) * 100
         }
       }))
       const {body, tmpParams} = item
       const {file} = tmpParams || {}
       await new Promise(async (resolve, reject) => {
-        uploading = await utils.uploadPhoto(body, file, (percent) => {
-          this.setState((prev)=>({
+        let timer
+        const success = (data) => {
+          timer && clearInterval(timer)
+          resolve(data)
+        }
+        const error = (e) => {
+          timer && clearInterval(timer)
+          reject(e)
+        }
+        utils.uploadPhoto(body, file, (percent) => {
+          console.log(percent)
+          this.setState((prev) => ({
             upload: {
               ...prev.upload,
-              currentIndex: i,
               currentPercent: percent,
               percent: ((i / uploadCount) * 100) + (percent / uploadCount)
             }
           }))
-          console.log(percent)
-          // this._uploadCancel = true
-          if (this._uploadCancel) {
-            uploading && uploading.cancel()
-            reject(new Error('cancel'))
-          }
         })
-        uploading.start()
-          .then(key=>resolve(key))
-          .catch(reject)
+          .then((uploading) => {
+            uploading.start()
+              .then(key => success(key))
+              .catch(error)
+            // 检查是否点击了取消
+            timer = setInterval(() => {
+              if (this._uploadCancel) {
+                uploading && uploading.cancel()
+                error(new Error('cancel'))
+              }
+            }, 300)
+          })
+          .catch(error)
       })
     }
+    this._resetProgress()
   }
 
   _complete = async () => {
@@ -178,10 +192,11 @@ export default class DetailPage extends PureComponent {
     try {
       await this._uploadFiles(media)
     } catch (e) {
+      this._resetProgress()
       if (e.message === 'cancel') {
         overlays.showToast('取消上传')
       } else {
-        overlays.showAlert('上传失败，是否重新上传？', e.message, [
+        overlays.showAlert('上传失败，是否重新上传？', '', [
           {text: '确定', onPress: async () => this._complete()},
           {type: 'cancel'},
         ])
@@ -397,7 +412,7 @@ export default class DetailPage extends PureComponent {
     return (
       <div id='percent'>
         <div id='percent-child'>
-          <p>当前第{currentIndex+1}张{parseInt(currentPercent)}%，共有{count}张{parseInt(percent)}%</p>
+          <p>当前第{currentIndex + 1}张{parseInt(currentPercent)}%，共有{count}张{parseInt(percent)}%</p>
           <button
             onClick={this._cancelUpload}
             style={{marginTop: 15}}>

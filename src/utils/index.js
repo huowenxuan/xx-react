@@ -120,10 +120,10 @@ export function choosePhoto(isImage, max) {
  */
 export async function uploadPhoto(path, file, onProgress) {
   if (path.startsWith('weixin') || path.startsWith('wx')) {
-    return await wechat.uploadImage(path, onProgress, 3000)
+    return wechat.uploadImage(path, onProgress, 3000)
   } else if (file) {
     let key = qiniu.generateKey(path)
-    return await qiniu.uploadFile(file, key, onProgress)
+    return qiniu.uploadFile(file, key, onProgress)
   }
 }
 
