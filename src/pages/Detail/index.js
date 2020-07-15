@@ -72,11 +72,11 @@ export default class DetailPage extends PureComponent {
     }))
   }
 
-  _complete = ()=> {
-    const {post} = this.state
-    const {media} = post
-    let uploadFiles = []
-    for (let i = 0;i< media.length; i++) {
+  async _uploadFiles(media) {
+    let uploading = null
+
+    let uploadMedias = []
+    for (let i = 0; i < media.length; i++) {
       let item = media[i]
       const {type, body} = item
       if (type === 'image' || type === 'shortvideo') {
@@ -84,13 +84,24 @@ export default class DetailPage extends PureComponent {
           body.startsWith('wx') ||
           body.startsWith('weixin')
         ) {
-          uploadFiles.push({index: i, data: item})
+          uploadMedias.push({index: i, item})
         }
       }
     }
 
+    for (let {index, item} of uploadMedias) {
+      const {body, tmpParams} = item
+      const {file} = tmpParams || {}
+      let key = await utils.uploadPhoto(body, file)
+    }
+  }
 
-    console.log(uploadFiles)
+  _complete = async () => {
+    const {post} = this.state
+    const {media} = post
+
+    await this._uploadFiles(media)
+
   }
 
   _hiddenOverlay = () => {
@@ -172,21 +183,20 @@ export default class DetailPage extends PureComponent {
     }
 
     for (let item of data) {
-      const {width, height, size, src, duration, tmpParams} = item
-      const {file} = tmpParams || {}
+      const {width, height, size, src, duration, file} = item
       if (isImage) {
         this._updateMedia(true, {
           type: 'image',
           body: src,
-          is_new: true,
-          info: {width, height, size, duration}
+          info: {width, height, size, duration},
+          tmpParams: {file}
         })
       } else {
         this._updateMedia(true, {
           type: 'sortvideo',
           body: src,
-          is_new: true,
-          info: {width, height, size}
+          info: {width, height, size},
+          tmpParams: {file}
         })
       }
     }

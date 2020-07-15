@@ -8,7 +8,11 @@ function choosePhotoBrowser(isImage, max) {
     document.body.appendChild(video)
     video.src = src
     return new Promise((resolve, reject) => {
-      video.addEventListener('loadedmetadata', (e) => {
+      video.onerror = ()=>{
+        reject(new Error(video.error.message))
+        document.body.removeChild(video)
+      }
+      video.onloadedmetadata = (e) => {
         const {videoWidth, videoHeight, duration} = video
         if (duration > 60) {
           let e = '视频最长60秒'
@@ -17,7 +21,7 @@ function choosePhotoBrowser(isImage, max) {
           resolve({src, width: videoWidth, height: videoHeight, duration})
         }
         document.body.removeChild(video)
-      })
+      }
     })
 
   }
@@ -26,13 +30,8 @@ function choosePhotoBrowser(isImage, max) {
     let image = new Image()
     image.src = src
     return new Promise((resolve, reject) => {
-      image.onload = () => {
-        resolve({src, width: image.width, height: image.height})
-      }
-      image.onerror = () => {
-        reject(new Error())
-        return null
-      }
+      image.onload = () => resolve({src, width: image.width, height: image.height})
+      image.onerror = () => reject(new Error())
     })
   }
 
@@ -61,7 +60,7 @@ function choosePhotoBrowser(isImage, max) {
           else
             item = await handleVideo(src)
           item.size = file.size
-          item.tmpParams = {file}
+          item.file = file
           result.push(item)
         } catch (e) {
           return reject(e)
@@ -119,12 +118,13 @@ export function choosePhoto(isImage, max) {
  *  通过微信选择器选择的的文件不需要该参数
  * @return {Promise<key>}
  */
-export async function uploadPhoto(path, file) {
+export async function uploadPhoto(path, file, onProgress) {
   if (path.startsWith('weixin') || path.startsWith('wx')) {
-    return await wechat.uploadImage(path)
+    return wechat.uploadImage(path)
   } else if (file) {
     let key = qiniu.generateKey(path)
-    return await qiniu.uploadFile(file, key)
+    let observable = await qiniu.uploadFile(file, key, onProgress)
+    return observable.start()
   }
 }
 

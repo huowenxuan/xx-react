@@ -28,21 +28,15 @@ class Qiniu {
     return hmac.digest('base64');
   }
 
-  async uploadFile(file, key) {
+  async uploadFile(file, key, onProgress) {
     let token = await this._getToken()
     const observable = qiniu.upload(file, key, token)
-    return {
-      start: ()=>{
-        return new Promise((resolve, reject) => {
-          observable.subscribe(
-            () => resolve(key),
-            reject
-          )
-        })
-      },
-      stop: ()=>observable.unsubscribe()
-    }
-
+    observable.start = () => new Promise((resolve, reject) => {
+      // 第一个参数为进度回到方法，包含已上传、总数、百分比
+      observable.subscribe(onProgress, reject, () => resolve(key))
+    })
+    observable.cancel = observable.unsubscribe
+    return observable
   }
 }
 
