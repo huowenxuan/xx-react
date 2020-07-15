@@ -9,7 +9,7 @@ function choosePhotoBrowser(isImage, max) {
     video.src = src
     return new Promise((resolve, reject) => {
       video.onerror = ()=>{
-        reject(new Error(video.error.message))
+        reject(new Error('添加图片失败:' + video.error.message))
         document.body.removeChild(video)
       }
       video.onloadedmetadata = (e) => {
@@ -28,10 +28,10 @@ function choosePhotoBrowser(isImage, max) {
 
   const handleImage = (src) => {
     let image = new Image()
-    image.src = src
+    image.src = src + 'sfdsa'
     return new Promise((resolve, reject) => {
       image.onload = () => resolve({src, width: image.width, height: image.height})
-      image.onerror = () => reject(new Error())
+      image.onerror = () => reject(new Error('添加图片失败'))
     })
   }
 
