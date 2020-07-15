@@ -136,6 +136,7 @@ export default class DetailPage extends PureComponent {
       })
     }
     for (let i = 0; i < uploadMedias.length; i++) {
+      let beforeDate = new Date()
       let {index, item} = uploadMedias[i]
       this.setState((prev) => ({
         upload: {
@@ -148,17 +149,20 @@ export default class DetailPage extends PureComponent {
       const {body, tmpParams} = item
       const {file} = tmpParams || {}
       await new Promise(async (resolve, reject) => {
-        let timer
-        const success = (data) => {
-          timer && clearInterval(timer)
-          resolve(data)
-        }
-        const error = (e) => {
-          timer && clearInterval(timer)
-          reject(e)
-        }
-        utils.uploadPhoto(body, file, (percent) => {
+        let timer, uploading
+        const error = (e) => reject(e)
+        // 检查是否点击了取消
+        timer = setInterval(() => {
+          if (this._uploadCancel) {
+            uploading && uploading.cancel()
+            error(new Error('cancel'))
+          }
+        }, 300)
+        const onProgress = (percent) => {
           console.log(percent)
+          if (new Date() - 300 <= beforeDate)
+            return
+          beforeDate = new Date()
           this.setState((prev) => ({
             upload: {
               ...prev.upload,
@@ -166,20 +170,24 @@ export default class DetailPage extends PureComponent {
               percent: ((i / uploadCount) * 100) + (percent / uploadCount)
             }
           }))
-        })
-          .then((uploading) => {
-            uploading.start()
-              .then(key => success(key))
-              .catch(error)
-            // 检查是否点击了取消
-            timer = setInterval(() => {
-              if (this._uploadCancel) {
-                uploading && uploading.cancel()
-                error(new Error('cancel'))
-              }
-            }, 300)
-          })
-          .catch(error)
+        }
+        try {
+          uploading = await utils.uploadPhoto(body, file, onProgress)
+          let key = await uploading.start()
+          console.log('上传完成 ', key)
+          this.setState((prev) => ({
+            upload: {
+              ...prev.upload,
+              currentPercent: 100,
+              percent: ((i / uploadCount) * 100) + (100 / uploadCount)
+            }
+          }))
+          resolve(key)
+        } catch (e) {
+          error(e)
+        } finally {
+          timer && clearInterval(timer)
+        }
       })
     }
     this._resetProgress()
