@@ -14,6 +14,7 @@ import EditBottomOverlay from "../../components/EditBottom/EditBottomOverlay"
 import images from '../../assets/images'
 import {get} from '../../request'
 import * as utils from '../../utils'
+import * as _ from 'lodash'
 
 const post = require('../../tmp/post.json')
 const MediaTypes = {
@@ -80,7 +81,6 @@ export default class DetailPage extends PureComponent {
     }))
   }
 
-
   _resetProgress = () => {
     this.setState({
       upload: {
@@ -90,19 +90,13 @@ export default class DetailPage extends PureComponent {
         count: 0,
         percent: 0
       },
-      completeBtnEnabled: true,
     })
   }
 
   _cancelUpload = () => {
     overlays.showAlert('是否取消上传', '', [
       {text: '取消'},
-      {
-        text: '确定', onPress: () => {
-          this._uploadCancel = true
-          this._resetProgress()
-        }
-      }
+      {text: '确定', onPress: () => this._uploadCancel = true}
     ])
   }
 
@@ -112,14 +106,18 @@ export default class DetailPage extends PureComponent {
     let uploadMedias = []
     for (let i = 0; i < media.length; i++) {
       let item = media[i]
-      let {type, body} = item
-      if (type === 'image' || type === 'sortvideo') {
-        if (body.startsWith('blob') ||
+      let {type, body, key} = item
+      if (
+        !key && (
+          type === 'image' ||
+          type === 'sortvideo'
+        ) && (
+          body.startsWith('blob') ||
           body.startsWith('wx') ||
           body.startsWith('weixin')
-        ) {
-          uploadMedias.push({index: i, item})
-        }
+        )
+      ) {
+        uploadMedias.push({index: i, item})
       }
     }
 
@@ -146,9 +144,8 @@ export default class DetailPage extends PureComponent {
           percent: (i / uploadCount) * 100
         }
       }))
-      const {body, tmpParams} = item
-      const {file} = tmpParams || {}
-      await new Promise(async (resolve, reject) => {
+      const {body, file} = item
+      let key = await new Promise(async (resolve, reject) => {
         let timer, uploading
         const error = (e) => reject(e)
         // 检查是否点击了取消
@@ -174,7 +171,6 @@ export default class DetailPage extends PureComponent {
         try {
           uploading = await utils.uploadPhoto(body, file, onProgress)
           let key = await uploading.start()
-          console.log('上传完成 ', key)
           this.setState((prev) => ({
             upload: {
               ...prev.upload,
@@ -189,6 +185,9 @@ export default class DetailPage extends PureComponent {
           timer && clearInterval(timer)
         }
       })
+
+      console.log('上传完成 ', key)
+      this._updateMediaByIndex(index, {key})
     }
     this._resetProgress()
   }
@@ -197,18 +196,32 @@ export default class DetailPage extends PureComponent {
     const {post} = this.state
     const {media} = post
 
+    this.setState({completeBtnEnabled: false})
     try {
       await this._uploadFiles(media)
+      let newPost = _.cloneDeep(this.state.post)
+      let newMedias = newPost.media
+      for (let item of newMedias) {
+        if (item.key) {
+          item.body = item.key
+          delete item.key
+          delete item.file
+        }
+      }
+      console.log(newMedias)
     } catch (e) {
       this._resetProgress()
       if (e.message === 'cancel') {
         overlays.showToast('取消上传')
       } else {
+        console.error(e)
         overlays.showAlert('上传失败，是否重新上传？', '', [
           {text: '确定', onPress: async () => this._complete()},
           {type: 'cancel'},
         ])
       }
+    } finally {
+      this.setState({completeBtnEnabled: true})
     }
   }
 
@@ -216,6 +229,15 @@ export default class DetailPage extends PureComponent {
     this.overlay.current && this.overlay.current.hidden(() => {
       this.setState({overlayType: MediaTypes.None})
     })
+  }
+
+  _updateMediaByIndex(index, updateParams) {
+    const {media} = this.state.post
+    media[index] = {
+      ...media[index],
+      ...updateParams
+    }
+    this._setPostState('media', media)
   }
 
   _updateMedia(isNew, newData) {
@@ -292,23 +314,16 @@ export default class DetailPage extends PureComponent {
 
     for (let item of data) {
       const {width, height, size, src, duration, file} = item
-      if (isImage) {
-        this._updateMedia(true, {
-          type: 'image',
-          body: src,
-          info: {width, height, size, duration},
-          tmpParams: {file}
-        })
-      } else {
-        this._updateMedia(true, {
-          type: 'sortvideo',
-          body: src,
-          info: {width, height, size},
-          tmpParams: {file}
-        })
-      }
-    }
+      this._updateMedia(true, {
+        type: isImage ? 'image' : 'sortvideo',
+        body: src,
+        info: isImage
+          ? {width, height, size}
+          : {width, height, size, duration},
+        file
+      })
 
+    }
   }
 
   _onAddClick(type, index) {
@@ -432,7 +447,7 @@ export default class DetailPage extends PureComponent {
   }
 
   render() {
-    const {post} = this.state
+    const {post, completeBtnEnabled} = this.state
     if (!post) return '等待'
 
     return (
@@ -440,7 +455,9 @@ export default class DetailPage extends PureComponent {
         <NavBar
           title={post.title}
           rightButtons={[
-            {text: '完成', onClick: this._complete}
+            completeBtnEnabled
+              ? {text: '完成', onClick: this._complete}
+              : {text: ''},
           ]}
         />
         <a href='#/'>回到Home</a>
