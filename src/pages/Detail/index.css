@@ -37,3 +37,24 @@ input {
     width: 20px;
     height: 20px;
 }
+#percent {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    top: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+#percent-child {
+    background-color: white;
+    width: 250px;
+    height: 100px;
+    box-shadow: 0 4px 8px 0 black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 14px;
+    flex-direction: column;
+}

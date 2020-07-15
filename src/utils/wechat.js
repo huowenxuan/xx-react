@@ -60,11 +60,9 @@ export async function uploadImage(localId, fakeOnProgress, fakeMaxDuration) {
       fail: ()=>{
         fakeOnProgress && fakeOnProgress(0)
         clearInterval(timer)
-        reject()
+        reject('微信素材上传失败')
       }
-
     })
-
   })
   obj.cancel = () => {
   }

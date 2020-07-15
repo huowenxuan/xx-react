@@ -35,7 +35,15 @@ export default class DetailPage extends PureComponent {
       currentEdit: {
         index: -1, // 包含media的item和添加按钮
         isNew: false  // 区分是修改item还是新增
-      }
+      },
+      upload: {
+        show: false,
+        currentIndex: 0,
+        currentPercent: 0,
+        count: 0,
+        percent: 0
+      },
+      completeBtnEnabled: true
     }
     this.overlay = React.createRef()
     this.addBtn = React.createRef()
@@ -72,13 +80,40 @@ export default class DetailPage extends PureComponent {
     }))
   }
 
+
+  _resetProgress = () => {
+    this.setState({
+      upload: {
+        show: false,
+        currentIndex: 0,
+        currentPercent: 0,
+        count: 0,
+        percent: 0
+      },
+      completeBtnEnabled: true,
+    })
+  }
+
+  _cancelUpload = () => {
+    overlays.showAlert('是否取消上传', '', [
+      {text: '取消'},
+      {
+        text: '确定', onPress: () => {
+          this._uploadCancel = true
+          this._resetProgress()
+        }
+      }
+    ])
+  }
+
   async _uploadFiles(media) {
     let uploading = null
+    this._uploadCancel = false
 
     let uploadMedias = []
     for (let i = 0; i < media.length; i++) {
       let item = media[i]
-      const {type, body} = item
+      let {type, body} = item
       if (type === 'image' || type === 'shortvideo') {
         if (body.startsWith('blob') ||
           body.startsWith('wx') ||
@@ -89,15 +124,50 @@ export default class DetailPage extends PureComponent {
       }
     }
 
-    for (let {index, item} of uploadMedias) {
+    let uploadCount = uploadMedias.length
+    if (uploadCount > 0) {
+      this.setState({
+        upload: {
+          show: true,
+          count: uploadCount,
+          percent: 0,
+          currentIndex: 0,
+          currentPercent: 0
+        }
+      })
+    }
+    for (let i = 0; i < uploadMedias.length; i++) {
+      let {index, item}  = uploadMedias[i]
+      this.setState((prev)=>({
+        upload: {
+          ...prev.upload,
+          currentIndex: index,
+          currentPercent: 0
+        }
+      }))
       const {body, tmpParams} = item
       const {file} = tmpParams || {}
-      uploading = await utils.uploadPhoto(body, file, (percent)=>{
-        // uploading.cancel()
-        console.log(percent)
+      await new Promise(async (resolve, reject) => {
+        uploading = await utils.uploadPhoto(body, file, (percent) => {
+          this.setState((prev)=>({
+            upload: {
+              ...prev.upload,
+              currentIndex: i,
+              currentPercent: percent,
+              percent: ((i / uploadCount) * 100) + (percent / uploadCount)
+            }
+          }))
+          console.log(percent)
+          // this._uploadCancel = true
+          if (this._uploadCancel) {
+            uploading && uploading.cancel()
+            reject(new Error('cancel'))
+          }
+        })
+        uploading.start()
+          .then(key=>resolve(key))
+          .catch(reject)
       })
-      let key = await uploading.start()
-      console.log(key)
     }
   }
 
@@ -105,8 +175,18 @@ export default class DetailPage extends PureComponent {
     const {post} = this.state
     const {media} = post
 
-    await this._uploadFiles(media)
-
+    try {
+      await this._uploadFiles(media)
+    } catch (e) {
+      if (e.message === 'cancel') {
+        overlays.showToast('取消上传')
+      } else {
+        overlays.showAlert('上传失败，是否重新上传？', e.message, [
+          {text: '确定', onPress: async () => this._complete()},
+          {type: 'cancel'},
+        ])
+      }
+    }
   }
 
   _hiddenOverlay = () => {
@@ -304,6 +384,30 @@ export default class DetailPage extends PureComponent {
     )
   }
 
+  _renderPercent() {
+    const {
+      currentIndex,
+      currentPercent,
+      count,
+      percent,
+      show
+    } = this.state.upload
+    if (!show) return null
+
+    return (
+      <div id='percent'>
+        <div id='percent-child'>
+          <p>当前第{currentIndex+1}张{parseInt(currentPercent)}%，共有{count}张{parseInt(percent)}%</p>
+          <button
+            onClick={this._cancelUpload}
+            style={{marginTop: 15}}>
+            取消
+          </button>
+        </div>
+      </div>
+    )
+  }
+
   render() {
     const {post} = this.state
     if (!post) return '等待'
@@ -338,6 +442,7 @@ export default class DetailPage extends PureComponent {
           onLeftClick={() => this._showBottomEdit('music')}
           onRightClick={() => this._showBottomEdit('permission')}
         />
+        {this._renderPercent()}
       </div>
     )
   }
