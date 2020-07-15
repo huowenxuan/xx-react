@@ -5,7 +5,13 @@ import NavBar from '../NavBar/'
 import * as utils from '../../utils/'
 import overlays from '../overlays'
 
-const tutorialUrl = 'http://static.tangshui.net/tangshui_qqyouku.jpeg'
+const baseUrl = 'http://imgssl.tangshui.net/'
+const imgs = [
+  baseUrl + 'tangshui_qqyouku_1.jpg',
+  baseUrl + 'tangshui_qqyouku_2.jpg',
+  baseUrl + 'tangshui_qqyouku_3.jpg',
+  baseUrl + 'tangshui_qqyouku_4.jpg',
+]
 
 class EditTextOverlay extends PureComponent {
   constructor(props) {
@@ -58,8 +64,8 @@ class EditTextOverlay extends PureComponent {
             <button
               className='web-video-btn web-video-btn-clear'
               onClick={() => {
-              this.setState({body: ''})
-            }}>
+                this.setState({body: ''})
+              }}>
               清空
             </button>
             <button
@@ -71,10 +77,13 @@ class EditTextOverlay extends PureComponent {
 
         </div>
 
-        <img
-          src={tutorialUrl}
-          style={{width: '100%'}}
-        />
+        {imgs.map(img => (
+          <img
+            key={img}
+            src={img}
+            style={{width: '100%'}}
+          />
+        ))}
       </div>
     )
   }
