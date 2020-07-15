@@ -72,10 +72,25 @@ export default class DetailPage extends PureComponent {
     }))
   }
 
-  _upload = ()=> {
+  _complete = ()=> {
     const {post} = this.state
     const {media} = post
-    console.log(media.length)
+    let uploadFiles = []
+    for (let i = 0;i< media.length; i++) {
+      let item = media[i]
+      const {type, body} = item
+      if (type === 'image' || type === 'shortvideo') {
+        if (body.startsWith('blob') ||
+          body.startsWith('wx') ||
+          body.startsWith('weixin')
+        ) {
+          uploadFiles.push({index: i, data: item})
+        }
+      }
+    }
+
+
+    console.log(uploadFiles)
   }
 
   _hiddenOverlay = () => {
@@ -283,7 +298,7 @@ export default class DetailPage extends PureComponent {
         <NavBar
           title={post.title}
           rightButtons={[
-            {text: '完成', onClick: this._upload}
+            {text: '完成', onClick: this._complete}
           ]}
         />
         <a href='#/'>回到Home</a>

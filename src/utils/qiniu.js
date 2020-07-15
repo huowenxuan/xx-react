@@ -30,13 +30,19 @@ class Qiniu {
 
   async uploadFile(file, key) {
     let token = await this._getToken()
-    return new Promise((resolve, reject) => {
-      const observable = qiniu.upload(file, key, token)
-      observable.subscribe(
-        () => resolve(key),
-        reject
-      )
-    })
+    const observable = qiniu.upload(file, key, token)
+    return {
+      start: ()=>{
+        return new Promise((resolve, reject) => {
+          observable.subscribe(
+            () => resolve(key),
+            reject
+          )
+        })
+      },
+      stop: ()=>observable.unsubscribe()
+    }
+
   }
 }
 
