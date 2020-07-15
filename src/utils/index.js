@@ -28,7 +28,7 @@ function choosePhotoBrowser(isImage, max) {
 
   const handleImage = (src) => {
     let image = new Image()
-    image.src = src + 'sfdsa'
+    image.src = src
     return new Promise((resolve, reject) => {
       image.onload = () => resolve({src, width: image.width, height: image.height})
       image.onerror = () => reject(new Error('添加图片失败'))
