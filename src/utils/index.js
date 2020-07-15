@@ -8,7 +8,7 @@ function choosePhotoBrowser(isImage, max) {
     document.body.appendChild(video)
     video.src = src
     return new Promise((resolve, reject) => {
-      video.onerror = ()=>{
+      video.onerror = () => {
         reject(new Error('添加图片失败:' + video.error.message))
         document.body.removeChild(video)
       }
@@ -119,13 +119,31 @@ export function choosePhoto(isImage, max) {
  * @return {Promise<key>}
  */
 export async function uploadPhoto(path, file, onProgress) {
+  let data = null
   if (path.startsWith('weixin') || path.startsWith('wx')) {
-    return wechat.uploadImage(path)
+    // 假的进度
+    let fakePercent = 0
+    let maxDuration =  3 * 1000 // 假设上传最大时间
+    let duration = 300
+    let maxTimes = Math.ceil(maxDuration / duration)
+    let curTimes = 0
+    let timer = setInterval(() => {
+      curTimes ++
+      fakePercent = ((curTimes * duration) / maxDuration) * 100
+      onProgress && onProgress(fakePercent)
+      // 最后一次不再增加（不会加到100%）
+      if (curTimes === maxTimes - 1)
+        clearInterval(timer)
+    }, duration)
+    data = await wechat.uploadImage(path)
+    onProgress && onProgress(100)
+    clearInterval(timer)
   } else if (file) {
     let key = qiniu.generateKey(path)
     let observable = await qiniu.uploadFile(file, key, onProgress)
-    return observable.start()
+    data = await observable.start()
   }
+  return data
 }
 
 /* 转换从浏览器赋值或者客户端分享出来的优酷、腾讯视频 */

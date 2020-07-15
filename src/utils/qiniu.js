@@ -32,8 +32,11 @@ class Qiniu {
     let token = await this._getToken()
     const observable = qiniu.upload(file, key, token)
     observable.start = () => new Promise((resolve, reject) => {
-      // 第一个参数为进度回到方法，包含已上传、总数、百分比
-      observable.subscribe(onProgress, reject, () => resolve(key))
+      // 第一个参数为进度回到方法，包含已上传、总数、百分比 total:{ loaded, total, percent }
+      observable.subscribe(
+        ({total}) => onProgress && onProgress(total.percent),
+        reject,
+        () => resolve(key))
     })
     observable.cancel = observable.unsubscribe
     return observable
