@@ -472,7 +472,7 @@ export default class DetailPage extends PureComponent {
               defaultValue={post.title}
             />
           </div>
-          <p>{post.description}</p>
+          {/*<p>{post.description}</p>*/}
           {this._renderMedia(post.media)}
         </div>
 
