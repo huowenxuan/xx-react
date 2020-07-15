@@ -92,9 +92,12 @@ export default class DetailPage extends PureComponent {
     for (let {index, item} of uploadMedias) {
       const {body, tmpParams} = item
       const {file} = tmpParams || {}
-      let key = await utils.uploadPhoto(body, file, (percent)=>{
+      uploading = await utils.uploadPhoto(body, file, (percent)=>{
+        // uploading.cancel()
         console.log(percent)
       })
+      let key = await uploading.start()
+      console.log(key)
     }
   }
 

@@ -119,15 +119,12 @@ export function choosePhoto(isImage, max) {
  * @return {Promise<key>}
  */
 export async function uploadPhoto(path, file, onProgress) {
-  let data = null
   if (path.startsWith('weixin') || path.startsWith('wx')) {
     return await wechat.uploadImage(path, onProgress, 3000)
   } else if (file) {
     let key = qiniu.generateKey(path)
-    let observable = await qiniu.uploadFile(file, key, onProgress)
-    return await observable.start()
+    return await qiniu.uploadFile(file, key, onProgress)
   }
-  return data
 }
 
 /* 转换从浏览器赋值或者客户端分享出来的优酷、腾讯视频 */
