@@ -37,7 +37,7 @@ export async function uploadImage(localId) {
       success: async (res) => {
         let {serverId} = res
         let result = await get(API.mediaToQiniu + serverId)
-        resolve(result.data)
+        resolve(result.data.key)
       },
       fail: reject
     })

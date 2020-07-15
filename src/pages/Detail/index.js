@@ -46,30 +46,21 @@ export default class DetailPage extends PureComponent {
     this._initData()
   }
 
-
-  // 弹出选择图片和权限遮罩
-  _showBottomEdit(status) {
-    overlays.show(<EditBottomOverlay status={status}/>)
-  }
-
-  _toJson(data) {
-    try {
-      return JSON.parse(data)
-    } catch (e) {
-      return data
-    }
-  }
-
   _initData() {
     const {media} = post
     for (let item of media) {
       const {info, type, style} = item
       if (type === 'image') {
-        item.info = this._toJson(info) || {}
-        item.style = this._toJson(style) || {}
+        item.info = utils.toJson(info) || {}
+        item.style = utils.toJson(style) || {}
       }
     }
     this.setState({post})
+  }
+
+  // 弹出选择图片和权限遮罩
+  _showBottomEdit(status) {
+    overlays.show(<EditBottomOverlay status={status}/>)
   }
 
   _setPostState(field, data) {
@@ -79,6 +70,12 @@ export default class DetailPage extends PureComponent {
         [field]: data
       }
     }))
+  }
+
+  _upload = ()=> {
+    const {post} = this.state
+    const {media} = post
+    console.log(media.length)
   }
 
   _hiddenOverlay = () => {
@@ -160,7 +157,8 @@ export default class DetailPage extends PureComponent {
     }
 
     for (let item of data) {
-      const {width, height, size, src, duration} = item
+      const {width, height, size, src, duration, tmpParams} = item
+      const {file} = tmpParams || {}
       if (isImage) {
         this._updateMedia(true, {
           type: 'image',
@@ -168,7 +166,6 @@ export default class DetailPage extends PureComponent {
           is_new: true,
           info: {width, height, size, duration}
         })
-        utils.uploadPhoto({file: item.file, path: src})
       } else {
         this._updateMedia(true, {
           type: 'sortvideo',
@@ -285,6 +282,9 @@ export default class DetailPage extends PureComponent {
       <div>
         <NavBar
           title={post.title}
+          rightButtons={[
+            {text: '完成', onClick: this._upload}
+          ]}
         />
         <a href='#/'>回到Home</a>
         <button onClick={() => this.props.history.goBack()}>back</button>

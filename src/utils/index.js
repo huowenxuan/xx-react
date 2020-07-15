@@ -1,5 +1,5 @@
 import * as wechat from './wechat'
-import qiniu from './Qiniu'
+import qiniu from './qiniu'
 import {get, API} from "../request"
 
 function choosePhotoBrowser(isImage, max) {
@@ -61,7 +61,7 @@ function choosePhotoBrowser(isImage, max) {
           else
             item = await handleVideo(src)
           item.size = file.size
-          item.file = file
+          item.tmpParams = {file}
           result.push(item)
         } catch (e) {
           return reject(e)
@@ -107,28 +107,25 @@ export function choosePhoto(isImage, max) {
   // if (isImage) {
   //   return choosePhotoWx(isImage, max)
   // } else {
-    return choosePhotoBrowser(isImage, 100)
+  return choosePhotoBrowser(isImage, 100)
   // }
 }
 
-export async function uploadPhoto({file, path}) {
+/**
+ * 上传图片
+ * @param path 路径
+ * @param file File类型的文件，
+ *  通过input选择的文件需要该参数
+ *  通过微信选择器选择的的文件不需要该参数
+ * @return {Promise<key>}
+ */
+export async function uploadPhoto(path, file) {
   if (path.startsWith('weixin') || path.startsWith('wx')) {
     return await wechat.uploadImage(path)
   } else if (file) {
-    let token = await get(API.qiniuToken)
-    token = token.qiniutoken
-    let key = qiniu.uploadKey(path)
-    console.log(key)
-    qiniu.upload(file, key, token)
+    let key = qiniu.generateKey(path)
+    return await qiniu.uploadFile(file, key)
   }
-}
-
-export async function uploadPhotos(paths) {
-  let data = []
-  for (let path of paths) {
-    data.push(await uploadPhoto(path))
-  }
-  return data
 }
 
 /* 转换从浏览器赋值或者客户端分享出来的优酷、腾讯视频 */
@@ -168,4 +165,12 @@ export function checkUrl(telAndWord) {
   let strRegex = "^(http:\/\/|https:\/\/|Http:\/\/|Https:\/\/)((?:[A-Za-z0-9]+-[A-Za-z0-9]+|[A-Za-z0-9]+)\.)+([A-Za-z]+)[\?\:]?.*$"
   check = new RegExp(strRegex)
   return check.test(telAndWord.trim())
+}
+
+export function toJson(data) {
+  try {
+    return JSON.parse(data)
+  } catch (e) {
+    return data
+  }
 }
