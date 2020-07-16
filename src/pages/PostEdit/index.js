@@ -49,6 +49,7 @@ export default class DetailPage extends PureComponent {
       },
       completeBtnEnabled: true
     }
+    this._coverFile = null // 原生图片选择器选择图片后的file文件，设置为封面图
     this.overlay = React.createRef()
     this.addBtn = React.createRef()
   }
