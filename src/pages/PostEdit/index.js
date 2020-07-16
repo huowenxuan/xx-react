@@ -135,6 +135,19 @@ export default class DetailPage extends PureComponent {
       }
     }
 
+    // 判断封面是否需要上传
+    const {headbacimgurl, coverKey} = this.state.post
+    if(!coverKey && headbacimgurl) {
+      uploadMedias.unshift({
+        index: -1,
+        isCover: true,
+        item: {
+          file: this._coverFile,
+          body: headbacimgurl
+        }
+      })
+    }
+
     let uploadCount = uploadMedias.length
     if (uploadCount > 0) {
       this.setState({
@@ -149,7 +162,7 @@ export default class DetailPage extends PureComponent {
     }
     for (let i = 0; i < uploadMedias.length; i++) {
       let beforeDate = new Date()
-      let {index, item} = uploadMedias[i]
+      let {index, item, isCover} = uploadMedias[i]
       this.setState((prev) => ({
         upload: {
           ...prev.upload,
@@ -200,8 +213,13 @@ export default class DetailPage extends PureComponent {
         }
       })
 
-      console.log('上传完成 ', key)
-      this._updateMediaByIndex(index, {key})
+      if (isCover) {
+        console.log('封面上传完成 ', key)
+        this._setPostState('coverKey', key)
+      } else {
+        console.log('上传完成 ', key)
+        this._updateMediaByIndex(index, {key})
+      }
     }
     this._resetProgress()
   }
@@ -275,8 +293,6 @@ export default class DetailPage extends PureComponent {
         this._setItemToCover(index, newData)
       }
     }
-
-
   }
 
   // 把某项media设置为封面图
