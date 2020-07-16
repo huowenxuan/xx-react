@@ -11,10 +11,6 @@ const PostNew = (props) => {
     props.history.push('postedit/')
   }
 
-  const openApp = () => {
-    alert('打开app')
-  }
-
   return (
     <div>
       <NavBar
@@ -29,7 +25,7 @@ const PostNew = (props) => {
         </div>
       </div>
       <p id='post-new-text'>可上传100张图片，一键分享朋友圈</p>
-      <div id='open-app-box' onClick={openApp}>
+      <div id='open-app-box' onClick={utils.openApp}>
         <div id='open-app'>
           打开糖水App，探索更多有趣玩法
         </div>

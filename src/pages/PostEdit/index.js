@@ -454,14 +454,13 @@ export default class DetailPage extends PureComponent {
       <div>
         <NavBar
           title={post.title}
+          onBack={this.props.history.goBack}
           rightButtons={[
             completeBtnEnabled
               ? {text: '完成', onClick: this._complete}
               : {text: ''},
           ]}
         />
-        <a href='#/'>回到Home</a>
-        <button onClick={() => this.props.history.goBack()}>back</button>
 
         {this._renderCover()}
         <div id='wrapper'>

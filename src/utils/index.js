@@ -2,6 +2,15 @@ import * as wechat from './wechat'
 import qiniu from './qiniu'
 import {get, API} from "../request"
 
+const u = window.navigator.userAgent
+export const isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1 //android终端
+export const isIOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/) //ios终端
+export const isWeibo = u.toLowerCase().match(/weibo/i) == "weibo"
+export const isWxOrQQ = u.toLowerCase().match(/MicroMessenger/i) == "micromessenger" || u.toLowerCase().match(/QQ/i) == "qq"
+export const isQQ = u.toLowerCase().match(/qq/i) == "qq" && u.toLowerCase().match(/MicroMessenger/i) == null
+export const isWeixin = u.toLowerCase().match(/MicroMessenger/i) == "micromessenger"
+export const isUC = u.toLowerCase().match(/UCBrowser/i) == "ucbrowser"
+
 function choosePhotoBrowser(isImage, multiple) {
   const handleVideo = async (src) => {
     let video = document.createElement('video')
@@ -103,7 +112,7 @@ async function choosePhotoWx(multiple) {
  * @param multiple 是否可多选
  */
 export function choosePhoto(isImage, multiple) {
-  if (isImage && isWeixin()) {
+  if (isImage && isWeixin) {
     return choosePhotoWx(multiple)
   } else {
     return choosePhotoBrowser(isImage, multiple)
@@ -174,7 +183,37 @@ export function toJson(data) {
   }
 }
 
-export function isWeixin() {
-  let ua = navigator.userAgent.toLowerCase()
-  return ua.match(/MicroMessenger/i) == "micromessenger"
+/**
+ * 打开app
+ * @param toStore true为去商店，false为打开app
+ */
+export function openApp(toStore) {
+  if (isIOS) {
+    if (toStore) {
+      window.location.href = "/applinks"
+    } else {
+      setTimeout(function () {
+        window.location.href = "http://a.app.qq.com/o/simple.jsp?pkgname=com.girtu.girtu"
+      }, 1000)
+    }
+  } else {
+    if (isWxOrQQ) {
+      let div = document.createElement("div")
+      div.innerHTML = `
+<div class="navBox">
+  <p>如果您已安装糖水,</p>
+  <p>请使用<span class="system">浏览器</span>打开此页面</p>
+</div>`
+      document.body.appendChild(div)
+    } else {
+      if (toStore) {
+        window.location.href = "tangshui://com.girtu.girtu/deeplink"
+      } else {
+        setTimeout(function () {
+          // TODO: 改为安卓apk或官网，将来改为应用宝链接
+          window.location.href = "http://a.app.qq.com/o/simple.jsp?pkgname=com.girtu.girtu"
+        }, 1000)
+      }
+    }
+  }
 }
