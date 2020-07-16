@@ -27,10 +27,9 @@
 
 
 .edit-text-overlay {
-    /*margin-top: -10px;*/
     position: fixed;
-    background-color: white;
-    box-shadow: 0 5px 30px 0 #D5D5D588;
+    box-shadow: 0 5px 30px 0 #D5D5D5;
+    border-radius: 6px;
 }
 
 .edit-text-triangle {

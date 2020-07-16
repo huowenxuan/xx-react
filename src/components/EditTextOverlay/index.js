@@ -72,13 +72,15 @@ class EditTextOverlay extends PureComponent {
   }
 
   _renderColorOverlay() {
-    const triangleWidth = 26
+    const triangleWidth = 16
+    const triangle2Width = 22
+    const triangle3Width = 18
     const top = 12
     const {colorRect: rect, colorShow} = this.state
     if (!colorShow) return null
     return (
       <div
-        onClick={(e)=>e.stopPropagation()}
+        onClick={(e) => e.stopPropagation()}
         className='edit-text-overlay'
         style={{
           top: rect.top + rect.height + top,
@@ -86,17 +88,9 @@ class EditTextOverlay extends PureComponent {
         }}
       >
         <div
-          className='edit-text-triangle'
-          style={{
-            top: rect.top + rect.height - triangleWidth + top,
-            borderWidth: triangleWidth / 2,
-            left: rect.left + rect.width / 2 - triangleWidth / 2
-          }}
-        />
-        <div
           className='edit-text-colors'
         >
-          {Colors.map(color=>(
+          {Colors.map(color => (
             <div
               key={color}
               className='edit-text-color'
@@ -104,6 +98,36 @@ class EditTextOverlay extends PureComponent {
             />
           ))}
         </div>
+        {/* 外部三角形，模拟边框 */}
+        <div
+          className='edit-text-triangle'
+          style={{
+            top: rect.top + rect.height - triangle3Width + top,
+            borderWidth: triangle3Width / 2,
+            borderColor: 'transparent transparent #d5d5d588 transparent',
+            left: rect.left + rect.width / 2 - triangle3Width / 2
+          }}
+        >
+          {/* 内部白色三角形 */}
+          <div
+            className='edit-text-triangle'
+            style={{
+              top: rect.top + rect.height - triangleWidth + top,
+              borderWidth: triangleWidth / 2,
+              left: rect.left + rect.width / 2 - triangleWidth / 2
+            }}
+          >
+          </div>
+        </div>
+        {/* 把矩形边框挡住的三角形 */}
+        <div
+          className='edit-text-triangle'
+          style={{
+            top: rect.top + rect.height - triangle2Width + top + 3,
+            borderWidth: triangle2Width / 2,
+            left: rect.left + rect.width / 2 - triangle2Width / 2
+          }}
+        />
       </div>
     )
   }
