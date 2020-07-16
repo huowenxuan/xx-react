@@ -23,7 +23,7 @@
 }
 
 .title {
-    font-size: 16px;
+    font-size: 18px;
     color: black;
     font-weight: bold;
 }
@@ -37,7 +37,7 @@
 .nav-button {
     height: 44px;
     padding: 0 6px;
-    font-size: 13px;
+    font-size: 14px;
     color: #4C4C4C;
 }
 
@@ -50,7 +50,8 @@
 }
 
 .back-button-img {
-    width: 16px;
-    height: 16px;
+    width: 14px;
+    height: 14px;
     margin-left: -4px;
+    margin-right: 2px;
 }

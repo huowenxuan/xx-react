@@ -7,8 +7,9 @@ import PostNew from './pages/PostNew/';
 export default () => (
   <HashRouter>
     <Switch>
-      <Route exact path="/" component={Home}/>
+      <Route exact path="/" component={PostNew}/>
       <Route exact path="/postnew" component={PostNew}/>
+      <Route exact path="/postedit/" component={PostEdit}/>
       <Route exact path="/postedit/:id" component={PostEdit}/>
     </Switch>
   </HashRouter>

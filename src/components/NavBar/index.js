@@ -18,9 +18,9 @@ export default class NavBar extends PureComponent {
 
   static defaultProps = {
     leftButtons: null, // 如果是null、undefined就显示返回按钮、[]都不显示，默认显示
-    rightButtons: [{text: 'fff'},{text: 'fff'},],
+    rightButtons: [],
     title: '',
-    backText: '返回'
+    backText: ''
   }
 
   backButton() {

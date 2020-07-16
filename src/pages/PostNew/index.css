@@ -1,0 +1,46 @@
+#open-app-box {
+    position: fixed;
+    bottom: 30px;
+    width: 100%;
+}
+
+#open-app {
+    margin: 0 auto;
+    width: max-content;
+    color: white;
+    font-size: 16px;
+    line-height: 22px;
+    font-weight: 600;
+    padding: 7px 20px;
+    border-radius: 20px;
+    box-sizing: border-box;
+    background-image: linear-gradient(to right, #FE6E50, #FF4542);
+}
+
+#post-new-back {
+    background-color: #F8F8F8;
+    margin: 20px;
+    padding-top: 66.67%;
+    height: 0;
+    position: relative;
+}
+
+#post-new-back-img-box {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#post-new-back-img {
+    width: 135px;
+}
+#post-new-text {
+    color: #191919;
+    font-size: 14px;
+    text-align: center;
+}
