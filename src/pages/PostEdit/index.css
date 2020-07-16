@@ -4,14 +4,39 @@ input {
 }
 
 #wrapper {
-    padding: 15px;
+    padding: 0 15px;
 }
 
-#cover {
+.edit-cover {
     height: 210px;
     width: 100%;
     background-position: center center;
     background-size: cover;
+    background-color: #F8F8F8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.edit-cover-none {
+    font-size: 12px;
+    color: #999;
+}
+
+.edit-cover-close {
+    width: 100px;
+    height: 20px;
+    margin: 10px 0 0 20px;
+    background-color: #F8F8F8;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.edit-cover-close-img {
+    width: 20px;
+    height: 20px;
+    margin-right: 5px;
 }
 
 #title-box {
@@ -21,10 +46,11 @@ input {
     font-size: 20px;
     line-height: 1.3;
     width: 100%;
-    height: 90px;
+    height: 68px;
+    color: #191919;
     text-align: center;
-    padding: 5px;
-    font-weight: 700;
+    padding: 0 5px;
+    box-sizing: border-box;
 }
 
 .add-row {
@@ -33,10 +59,12 @@ input {
     justify-content: center;
     align-items: center;
 }
+
 .add-icon {
     width: 20px;
     height: 20px;
 }
+
 #percent {
     position: fixed;
     left: 0;
@@ -47,6 +75,7 @@ input {
     justify-content: center;
     align-items: center;
 }
+
 #percent-child {
     background-color: white;
     width: 250px;

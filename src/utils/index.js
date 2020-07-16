@@ -11,7 +11,7 @@ export const isQQ = u.toLowerCase().match(/qq/i) == "qq" && u.toLowerCase().matc
 export const isWeixin = u.toLowerCase().match(/MicroMessenger/i) == "micromessenger"
 export const isUC = u.toLowerCase().match(/UCBrowser/i) == "ucbrowser"
 
-function choosePhotoBrowser(isImage, multiple) {
+function choosePhotoBrowser(isImage, multiple, cb) {
   const handleVideo = async (src) => {
     let video = document.createElement('video')
     document.body.appendChild(video)
@@ -44,8 +44,12 @@ function choosePhotoBrowser(isImage, multiple) {
     })
   }
 
-  let input = document.createElement('input')
-  document.body.appendChild(input)
+  let input = document.getElementById('input')
+  if (!input) {
+    input = document.createElement('input')
+    input.id = 'input'
+    document.body.appendChild(input)
+  }
   input.style = "display:none"
   input.type = 'file'
   input.multiple = multiple
@@ -57,17 +61,14 @@ function choosePhotoBrowser(isImage, multiple) {
   }
   return new Promise((resolve, reject) => {
     input.onchange = async function () {
-      document.body.removeChild(input)
       let result = []
       let files = input.files
       for (let file of files) {
         let src = window.URL.createObjectURL(file)
-        let item
         try {
-          if (file.type.startsWith('image'))
-            item = await handleImage(src)
-          else
-            item = await handleVideo(src)
+          let item = file.type.startsWith('image')
+            ? await handleImage(src)
+            : await handleVideo(src)
           item.size = file.size
           item.file = file
           result.push(item)

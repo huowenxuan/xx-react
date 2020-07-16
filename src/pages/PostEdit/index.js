@@ -8,7 +8,7 @@ import EditWebVideoOverlay from '../../components/EditWebVideoOverlay/'
 import NavBar from '../../components/NavBar/'
 import './index.css'
 import overlay from "../../components/overlays"
-import EditBottomButtons from "../../components/EditBottom/EditBottomButtons/"
+import EditBottomButtons, {EditBottomHeight} from "../../components/EditBottom/EditBottomButtons/"
 import overlays from "../../components/overlays"
 import EditBottomOverlay from "../../components/EditBottom/EditBottomOverlay"
 import images from '../../assets/images'
@@ -30,7 +30,10 @@ export default class DetailPage extends PureComponent {
     super(props)
     this.state = {
       openedAddItem: -1,
-      post: null,
+      post: {
+        media: [],
+        coverHidden: true
+      },
       overlayType: MediaTypes.None,
       // 当前更新的media
       currentEdit: {
@@ -51,11 +54,18 @@ export default class DetailPage extends PureComponent {
   }
 
   componentDidMount() {
-    const {id} = this.props.match.params
     this._initData()
   }
 
   _initData() {
+    const {id} = this.props.match.params
+    const {photos} = this.props.location
+    if (id) {
+      // 编辑旧帖子
+    } else if (photos) {
+      // 根据照片创建新帖子
+    }
+
     const {media} = post
     for (let item of media) {
       const {info, type, style} = item
@@ -64,7 +74,7 @@ export default class DetailPage extends PureComponent {
         item.style = utils.toJson(style) || {}
       }
     }
-    this.setState({post})
+    // this.setState({post})
   }
 
   // 弹出选择图片和权限遮罩
@@ -354,6 +364,9 @@ export default class DetailPage extends PureComponent {
   }
 
   _renderMedia(media) {
+    if (!media || media.length === 0) {
+      return this._renderAddItem(0)
+    }
     return media.map((data, index) => (
       // 每个item的key不变可保证每次修改元素后所有的视频不重新加载
       <ul key={`${data._id}-${data.body}`}>
@@ -375,6 +388,7 @@ export default class DetailPage extends PureComponent {
   _renderAddOverlay() {
     const {overlayType} = this.state
     const {post, currentEdit} = this.state
+    if (!post) return null
     const {isNew, index} = currentEdit
     let curData = isNew ? null : post.media[index]
     let OverlayView = null
@@ -410,16 +424,49 @@ export default class DetailPage extends PureComponent {
     )
   }
 
+  _onCoverClick = async  ()=>{
+    // let photos = await utils.choosePhoto(true, false)
+    // let photo = photos[0]
+    // const {file, src} = photo
+    // this._setPostState('coverKeyUrl', src)
+    // this._coverFile = file
+    this._setPostState('coverKeyUrl', 'blob:http://localhost:3000/0c1adb63-987a-47e3-9c9e-d691d0ff225d')
+  }
+
   _renderCover() {
-    const {post} = this.state
+    const {post, coverHidden} = this.state
     const {coverKeyUrl} = post
-    return (
-      <div
-        id='cover'
-        style={{backgroundImage: `url(${coverKeyUrl})`}}
-      >
-      </div>
-    )
+    if (!coverKeyUrl) {
+      return (
+        <div
+          onClick={this._onCoverClick}
+          className='edit-cover edit-cover-none'
+          style={{backgroundImage: `url(${coverKeyUrl})`}}
+        >
+          上传封面
+        </div>
+      )
+    } else if (!coverHidden) {
+      return (
+        <div
+          className='edit-cover'
+          style={{backgroundImage: `url(${coverKeyUrl})`}}
+        >
+
+        </div>
+      )
+    } else {
+      return (
+        <div
+          onClick={()=>this.setState({coverHidden: false})}
+          className='edit-cover-close'
+          style={{backgroundImage: `url(${coverKeyUrl})`}}
+        >
+          <img className='edit-cover-close-img' src={images.icon_limit_red}/>
+          显示封面
+        </div>
+      )
+    }
   }
 
   _renderPercent() {
@@ -448,12 +495,11 @@ export default class DetailPage extends PureComponent {
 
   render() {
     const {post, completeBtnEnabled} = this.state
-    if (!post) return '等待'
-
+    const {title, media} = post
     return (
       <div>
         <NavBar
-          title={post.title}
+          title={title}
           onBack={this.props.history.goBack}
           rightButtons={[
             completeBtnEnabled
@@ -467,12 +513,12 @@ export default class DetailPage extends PureComponent {
           <div id='title-box'>
             <input
               id='title-input'
-              placeholder="输入标题"
-              defaultValue={post.title}
+              placeholder="输入标题(2-50字)"
+              defaultValue={title}
             />
           </div>
           {/*<p>{post.description}</p>*/}
-          {this._renderMedia(post.media)}
+          {this._renderMedia(media)}
         </div>
 
         {this._renderAddOverlay()}
@@ -481,6 +527,7 @@ export default class DetailPage extends PureComponent {
           onLeftClick={() => this._showBottomEdit('music')}
           onRightClick={() => this._showBottomEdit('permission')}
         />
+        <div style={{height: EditBottomHeight}}/>
         {this._renderPercent()}
       </div>
     )

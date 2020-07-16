@@ -8,7 +8,10 @@ import * as utils from "../../utils"
 const PostNew = (props) => {
   const addImage = async () => {
     let photos = await utils.choosePhoto(true, true)
-    props.history.push('postedit/')
+    props.history.push({
+      pathname: 'postedit/',
+      photos
+    })
   }
 
   return (
