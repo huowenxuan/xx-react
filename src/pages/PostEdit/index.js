@@ -278,6 +278,7 @@ export default class DetailPage extends PureComponent {
 
   // 把某项media设置为封面图
   _setItemToCover(index, item) {
+    console.log(item)
     console.log('TODO setItemToCover')
   }
 
@@ -375,6 +376,7 @@ export default class DetailPage extends PureComponent {
   }
 
   _renderMedia(media) {
+    const {coverKeyUrl} = this.state.post
     if (!media || media.length === 0) {
       return this._renderAddItem(0)
     }
@@ -383,6 +385,7 @@ export default class DetailPage extends PureComponent {
       <ul key={`${data._id}-${data.body}`}>
         {this._renderAddItem(index)}
         <MediaItem
+          isCover={coverKeyUrl === data.body}
           data={data}
           onClick={() => this._clickMedia(data, index)}
           onDelete={() => this._del(index)}

@@ -96,15 +96,15 @@ export default class MediaItem extends PureComponent {
 
   _renderSetCoverBtn() {
     const {data} = this.props
-    const {onDelete, onUp, onDown, onSetCover} = this.props
+    const {onDelete, onUp, onDown, onSetCover, isCover} = this.props
     const {type} = data
     if (type !== 'image') return null
     return (
       <button
         className='item-btn item-btn-set-cover'
-        onClick={e => this._action(e, onSetCover)}
+        onClick={isCover ? null : e => this._action(e, onSetCover)}
       >
-        设为封面
+        {isCover ? '当前封面' : '设为封面'}
       </button>
     )
 

@@ -13,7 +13,7 @@ class EditTextOverlay extends PureComponent {
     this.state = {
       body,
       rotate,
-      isCover: false
+      choose: false
     }
   }
 
@@ -22,7 +22,7 @@ class EditTextOverlay extends PureComponent {
 
   _done = () => {
     const {onChange, data} = this.props
-    const {rotate, isCover} = this.state
+    const {rotate, choose} = this.state
     let style = {}
     // 归到0、90、180、270度
     if (rotate) style.rotate = (rotate / 90) % 4 * 90
@@ -30,7 +30,7 @@ class EditTextOverlay extends PureComponent {
       ...data,
       type: 'image',
       style,
-      isCover
+      isCover: choose
     })
   }
 
@@ -44,9 +44,9 @@ class EditTextOverlay extends PureComponent {
     const {
       body,
       rotate = 0,
-      isCover
+      choose
     } = this.state
-    const {onCancel} = this.props
+    const {onCancel, isCover} = this.props
     return (
       <div
         className='add-image-wrapper'
@@ -69,16 +69,20 @@ class EditTextOverlay extends PureComponent {
             onClick={e => e.stopPropagation()}
           >
             <div className='add-img-bottom-btns'>
-              <div className='set-cover-btn' onClick={() => this.setState(({isCover}) => ({isCover: !isCover}))}>
-                <button
-                  style={{
-                    marginRight: 5,
-                    backgroundImage: `url(${images.edit_image_icons})`,
-                    backgroundPosition: isCover ? '-20px 0' : '0 0'
-                  }}
-                  className='rotate-btn'>
-                </button>
-                设为封面
+              <div
+                className='set-cover-btn'
+                onClick={isCover ? null : () => this.setState(({choose}) => ({choose: !choose}))}>
+                {isCover ? '当前封面': [
+                  <button
+                    style={{
+                      marginRight: 5,
+                      backgroundImage: `url(${images.edit_image_icons})`,
+                      backgroundPosition: choose ? '-20px 0' : '0 0'
+                    }}
+                    className='rotate-btn'>
+                  </button>,
+                  '设为封面'
+                ]}
               </div>
               <button
                 style={{backgroundImage: `url(${images.edit_image_icons})`}}
