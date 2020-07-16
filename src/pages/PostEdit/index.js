@@ -34,7 +34,7 @@ export default class DetailPage extends PureComponent {
         media: [],
         coverHidden: true
       },
-      overlayType: MediaTypes.None,
+      overlayType: MediaTypes.Text,
       // 当前更新的media
       currentEdit: {
         index: -1, // 包含media的item和添加按钮

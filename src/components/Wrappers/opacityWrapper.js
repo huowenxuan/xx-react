@@ -11,6 +11,7 @@ export default function opacityWrapper(Container) {
     }
 
     componentDidMount() {
+      super.componentDidMount()
       setTimeout(() => {
         this.setState({
           __opacity: 1

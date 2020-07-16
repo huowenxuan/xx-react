@@ -1,9 +1,10 @@
-import React, {PureComponent} from "react";
+import React, {PureComponent} from "react"
 import './index.css'
 import opacityWrapper from '../Wrappers/opacityWrapper'
 
 const Weights = ['normal', 'bold']
-const Colors = ['#222', 'red']
+const Colors = ['#323232', '#999999', '#E7511A',
+  '#D68F50', '#C3A546', '#488D63', '#548BAC', '#A58876', '#FFFAEF']
 const Aligns = ['left', 'center', 'right']
 const Sizes = ['16', '20', '13']
 
@@ -17,11 +18,26 @@ class EditTextOverlay extends PureComponent {
       color: style.color,
       fontSize: style.fontSize,
       textAlign: style.textAlign,
-      text: body || ''
+      text: body || '',
+      colorRect: {},
+      colorShow: false
     }
+
+    this.colorBtn = React.createRef()
+    this.sizeBtn = React.createRef()
   }
 
   componentDidMount() {
+    this._showColors()
+  }
+
+  _showColors() {
+    let rect = this.colorBtn.current.getBoundingClientRect()
+    console.log(rect)
+    this.setState({
+      colorRect: rect,
+      colorShow: true
+    })
   }
 
   _done = () => {
@@ -55,6 +71,43 @@ class EditTextOverlay extends PureComponent {
     })
   }
 
+  _renderColorOverlay() {
+    const triangleWidth = 26
+    const top = 12
+    const {colorRect: rect, colorShow} = this.state
+    if (!colorShow) return null
+    return (
+      <div
+        onClick={(e)=>e.stopPropagation()}
+        className='edit-text-overlay'
+        style={{
+          top: rect.top + rect.height + top,
+          left: 30
+        }}
+      >
+        <div
+          className='edit-text-triangle'
+          style={{
+            top: rect.top + rect.height - triangleWidth + top,
+            borderWidth: triangleWidth / 2,
+            left: rect.left + rect.width / 2 - triangleWidth / 2
+          }}
+        />
+        <div
+          className='edit-text-colors'
+        >
+          {Colors.map(color=>(
+            <div
+              key={color}
+              className='edit-text-color'
+              style={{backgroundColor: color}}
+            />
+          ))}
+        </div>
+      </div>
+    )
+  }
+
   render() {
     const {
       text,
@@ -82,36 +135,38 @@ class EditTextOverlay extends PureComponent {
         />
           <div className='add-text-btns'>
             <div className='add-text-left-btns'>
-              <div
+              <button
                 onClick={() => this.change('fontWeight', Weights)}
                 className='add-text-left-btns'
               >
                 粗细
-              </div>
-              <div
+              </button>
+              <button
+                ref={this.colorBtn}
                 onClick={() => this.change('color', Colors)}
                 className='add-text-left-btns'
               >
                 颜色
-              </div>
-              <div
+              </button>
+              <button
                 onClick={() => this.change('textAlign', Aligns)}
                 className='add-text-left-btns'
               >
                 居中
-              </div>
-              <div
+              </button>
+              <button
                 onClick={() => this.change('fontSize', Sizes)}
                 className='add-text-left-btns'
               >
                 大小
-              </div>
+              </button>
             </div>
             <div onClick={this._done}>
               <p>完成</p>
             </div>
           </div>
         </div>
+        {this._renderColorOverlay()}
       </div>
     )
   }

@@ -23,8 +23,33 @@
     justify-content: space-between;
 }
 .add-text-left-btns {
-    display: flex;
 }
-.add-text-left-btns {
-    padding: 0 10px 0 0 ;
+
+
+.edit-text-overlay {
+    /*margin-top: -10px;*/
+    position: fixed;
+    background-color: white;
+    box-shadow: 0 5px 30px 0 #D5D5D588;
+}
+
+.edit-text-triangle {
+    position: fixed;
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-color: transparent transparent white transparent;
+}
+.edit-text-colors {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: #D5D5D550 1px solid;
+    border-radius: 6px;
+}
+.edit-text-color {
+    margin: 16px 8px;
+    width: 18px;
+    height: 18px;
+    border-radius: 2px
 }
