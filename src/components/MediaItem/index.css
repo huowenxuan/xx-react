@@ -77,6 +77,14 @@
     top: 50px;
     right: 0
 }
+.item-btn-set-cover {
+    color: white;
+    font-size: 13px;
+    bottom: 10px;
+    right: 10px;
+    width: auto !important;
+    height: auto !important;
+}
 
 .web-video-box {
     padding: 25% 0;

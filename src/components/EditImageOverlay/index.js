@@ -1,6 +1,7 @@
-import React, {PureComponent} from "react";
+import React, {PureComponent} from "react"
 import './index.css'
 import opacityWrapper from '../Wrappers/opacityWrapper'
+import images from "../../assets/images"
 
 class EditTextOverlay extends PureComponent {
   constructor(props) {
@@ -11,7 +12,8 @@ class EditTextOverlay extends PureComponent {
     const {rotate} = style
     this.state = {
       body,
-      rotate
+      rotate,
+      isCover: false
     }
   }
 
@@ -20,7 +22,7 @@ class EditTextOverlay extends PureComponent {
 
   _done = () => {
     const {onChange, data} = this.props
-    const {rotate} = this.state
+    const {rotate, isCover} = this.state
     let style = {}
     // 归到0、90、180、270度
     if (rotate) style.rotate = (rotate / 90) % 4 * 90
@@ -28,6 +30,7 @@ class EditTextOverlay extends PureComponent {
       ...data,
       type: 'image',
       style,
+      isCover
     })
   }
 
@@ -40,7 +43,8 @@ class EditTextOverlay extends PureComponent {
   render() {
     const {
       body,
-      rotate = 0
+      rotate = 0,
+      isCover
     } = this.state
     const {onCancel} = this.props
     return (
@@ -62,25 +66,33 @@ class EditTextOverlay extends PureComponent {
 
           <div
             className='add-img-bottom'
-            onClick={e=>e.stopPropagation()}
+            onClick={e => e.stopPropagation()}
           >
             <div className='add-img-bottom-btns'>
-              <div>
-
+              <div className='set-cover-btn' onClick={() => this.setState(({isCover}) => ({isCover: !isCover}))}>
+                <button
+                  style={{
+                    marginRight: 5,
+                    backgroundImage: `url(${images.edit_image_icons})`,
+                    backgroundPosition: isCover ? '-20px 0' : '0 0'
+                  }}
+                  className='rotate-btn'>
+                </button>
+                设为封面
               </div>
-              <div onClick={()=>this._rotate(rotate)}>
-                旋转
-              </div>
+              <button
+                style={{backgroundImage: `url(${images.edit_image_icons})`}}
+                className='rotate-btn'
+                onClick={() => this._rotate(rotate)}>
+              </button>
             </div>
 
             <div className='add-img-confirm-box'>
-              <div onClick={onCancel}>
-                取消
-              </div>
-              <div onClick={this._done}>
-                确认
-              </div>
+              <div onClick={onCancel}>取消</div>
+              <div onClick={this._done}>确认</div>
+              <div className='white-line'/>
             </div>
+
           </div>
         </div>
       </div>

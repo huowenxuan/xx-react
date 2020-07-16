@@ -19,4 +19,5 @@ export default {
   edit_remove_icon: require('./img/edit_remove_icon.png'),
   edit_up_icon: require('./img/edit_up_icon.png'),
   edit_down_icon: require('./img/edit_down_icon.png'),
+  edit_image_icons: require('./img/edit_image_icons.png'),
 }

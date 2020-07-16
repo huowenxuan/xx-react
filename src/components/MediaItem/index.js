@@ -94,6 +94,21 @@ export default class MediaItem extends PureComponent {
     )
   }
 
+  _renderSetCoverBtn() {
+    const {data} = this.props
+    const {onDelete, onUp, onDown, onSetCover} = this.props
+    const {type} = data
+    if (type !== 'image') return null
+    return (
+      <button
+        className='item-btn item-btn-set-cover'
+        onClick={e => this._action(e, onSetCover)}
+      >
+        设为封面
+      </button>
+    )
+
+  }
   _renderBtns() {
     const {onDelete, onUp, onDown} = this.props
     return (
@@ -116,6 +131,7 @@ export default class MediaItem extends PureComponent {
         >
           <img className='item-icon' src={images.edit_down_icon}/>
         </button>
+        {this._renderSetCoverBtn()}
       </div>
     )
   }
