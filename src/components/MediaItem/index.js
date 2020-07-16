@@ -1,6 +1,7 @@
 import React, {PureComponent} from "react";
 import './index.css'
 import * as utils from '../../utils/'
+import images from "../../assets/images"
 
 export default class MediaItem extends PureComponent {
   constructor(props) {
@@ -44,12 +45,13 @@ export default class MediaItem extends PureComponent {
     return (
       <div className='image-box'>
         <img
-          className='image'
+          className='item-image'
           style={{
             transform: `rotate(${rotate}deg) scale(${scale}, ${scale})`,
           }}
           src={item.body}
         />
+        <div className='image-overlay'/>
       </div>
     )
   }
@@ -59,9 +61,10 @@ export default class MediaItem extends PureComponent {
       <div className='image-box'>
         <video
           controls={true}
-          className='video'
+          className='item-video'
           src={item.body}
         />
+        <div className='image-overlay'/>
       </div>
     )
   }
@@ -99,19 +102,19 @@ export default class MediaItem extends PureComponent {
           className='item-btn item-btn-del'
           onClick={e => this._action(e, onDelete)}
         >
-          X
+          <img className='item-icon-del' src={images.edit_remove_icon}/>
         </button>
         <button
           className='item-btn item-btn-up'
           onClick={e => this._action(e, onUp)}
         >
-          ↑
+          <img className='item-icon' src={images.edit_up_icon}/>
         </button>
         <button
           className='item-btn item-btn-down'
           onClick={e => this._action(e, onDown)}
         >
-          ↓
+          <img className='item-icon' src={images.edit_down_icon}/>
         </button>
       </div>
     )

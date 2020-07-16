@@ -16,4 +16,7 @@ export default {
   icon_music_red: require('./img/icon_music_red.png'),
   back_left: require('./img/back_left.png'),
   new_post_camera: require('./img/new_post_camera.png'),
+  edit_remove_icon: require('./img/edit_remove_icon.png'),
+  edit_up_icon: require('./img/edit_up_icon.png'),
+  edit_down_icon: require('./img/edit_down_icon.png'),
 }

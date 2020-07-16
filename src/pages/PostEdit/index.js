@@ -74,7 +74,7 @@ export default class DetailPage extends PureComponent {
         item.style = utils.toJson(style) || {}
       }
     }
-    // this.setState({post})
+    this.setState({post})
   }
 
   // 弹出选择图片和权限遮罩
@@ -425,17 +425,16 @@ export default class DetailPage extends PureComponent {
   }
 
   _onCoverClick = async  ()=>{
-    // let photos = await utils.choosePhoto(true, false)
-    // let photo = photos[0]
-    // const {file, src} = photo
-    // this._setPostState('coverKeyUrl', src)
-    // this._coverFile = file
-    this._setPostState('coverKeyUrl', 'blob:http://localhost:3000/0c1adb63-987a-47e3-9c9e-d691d0ff225d')
+    let photos = await utils.choosePhoto(true, false)
+    let photo = photos[0]
+    const {file, src} = photo
+    this._setPostState('coverKeyUrl', src)
+    this._coverFile = file
   }
 
   _renderCover() {
-    const {post, coverHidden} = this.state
-    const {coverKeyUrl} = post
+    const {post} = this.state
+    const {coverKeyUrl, coverHidden} = post
     if (!coverKeyUrl) {
       return (
         <div
@@ -448,21 +447,32 @@ export default class DetailPage extends PureComponent {
       )
     } else if (!coverHidden) {
       return (
-        <div
-          className='edit-cover'
-          style={{backgroundImage: `url(${coverKeyUrl})`}}
-        >
-
+        <div className='edit-cover'>
+          <img
+            className='cover'
+            src={coverKeyUrl}
+          />
+          <div className='edit-cover-wrapper'>
+            <button
+              onClick={()=>this._setPostState('coverHidden', true)}
+              className='edit-cover-remove'>
+              <img className='edit-cover-remove-img' src={images.edit_remove_icon}/>
+            </button>
+            <button
+              onClick={this._onCoverClick}
+              className='edit-cover-update'>
+              更改封面
+            </button>
+          </div>
         </div>
       )
     } else {
       return (
         <div
-          onClick={()=>this.setState({coverHidden: false})}
-          className='edit-cover-close'
-          style={{backgroundImage: `url(${coverKeyUrl})`}}
+          onClick={()=>this._setPostState('coverHidden', false)}
+          className='edit-cover-hidden'
         >
-          <img className='edit-cover-close-img' src={images.icon_limit_red}/>
+          <img className='edit-cover-hidden-img' src={coverKeyUrl}/>
           显示封面
         </div>
       )

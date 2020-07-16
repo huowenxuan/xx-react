@@ -7,15 +7,18 @@ input {
     padding: 0 15px;
 }
 
+
+.cover {
+    width: 100%;
+}
 .edit-cover {
     height: 210px;
-    width: 100%;
-    background-position: center center;
-    background-size: cover;
     background-color: #F8F8F8;
     display: flex;
     align-items: center;
     justify-content: center;
+    position: relative;
+    overflow: hidden;
 }
 
 .edit-cover-none {
@@ -23,20 +26,50 @@ input {
     color: #999;
 }
 
-.edit-cover-close {
-    width: 100px;
-    height: 20px;
+.edit-cover-hidden {
     margin: 10px 0 0 20px;
+    width: 110px;
+    height: 32px;
+    border-radius: 4px;
     background-color: #F8F8F8;
     font-size: 13px;
     display: flex;
     align-items: center;
     justify-content: center;
+    color: #191919
 }
-.edit-cover-close-img {
+
+.edit-cover-hidden-img {
     width: 20px;
     height: 20px;
-    margin-right: 5px;
+    margin-right: 10px;
+    border-radius: 2px;
+}
+
+.edit-cover-wrapper {
+    background-color: #00000030;
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    top: 0;
+    color: white;
+}
+
+.edit-cover-remove {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+}
+.edit-cover-remove-img {
+    width: 18px
+}
+.edit-cover-update {
+    position: absolute;
+    color: white;
+    font-size: 13px;
+    bottom: 10px;
+    right: 18px
 }
 
 #title-box {
