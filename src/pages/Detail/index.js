@@ -306,7 +306,7 @@ export default class DetailPage extends PureComponent {
   async _choosePhoto(isImage) {
     let data = null
     try {
-      data = await utils.choosePhoto(isImage, 1)
+      data = await utils.choosePhoto(isImage, true)
     } catch (e) {
       overlays.showToast(e.message)
       return

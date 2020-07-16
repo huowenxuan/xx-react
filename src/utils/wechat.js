@@ -15,11 +15,11 @@ async function getWechat() {
   return _wechat
 }
 
-export async function chooseImage(max) {
+export async function chooseImage(multiple) {
   let wx = await getWechat()
   return new Promise((resolve, reject) => {
     wx.chooseImage({
-      count: max, // 默认9
+      count: multiple ? 9 : 1, // 默认9
       sizeType: ['original'], // 原图 original 压缩 compressed
       sourceType: ['album', 'camera'], // 可以指定来源是相册还是相机，默认二者都有
       success: (res) => resolve(res.localIds),

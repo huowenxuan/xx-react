@@ -2,7 +2,7 @@ import * as wechat from './wechat'
 import qiniu from './qiniu'
 import {get, API} from "../request"
 
-function choosePhotoBrowser(isImage, max) {
+function choosePhotoBrowser(isImage, multiple) {
   const handleVideo = async (src) => {
     let video = document.createElement('video')
     document.body.appendChild(video)
@@ -39,7 +39,7 @@ function choosePhotoBrowser(isImage, max) {
   document.body.appendChild(input)
   input.style = "display:none"
   input.type = 'file'
-  input.multiple = max > 1
+  input.multiple = multiple
   input.accept = isImage
     ? 'image/gif, image/jpeg, image/png'
     : 'video/mp4'
@@ -72,7 +72,7 @@ function choosePhotoBrowser(isImage, max) {
   })
 }
 
-async function choosePhotoWx(isImage, max) {
+async function choosePhotoWx(multiple) {
   const handleImage = (src) => {
     // 微信的localId图片在iOS端不支持Image API，只支持img，不支持backgroundImage
     let image = document.createElement('img')
@@ -88,7 +88,7 @@ async function choosePhotoWx(isImage, max) {
     })
   }
 
-  let localIds = await wechat.chooseImage(max)
+  let localIds = await wechat.chooseImage(multiple)
   let result = []
   for (let localId of localIds) {
     let item = await handleImage(localId)
@@ -102,12 +102,12 @@ async function choosePhotoWx(isImage, max) {
  * @param isImage true为图片。false为视频
  * @param max 最大数量
  */
-export function choosePhoto(isImage, max) {
-  // if (isImage) {
-  //   return choosePhotoWx(isImage, max)
-  // } else {
-  return choosePhotoBrowser(isImage, 100)
-  // }
+export function choosePhoto(isImage, multiple) {
+  if (isImage) {
+    return choosePhotoWx(multiple)
+  } else {
+    return choosePhotoBrowser(isImage, multiple)
+  }
 }
 
 /**
