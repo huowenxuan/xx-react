@@ -103,7 +103,7 @@ async function choosePhotoWx(multiple) {
  * @param multiple 是否可多选
  */
 export function choosePhoto(isImage, multiple) {
-  if (isImage) {
+  if (isImage && isWeixin()) {
     return choosePhotoWx(multiple)
   } else {
     return choosePhotoBrowser(isImage, multiple)
@@ -172,4 +172,9 @@ export function toJson(data) {
   } catch (e) {
     return data
   }
+}
+
+export function isWeixin() {
+  let ua = navigator.userAgent.toLowerCase()
+  return ua.match(/MicroMessenger/i) == "micromessenger"
 }
