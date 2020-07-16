@@ -26,6 +26,7 @@ button {
   border: #000 0 solid;
   background-color: transparent;
   outline: none;
+  padding: 0
 }
 
 textarea {

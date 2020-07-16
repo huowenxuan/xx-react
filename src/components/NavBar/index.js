@@ -1,32 +1,35 @@
-import React, {PureComponent} from "react";
+import React, {PureComponent} from "react"
 import './index.css'
 import PropTypes from 'prop-types'
 import images from '../../assets/images'
 
 export default class NavBar extends PureComponent {
   constructor(props) {
-    super(props);
+    super(props)
   }
 
   static propTypes = {
     leftButtons: PropTypes.array,
     rightButtons: PropTypes.array,
     title: PropTypes.string,
-    onBack: PropTypes.func
-  };
+    onBack: PropTypes.func,
+    backText: PropTypes.string,
+  }
 
   static defaultProps = {
     leftButtons: null, // 如果是null、undefined就显示返回按钮、[]都不显示，默认显示
-    rightButtons: [],
+    rightButtons: [{text: 'fff'},{text: 'fff'},],
     title: '',
-  };
+    backText: '返回'
+  }
 
   backButton() {
-    const {onBack} = this.props
+    const {onBack, backText} = this.props
     return [{
       custom: (
-        <div className='icon-button'>
-          <img className='back-button' src={images.BACK}/>
+        <div className='nav-center nav-button'>
+            <img className='back-button-img' src={images.back_left}/>
+          {backText}
         </div>
       ),
       onClick: () => onBack
@@ -44,13 +47,13 @@ export default class NavBar extends PureComponent {
 
   _showTitle(title) {
     title = title || ''
-    let length = 0;
+    let length = 0
     let stopIndex = -1
     for (let i = 0; i < title.length; i++) {
       if (this._isEnglishChar(title[i])) {
-        length += 1;
+        length += 1
       } else {
-        length += 2;
+        length += 2
       }
 
       if (length >= 28) {
@@ -72,7 +75,7 @@ export default class NavBar extends PureComponent {
     let button
     if (data.text) {
       button = (
-        <div className='nav-center text-button' style={data.style}>
+        <div className='nav-button nav-center text-button' style={data.style}>
           <div className='button-text' style={data.textStyle}>
             {data.text}
           </div>
@@ -80,7 +83,7 @@ export default class NavBar extends PureComponent {
       )
     } else if (data.icon) {
       button = (
-        <div className='nav-center icon-button' style={data.style}>
+        <div className='nav-button nav-center icon-button' style={data.style}>
           {data.icon}
         </div>
       )
@@ -110,7 +113,7 @@ export default class NavBar extends PureComponent {
   }
 
   _renderNavBar(navHeight) {
-    const {title, leftButtons, rightButtons, style, titleView} = this.props;
+    const {title, leftButtons, rightButtons, style, titleView} = this.props
     return (
       <nav style={{height: navHeight, ...style}} className='nav-wrapper'>
         <div className='title-box'>
