@@ -100,7 +100,7 @@ async function choosePhotoWx(multiple) {
 /**
  * 选择图片/视频
  * @param isImage true为图片。false为视频
- * @param max 最大数量
+ * @param multiple 是否可多选
  */
 export function choosePhoto(isImage, multiple) {
   if (isImage) {
