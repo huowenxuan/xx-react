@@ -507,11 +507,12 @@ export default class DetailPage extends PureComponent {
     return (
       <div id='percent'>
         <div id='percent-child'>
-          <p>当前第{currentIndex + 1}张{parseInt(currentPercent)}%，共有{count}张{parseInt(percent)}%</p>
+          <p>正在上传第{currentIndex + 1}张{parseInt(currentPercent)}%，共{count}张</p>
           <button
+            className='percent-cancel'
             onClick={this._cancelUpload}
-            style={{marginTop: 15}}>
-            取消
+          >
+            取消上传
           </button>
         </div>
       </div>

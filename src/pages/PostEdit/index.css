@@ -110,13 +110,19 @@ input {
 }
 
 #percent-child {
-    background-color: white;
-    width: 250px;
-    height: 100px;
+    background-color: #F8F8F8;
+    width: 220px;
+    height: 90px;
+    border-radius: 4px;
     box-shadow: 0 4px 8px 0 black;
     display: flex;
     justify-content: center;
     align-items: center;
     font-size: 14px;
     flex-direction: column;
+    color: #191919
+}
+.percent-cancel {
+    margin-top: 20px;
+    font-size: 12px;
 }
