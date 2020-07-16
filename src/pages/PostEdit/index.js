@@ -12,7 +12,7 @@ import EditBottomButtons, {EditBottomHeight} from "../../components/EditBottom/E
 import overlays from "../../components/overlays"
 import EditBottomOverlay from "../../components/EditBottom/EditBottomOverlay"
 import images from '../../assets/images'
-import {get} from '../../request'
+import {API, get} from '../../request'
 import * as utils from '../../utils'
 import * as _ from 'lodash'
 
@@ -57,24 +57,28 @@ export default class DetailPage extends PureComponent {
     this._initData()
   }
 
-  _initData() {
+  async _initData() {
     const {id} = this.props.match.params
     const {photos} = this.props.location
     if (id) {
       // 编辑旧帖子
+      let data = await get(API.postEdit + id, {},
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjU4YTE2NDkzMDRhZjE1OTgwYWZlNDk2YSIsInBob25lIjoiMTg4NDA5MTY3NDIiLCJpYXQiOjE1ODEzMjY4NDV9.jYNFFZWf0DcO5Wu5is21Htywds2zCDGH31YiLZSEeBw')
+      let post = data.post
+      const {media} = post
+      for (let item of media) {
+        const {info, type, style} = item
+        if (type === 'image') {
+          item.info = utils.toJson(info) || {}
+          item.style = utils.toJson(style) || {}
+        }
+      }
+      console.log(post)
+      this.setState({post})
     } else if (photos) {
       // 根据照片创建新帖子
     }
 
-    const {media} = post
-    for (let item of media) {
-      const {info, type, style} = item
-      if (type === 'image') {
-        item.info = utils.toJson(info) || {}
-        item.style = utils.toJson(style) || {}
-      }
-    }
-    this.setState({post})
   }
 
   // 弹出选择图片和权限遮罩
@@ -212,11 +216,10 @@ export default class DetailPage extends PureComponent {
       let newPost = _.cloneDeep(this.state.post)
       let newMedias = newPost.media
       for (let item of newMedias) {
-        if (item.key) {
-          item.body = item.key
-          delete item.key
-          delete item.file
-        }
+        delete item.file
+        delete item.isCover
+        item.info = JSON.stringify(item.info || {})
+        item.style = JSON.stringify(item.style || {})
       }
       console.log(newMedias)
     } catch (e) {
@@ -278,8 +281,8 @@ export default class DetailPage extends PureComponent {
 
   // 把某项media设置为封面图
   _setItemToCover(index, item) {
-    console.log(item)
-    console.log('TODO setItemToCover')
+    this._setPostState('headbacimgurl', item.body)
+    this._setPostState('coverKey', item.key)
   }
 
   _clickMedia(data, index) {
@@ -323,6 +326,12 @@ export default class DetailPage extends PureComponent {
         />
       )
     })
+  }
+
+  _mediaIsCover(item) {
+    const {headbacimgurl, coverKey} = this.state.post
+    if (!item) return false
+    return headbacimgurl === item.body || coverKey === item.key
   }
 
   async _choosePhoto(isImage) {
@@ -376,7 +385,7 @@ export default class DetailPage extends PureComponent {
   }
 
   _renderMedia(media) {
-    const {coverKeyUrl} = this.state.post
+    const {coverKey, headbacimgurl} = this.state.post
     if (!media || media.length === 0) {
       return this._renderAddItem(0)
     }
@@ -385,13 +394,13 @@ export default class DetailPage extends PureComponent {
       <ul key={`${data._id}-${data.body}`}>
         {this._renderAddItem(index)}
         <MediaItem
-          isCover={coverKeyUrl === data.body}
+          isCover={this._mediaIsCover(data)}
           data={data}
           onClick={() => this._clickMedia(data, index)}
           onDelete={() => this._del(index)}
           onUp={() => this._up(index)}
           onDown={() => this._down(index)}
-          onSetCover={()=>this._setItemToCover(index, data)}
+          onSetCover={() => this._setItemToCover(index, data)}
         />
         {index === media.length - 1
           ? this._renderAddItem(index + 1)
@@ -432,6 +441,7 @@ export default class DetailPage extends PureComponent {
         <OverlayView
           ref={this.overlay}
           data={curData}
+          isCover={this._mediaIsCover(curData)}
           onChange={(data) => this._updateMedia(isNew, data)}
           onCancel={this._hiddenOverlay}
         />
@@ -439,23 +449,23 @@ export default class DetailPage extends PureComponent {
     )
   }
 
-  _onCoverClick = async  ()=>{
+  _onCoverClick = async () => {
     let photos = await utils.choosePhoto(true, false)
     let photo = photos[0]
     const {file, src} = photo
-    this._setPostState('coverKeyUrl', src)
+    this._setPostState('headbacimgurl', src)
+    this._setPostState('coverKey', '')
     this._coverFile = file
   }
 
   _renderCover() {
     const {post} = this.state
-    const {coverKeyUrl, coverHidden} = post
-    if (!coverKeyUrl) {
+    const {coverKey, headbacimgurl, coverHidden} = post
+    if (!headbacimgurl) {
       return (
         <div
           onClick={this._onCoverClick}
           className='edit-cover edit-cover-none'
-          style={{backgroundImage: `url(${coverKeyUrl})`}}
         >
           上传封面
         </div>
@@ -465,11 +475,11 @@ export default class DetailPage extends PureComponent {
         <div className='edit-cover'>
           <img
             className='cover'
-            src={coverKeyUrl}
+            src={headbacimgurl}
           />
           <div className='edit-cover-wrapper'>
             <button
-              onClick={()=>this._setPostState('coverHidden', true)}
+              onClick={() => this._setPostState('coverHidden', true)}
               className='edit-cover-remove'>
               <img className='edit-cover-remove-img' src={images.edit_remove_icon}/>
             </button>
@@ -484,10 +494,10 @@ export default class DetailPage extends PureComponent {
     } else {
       return (
         <div
-          onClick={()=>this._setPostState('coverHidden', false)}
+          onClick={() => this._setPostState('coverHidden', false)}
           className='edit-cover-hidden'
         >
-          <img className='edit-cover-hidden-img' src={coverKeyUrl}/>
+          <img className='edit-cover-hidden-img' src={headbacimgurl}/>
           显示封面
         </div>
       )
