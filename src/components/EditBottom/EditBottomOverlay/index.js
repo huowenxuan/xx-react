@@ -44,13 +44,16 @@ export default class OverlayViewFade extends OverlayView {
   }
 
   _update(type) {
-    this.setState((prevState) => {
-      return {
+    const {type: prevType} = this.state
+    if (prevType === type) {
+      this.disappear()
+    } else {
+      this.setState({
         type,
         height: this.getHeight(type),
         x: this.getX(type),
-      }
-    })
+      })
+    }
   }
 
   componentWillUnmount() {
@@ -101,6 +104,7 @@ export default class OverlayViewFade extends OverlayView {
         protect={protect}
         status={status}
         onUpdate={this._onUpdate}
+        onDismiss={this.disappear}
       />
     )
   }

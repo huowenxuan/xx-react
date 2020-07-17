@@ -104,7 +104,6 @@ export default class EditAudio extends PureComponent {
   }
 
   _done = () => {
-    console.log(this.state.choose)
     const {onUpdate, onBack} = this.props
     onUpdate('audio_id', this.state.choose)
     onBack()
@@ -160,7 +159,6 @@ export default class EditAudio extends PureComponent {
   _renderHeader() {
     const {choose, playState} = this.state
     if (!choose) return null
-    console.log(choose)
     return (
       <div
         id='music-img-bg'

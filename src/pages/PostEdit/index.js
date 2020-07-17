@@ -255,17 +255,17 @@ export default class DetailPage extends PureComponent {
         item.style = JSON.stringify(item.style || {})
       }
 
-      const {coverKey, title, coverHidden} = newPost
+      const {coverKey, title, coverHidden, audio_id, status, protect} = newPost
       let data = {
         media: newPost.media,
         title,
         coverKey: coverKey,
         coverHidden: coverHidden,
-        // status: this.state.status,
-        // audio_id: this.state.audio,
-        // protect: this.state.protect,
+        audio_id,
+        status,
+        protect,
       }
-      console.log(newMedias)
+      console.log(data)
     } catch (e) {
       this._resetProgress()
       if (e.message === 'cancel') {

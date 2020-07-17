@@ -18,7 +18,6 @@ export default (props) => {
   const [answer, setAnswer] = useState(protect ? protect.question : 'protect')
 
   useEffect(() => {
-    console.log('componentDidMount')
   }, [])
 
   const _showProtect = () => {
@@ -33,6 +32,7 @@ export default (props) => {
             setAnswer(answer)
             setQuestion(question)
             props.onUpdate('protect', {answer, question})
+            props.onDismiss()
           }}
         />
       </OverlayViewFade>
@@ -46,6 +46,7 @@ export default (props) => {
     } else {
       setPermission(type)
       props.onUpdate('status', type)
+      props.onDismiss()
     }
   }
 
