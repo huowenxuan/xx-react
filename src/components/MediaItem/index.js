@@ -17,29 +17,27 @@ export default class MediaItem extends PureComponent {
     const {style = {}, body} = item
     const {fontSize = 16, fontWeight = 'normal', color = '#222', textAlign = 'left'} = style
     return (
-      <div className='text-item'>
-        <p
-          className='text'
-          style={{
-            fontSize: fontSize + 'px',
-            fontWeight,
-            color,
-            textAlign
-          }}
-        >
-          {item.body}
-        </p>
+      <div
+        className='text-item'
+        style={{
+          fontSize: fontSize + 'px',
+          fontWeight,
+          color,
+          textAlign
+        }}
+      >
+        {body}
       </div>
     )
   }
 
   _renderImage(item) {
-    const {style=0, info = {}} = item
+    const {style = 0, info = {}} = item
     const {width, height} = info
     let scale = 1
     // 旋转后缩放以尽可能适应容器大小
     if (width && height && (style === 90 || style === 270)) {
-      scale =  width / height
+      scale = width / height
     }
     return (
       <div className='image-box'>
@@ -106,8 +104,8 @@ export default class MediaItem extends PureComponent {
         {isCover ? '当前封面' : '设为封面'}
       </button>
     )
-
   }
+
   _renderBtns() {
     const {onDelete, onUp, onDown} = this.props
     return (
@@ -135,7 +133,7 @@ export default class MediaItem extends PureComponent {
     )
   }
 
-  _onClick = ()=> {
+  _onClick = () => {
     const {data, onClick} = this.props
     onClick && onClick()
   }

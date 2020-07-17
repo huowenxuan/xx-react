@@ -16,7 +16,7 @@
     background-color: #00000030;
     position: absolute;
     left: 0;
-    right:0;
+    right: 0;
     bottom: 0;
     top: 0;
     pointer-events: none;
@@ -32,11 +32,12 @@
 }
 
 .text-item {
-    padding: 40px 30px;
+    padding: 30px 30px;
     background-color: #E9E9E9;
     color: #222;
     line-height: 1.7;
     font-size: 14px;
+    white-space: pre-wrap
 }
 
 .item-btns {
@@ -77,6 +78,7 @@
     top: 50px;
     right: 0
 }
+
 .item-btn-set-cover {
     color: white;
     font-size: 13px;
@@ -89,6 +91,7 @@
 .web-video-box {
     padding: 25% 0;
 }
+
 .web-video {
     position: absolute;
     left: 0;

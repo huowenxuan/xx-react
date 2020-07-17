@@ -200,6 +200,7 @@ class EditTextOverlay extends PureComponent {
       fontSize = '16',
       textAlign = 'left'
     } = this.state
+    const {onCancel} = this.props
     let alignImg = images.edit_text_left
     if (textAlign === 'right') alignImg = images.edit_text_right
     if (textAlign === 'center') alignImg = images.edit_text_center
@@ -207,6 +208,7 @@ class EditTextOverlay extends PureComponent {
       <div className='add-text-container'>
         <NavBar
           title='编辑文字'
+          onBack={onCancel}
           rightButtons={[{
             text: '完成',
             style: {color: '#E97462'},
