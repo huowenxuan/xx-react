@@ -6,13 +6,13 @@ import images from "../../assets/images"
 class EditTextOverlay extends PureComponent {
   constructor(props) {
     super(props)
-    // info= format size height width
-    // style= rotate:90
-    const {body, style = {}} = props.data || {}
-    const {rotate} = style
+    // info = format size height width
+    // style = 90
+    // 后台把style直接设置为旋转角度
+    const {body, style} = props.data || {}
     this.state = {
       body,
-      rotate,
+      rotate: style ? parseInt(style) : 0,
       choose: false
     }
   }
@@ -23,13 +23,14 @@ class EditTextOverlay extends PureComponent {
   _done = () => {
     const {onChange, data} = this.props
     const {rotate, choose} = this.state
-    let style = {}
+    let style = 0
     // 归到0、90、180、270度
-    if (rotate) style.rotate = (rotate / 90) % 4 * 90
+    if (rotate) style = (rotate / 90) % 4 * 90
     onChange && onChange({
       ...data,
       type: 'image',
-      style,
+      // 必须转为字符串后台才能修改成功
+      style: style.toString(),
       isCover: choose
     })
   }
@@ -72,7 +73,7 @@ class EditTextOverlay extends PureComponent {
               <div
                 className='set-cover-btn'
                 onClick={isCover ? null : () => this.setState(({choose}) => ({choose: !choose}))}>
-                {isCover ? '当前封面': [
+                {isCover ? '当前封面' : [
                   <button
                     style={{
                       marginRight: 5,

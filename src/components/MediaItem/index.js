@@ -34,12 +34,11 @@ export default class MediaItem extends PureComponent {
   }
 
   _renderImage(item) {
-    const {style = {}, info = {}} = item
-    const {rotate = 0} = style
+    const {style=0, info = {}} = item
     const {width, height} = info
     let scale = 1
     // 旋转后缩放以尽可能适应容器大小
-    if (width && height && (rotate === 90 || rotate === 270)) {
+    if (width && height && (style === 90 || style === 270)) {
       scale =  width / height
     }
     return (
@@ -47,7 +46,7 @@ export default class MediaItem extends PureComponent {
         <img
           className='item-image'
           style={{
-            transform: `rotate(${rotate}deg) scale(${scale}, ${scale})`,
+            transform: `rotate(${style}deg) scale(${scale}, ${scale})`,
           }}
           src={item.body}
         />

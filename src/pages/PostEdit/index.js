@@ -12,10 +12,11 @@ import EditBottomButtons, {EditBottomHeight} from "../../components/EditBottom/E
 import overlays from "../../components/overlays"
 import EditBottomOverlay from "../../components/EditBottom/EditBottomOverlay"
 import images from '../../assets/images'
-import {API, get} from '../../request'
+import * as request from '../../request'
 import * as utils from '../../utils'
 import * as _ from 'lodash'
 
+const Token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjU4YTE2NDkzMDRhZjE1OTgwYWZlNDk2YSIsInBob25lIjoiMTg4NDA5MTY3NDIiLCJpYXQiOjE1ODEzMjY4NDV9.jYNFFZWf0DcO5Wu5is21Htywds2zCDGH31YiLZSEeBw'
 const post = require('../../tmp/post.json')
 const MediaTypes = {
   None: null,
@@ -66,15 +67,14 @@ export default class DetailPage extends PureComponent {
     if (id) {
       this.postId = id
       // 编辑旧帖子
-      let data = await get(API.postEdit + id, {},
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjU4YTE2NDkzMDRhZjE1OTgwYWZlNDk2YSIsInBob25lIjoiMTg4NDA5MTY3NDIiLCJpYXQiOjE1ODEzMjY4NDV9.jYNFFZWf0DcO5Wu5is21Htywds2zCDGH31YiLZSEeBw')
+      let data = await request.get(request.API.postEdit + id, {}, Token)
       let post = data.post
       const {media} = post
       for (let item of media) {
         const {info, type, style} = item
         if (type === 'image') {
-          item.info = utils.toJson(info) || {}
-          item.style = utils.toJson(style) || {}
+          item.info = utils.toJson(info)
+          item.style = utils.toJson(style)
         }
       }
       console.log(post)
@@ -246,28 +246,9 @@ export default class DetailPage extends PureComponent {
     this.setState({completeBtnEnabled: false})
     try {
       await this._uploadFiles(media)
-      let newPost = _.cloneDeep(this.state.post)
-      let newMedias = newPost.media
-      for (let item of newMedias) {
-        delete item.file
-        delete item.isCover
-        item.info = JSON.stringify(item.info || {})
-        item.style = JSON.stringify(item.style || {})
-      }
-
-      const {coverKey, title, coverHidden, audio_id, status, protect} = newPost
-      let data = {
-        media: newPost.media,
-        title,
-        coverKey: coverKey,
-        coverHidden: coverHidden,
-        audio_id,
-        status,
-        protect,
-      }
-      console.log(data)
     } catch (e) {
       this._resetProgress()
+      this.setState({completeBtnEnabled: true})
       if (e.message === 'cancel') {
         overlays.showToast('取消上传')
       } else {
@@ -277,9 +258,45 @@ export default class DetailPage extends PureComponent {
           {type: 'cancel'},
         ])
       }
-    } finally {
+    }
+
+    let newPost = _.cloneDeep(this.state.post)
+    let newMedias = newPost.media
+    for (let item of newMedias) {
+      delete item.file
+      delete item.isCover
+      item.info = JSON.stringify(item.info || {})
+      // 不需要转字符串
+      // item.style = JSON.stringify(item.style || {})
+    }
+
+    const {coverKey, title, coverHidden, audio_id, status, protect} = newPost
+    let data = {
+      media: newPost.media,
+      title,
+      coverKey,
+      coverHidden,
+      audio_id,
+      status,
+      protect,
+    }
+    console.log(data)
+    let result
+    try {
+      if (this.postId) {
+        result = await request.post(request.API.postUpdate + this.postId, {data}, Token)
+        overlays.showToast('更新成功')
+      } else {
+        result = await request.post(request.API.postCreate, {data}, Token)
+        overlays.showToast('创建成功')
+      }
+      console.log(result)
+    } catch (e) {
+      overlays.showToast(e.message)
       this.setState({completeBtnEnabled: true})
     }
+
+    this.setState({completeBtnEnabled: true})
   }
 
   _hiddenOverlay = () => {
@@ -596,7 +613,7 @@ export default class DetailPage extends PureComponent {
     return (
       <div>
         <NavBar
-          title={title}
+          title='写文章'
           onBack={this.props.history.goBack}
           rightButtons={[
             completeBtnEnabled
@@ -611,7 +628,8 @@ export default class DetailPage extends PureComponent {
             <input
               id='title-input'
               placeholder="输入标题(2-50字)"
-              defaultValue={title}
+              value={title || ''}
+              onChange={e => this._setPostState('title', e.target.value)}
             />
           </div>
           {/*<p>{post.description}</p>*/}
