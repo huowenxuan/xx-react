@@ -79,6 +79,7 @@ export default class DetailPage extends PureComponent {
       this.setState({post})
     } else if (photos) {
       // 根据照片创建新帖子
+      this._onPhotoChoose(photos, true)
     }
 
   }
@@ -220,7 +221,7 @@ export default class DetailPage extends PureComponent {
         this._setPostState('coverKey', key)
       } else {
         console.log('上传完成 ', key)
-        this._updateMediaByIndex(index, {key})
+        this._updateMedia(index, {key})
       }
     }
     this._resetProgress()
@@ -242,9 +243,9 @@ export default class DetailPage extends PureComponent {
         item.style = JSON.stringify(item.style || {})
       }
 
-      const {media, coverKey, title, coverHidden} = this.state.post
+      const {coverKey, title, coverHidden} = newPost
       let data = {
-        media,
+        media: newPost.media,
         title,
         coverKey: coverKey,
         coverHidden: coverHidden,
@@ -275,36 +276,24 @@ export default class DetailPage extends PureComponent {
     })
   }
 
-  _updateMediaByIndex(index, updateParams) {
+  _insertMedias(index, medias) {
+    const {media} = this.state.post
+    let arr1 = media.slice(0, index)
+    let arr2 = media.slice(index, media.length + 1)
+    arr1.push(...medias)
+    let newMedia = arr1.concat(arr2)
+    this._setPostState('media', newMedia)
+  }
+
+  _updateMedia(index, updateParams) {
     const {media} = this.state.post
     media[index] = {
       ...media[index],
       ...updateParams
     }
     this._setPostState('media', media)
-  }
-
-  _updateMedia(isNew, newData) {
-    const {index} = this.state.currentEdit
-    this._hiddenOverlay()
-    if (!newData.body) return
-
-    const {media} = this.state.post
-    if (isNew) {
-      // insert
-      let arr1 = media.slice(0, index)
-      let arr2 = media.slice(index, media.length + 1)
-      arr1.push(newData)
-      let newMedia = arr1.concat(arr2)
-      this._setPostState('media', newMedia)
-    } else {
-      // update
-      media[index] = newData
-      this._setPostState('media', media)
-
-      if (newData.isCover) {
-        this._setItemToCover(index, newData)
-      }
+    if (updateParams.isCover) {
+      this._setItemToCover(index, media[index])
     }
   }
 
@@ -365,24 +354,18 @@ export default class DetailPage extends PureComponent {
     return false
   }
 
-  async _choosePhoto(isImage) {
-    let data = null
-    try {
-      data = await utils.choosePhoto(isImage, true)
-      if (!data || data.length === 0) throw new Error('未选择图片')
-    } catch (e) {
-      overlays.showToast(e.message)
-      return
-    }
-
+  _onPhotoChoose(photos, isImage) {
+    if (!photos || photos.length === 0) return
     // 如果没封面，就把第一张设为封面
     if (isImage && !this.state.post.headbacimgurl) {
-      this._setLocalImageToCover(data[0].src, data[0].file)
+      this._setLocalImageToCover(photos[0].src, photos[0].file)
     }
 
-    for (let item of data) {
+    let insertData = []
+    const {index} = this.state.currentEdit
+    for (let item of photos) {
       const {width, height, size, src, duration, file} = item
-      this._updateMedia(true, {
+      insertData.push({
         type: isImage ? 'image' : 'sortvideo',
         body: src,
         info: isImage
@@ -390,6 +373,18 @@ export default class DetailPage extends PureComponent {
           : {width, height, size, duration},
         file
       })
+    }
+    this._insertMedias(index, insertData)
+  }
+
+  async _choosePhoto(isImage) {
+    let data = null
+    try {
+      data = await utils.choosePhoto(isImage, true)
+      return this._onPhotoChoose(data, isImage)
+    } catch (e) {
+      overlays.showToast(e.message)
+      return
     }
   }
 
@@ -419,6 +414,15 @@ export default class DetailPage extends PureComponent {
     } else {
       this.setState({overlayType: type})
     }
+  }
+
+  _onOverlayChange = (data, isNew) => {
+    const {index} = this.state.currentEdit
+    this._hiddenOverlay()
+    if (isNew)
+      this._insertMedias(index, [data])
+    else
+      this._updateMedia(index, data)
   }
 
   _renderAddItem(index) {
@@ -492,7 +496,7 @@ export default class DetailPage extends PureComponent {
           ref={this.overlay}
           data={curData}
           isCover={this._mediaIsCover(curData)}
-          onChange={(data) => this._updateMedia(isNew, data)}
+          onChange={(data) => this._onOverlayChange(data, isNew)}
           onCancel={this._hiddenOverlay}
         />
       </div>
