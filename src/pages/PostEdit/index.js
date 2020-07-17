@@ -37,7 +37,7 @@ export default class DetailPage extends PureComponent {
         status: 'public'
       },
       overlayType: MediaTypes.None,
-      // 当前更新的media
+      // 当前编辑的media
       currentEdit: {
         index: -1, // 包含media的item和添加按钮
         isNew: false  // 区分是修改item还是新增

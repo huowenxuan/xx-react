@@ -1,5 +1,4 @@
-.add-text-wrapper {
-    padding: 20px;
+.add-text-container {
     height: 100%;
     position: fixed;
     left: 0;
@@ -8,27 +7,43 @@
     bottom: 0;
     background-color: white;
 }
+.add-text-wrapper {
+    height: 100%;
+    width: 100%;
+    padding: 20px;
+    box-sizing: border-box;
+}
 .add-textarea {
     height: 200px;
     width: 100%;
-    padding: 10px;
-    /* 避免设置padding后宽度溢出 */
-    box-sizing: border-box;
     color: #222;
     font-size: 16px;
 }
 
 .add-text-btns {
     display: flex;
-    justify-content: space-between;
-}
-.add-text-left-btns {
+    align-items: center;
 }
 
-.add-text-left-btn {
-    margin: 0 5px;
+.add-text-btn {
+    margin-right: 28px;
+    background-position: center center;
+    background-size: cover;
+    width: 20px;
+    height: 20px;
 }
 
+.add-text-newline {
+    height: 30px;
+    width: 55px;
+    border-radius: 3px;
+    font-size: 12px;
+    line-height: 1;
+    text-align: center;
+    vertical-align: center;
+    background-color: #F8F8F8;
+    color: #9b9b9b;
+}
 
 .edit-text-overlay {
     position: fixed;
@@ -55,4 +70,12 @@
     width: 18px;
     height: 18px;
     border-radius: 2px
+}
+
+.edit-text-font {
+    margin: 16px 8px;
+    width: 60px;
+    text-align: center;
+    border-radius: 2px;
+    color: #231815;
 }

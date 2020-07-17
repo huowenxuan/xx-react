@@ -1,12 +1,19 @@
 import React, {PureComponent} from "react"
 import './index.css'
 import opacityWrapper from '../Wrappers/opacityWrapper'
+import images from "../../assets/images";
+import NavBar from "../NavBar";
 
 const Weights = ['normal', 'bold']
 const Colors = ['#323232', '#999999', '#E7511A',
   '#D68F50', '#C3A546', '#488D63', '#548BAC', '#A58876', '#FFFAEF']
 const Aligns = ['left', 'center', 'right']
-const Sizes = ['16', '20', '13']
+const Sizes = [
+  {size: 12, text: '小'},
+  {size: 14, text: '标准'},
+  {size: 16, text: '大'},
+  {size: 18, text: '超大'},
+]
 
 class EditTextOverlay extends PureComponent {
   constructor(props) {
@@ -19,30 +26,42 @@ class EditTextOverlay extends PureComponent {
       fontSize: style.fontSize,
       textAlign: style.textAlign,
       text: body || '',
-      colorRect: {},
-      colorShow: false
+      selectType: null,
+      selectBtnRect: {}
     }
 
-    this.colorBtn = React.createRef()
-    this.sizeBtn = React.createRef()
+    this.btnRefs = {
+      color: React.createRef(),
+      font: React.createRef()
+    }
   }
 
-  componentDidMount() {
-  }
-
-  _showColors = ()=> {
-    let rect = this.colorBtn.current.getBoundingClientRect()
+  _showSelect(type) {
+    const {selectType: prevType} = this.state
+    if (prevType === type) {
+      this.setState({selectType: null})
+      return
+    }
+    let rect = this.btnRefs[type].current.getBoundingClientRect()
     this.setState({
-      colorRect: rect,
-      colorShow: true
+      selectBtnRect: rect,
+      selectType: type
     })
+  }
+
+  _newline = ()=> {
+    console.log('newline')
+    this.setState(({text})=>({
+      text: (text || '') + '\n'
+    }))
   }
 
   _clickColor(color) {
-    this.setState({
-      color,
-      colorShow: false
-    })
+    this.setState({color, selectType: null})
+  }
+
+  _clickFont(size) {
+    this.setState({fontSize: size, selectType: null})
   }
 
   _done = () => {
@@ -71,18 +90,56 @@ class EditTextOverlay extends PureComponent {
       else next = all[index + 1]
 
       return {
-        [type]: next
+        [type]: next,
+        selectType: null
       }
     })
   }
 
-  _renderColorOverlay() {
+  _renderTriangle(rect, top) {
     const triangleWidth = 16
     const triangle2Width = 22
     const triangle3Width = 18
+    return [
+      // 外部三角形，模拟边框
+      <div
+        key='out-triangle'
+        className='edit-text-triangle'
+        style={{
+          top: rect.top + rect.height - triangle3Width + top,
+          borderWidth: triangle3Width / 2,
+          borderColor: 'transparent transparent #d5d5d588 transparent',
+          left: rect.left + rect.width / 2 - triangle3Width / 2
+        }}
+      >
+        {/* 内部白色三角形 */}
+        <div
+          className='edit-text-triangle'
+          style={{
+            top: rect.top + rect.height - triangleWidth + top,
+            borderWidth: triangleWidth / 2,
+            left: rect.left + rect.width / 2 - triangleWidth / 2
+          }}
+        >
+        </div>
+      </div>,
+      // 把矩形边框挡住的三角形
+      <div
+        key='in-triangle'
+        className='edit-text-triangle'
+        style={{
+          top: rect.top + rect.height - triangle2Width + top + 3,
+          borderWidth: triangle2Width / 2,
+          left: rect.left + rect.width / 2 - triangle2Width / 2
+        }}
+      />
+    ]
+  }
+
+  _renderFontOverlay() {
     const top = 12
-    const {colorRect: rect, colorShow} = this.state
-    if (!colorShow) return null
+    const {selectBtnRect: rect, selectType} = this.state
+    if (selectType !== 'font') return null
     return (
       <div
         onClick={(e) => e.stopPropagation()}
@@ -92,48 +149,45 @@ class EditTextOverlay extends PureComponent {
           left: 30
         }}
       >
-        <div
-          className='edit-text-colors'
-        >
+        <div className='edit-text-colors'>
+          {Sizes.map(({size, text}) => (
+            <p
+              key={text}
+              onClick={() => this._clickFont(size)}
+              className='edit-text-font'
+              style={{fontSize: size}}
+            >{text}</p>
+          ))}
+        </div>
+        {this._renderTriangle(rect, top)}
+      </div>
+    )
+  }
+
+  _renderColorOverlay() {
+    const top = 12
+    const {selectBtnRect: rect, selectType} = this.state
+    if (selectType !== 'color') return null
+    return (
+      <div
+        onClick={(e) => e.stopPropagation()}
+        className='edit-text-overlay'
+        style={{
+          top: rect.top + rect.height + top,
+          left: 30
+        }}
+      >
+        <div className='edit-text-colors'>
           {Colors.map(color => (
             <div
               key={color}
-              onClick={()=>this._clickColor(color)}
+              onClick={() => this._clickColor(color)}
               className='edit-text-color'
               style={{backgroundColor: color}}
             />
           ))}
         </div>
-        {/* 外部三角形，模拟边框 */}
-        <div
-          className='edit-text-triangle'
-          style={{
-            top: rect.top + rect.height - triangle3Width + top,
-            borderWidth: triangle3Width / 2,
-            borderColor: 'transparent transparent #d5d5d588 transparent',
-            left: rect.left + rect.width / 2 - triangle3Width / 2
-          }}
-        >
-          {/* 内部白色三角形 */}
-          <div
-            className='edit-text-triangle'
-            style={{
-              top: rect.top + rect.height - triangleWidth + top,
-              borderWidth: triangleWidth / 2,
-              left: rect.left + rect.width / 2 - triangleWidth / 2
-            }}
-          >
-          </div>
-        </div>
-        {/* 把矩形边框挡住的三角形 */}
-        <div
-          className='edit-text-triangle'
-          style={{
-            top: rect.top + rect.height - triangle2Width + top + 3,
-            borderWidth: triangle2Width / 2,
-            left: rect.left + rect.width / 2 - triangle2Width / 2
-          }}
-        />
+        {this._renderTriangle(rect, top)}
       </div>
     )
   }
@@ -146,58 +200,71 @@ class EditTextOverlay extends PureComponent {
       fontSize = '16',
       textAlign = 'left'
     } = this.state
+    let alignImg = images.edit_text_left
+    if (textAlign === 'right') alignImg = images.edit_text_right
+    if (textAlign === 'center') alignImg = images.edit_text_center
     return (
-      <div
-        onClick={this._done}
-        className='add-text-wrapper'
-      >
-        <div onClick={e => e.stopPropagation()}>
-        <textarea
-          className='add-textarea'
-          value={text}
-          onChange={e => this.setState({text: e.target.value})}
-          style={{
-            fontWeight,
-            color,
-            textAlign,
-            fontSize: fontSize + 'px'
-          }}
+      <div className='add-text-container'>
+        <NavBar
+          title='编辑文字'
+          rightButtons={[{
+            text: '完成',
+            style: {color: '#E97462'},
+            onClick: this._done
+          }]}
         />
+
+        <div
+          onClick={e => e.stopPropagation()}
+          className='add-text-wrapper'
+        >
+          <textarea
+            className='add-textarea'
+            value={text}
+            placeholder='点这里输入文字'
+            onChange={e => this.setState({text: e.target.value})}
+            style={{
+              fontWeight,
+              color,
+              textAlign,
+              fontSize: fontSize + 'px'
+            }}
+          />
           <div className='add-text-btns'>
-            <div className='add-text-left-btns'>
-              <button
-                onClick={() => this.change('fontWeight', Weights)}
-                className='add-text-left-btn'
-              >
-                粗细
-              </button>
-              <button
-                ref={this.colorBtn}
-                onClick={this._showColors}
-                // onClick={() => this.change('color', Colors)}
-                className='add-text-left-btn'
-              >
-                颜色
-              </button>
-              <button
-                onClick={() => this.change('textAlign', Aligns)}
-                className='add-text-left-btn'
-              >
-                居中
-              </button>
-              <button
-                onClick={() => this.change('fontSize', Sizes)}
-                className='add-text-left-btn'
-              >
-                大小
-              </button>
-            </div>
-            <div onClick={this._done}>
-              <p>完成</p>
-            </div>
+            <button
+              onClick={() => this.change('fontWeight', Weights)}
+              className='add-text-btn'
+              style={{
+                backgroundImage: `url(${fontWeight === 'normal'
+                  ? images.edit_text
+                  : images.edit_text_bold})`
+              }}
+            />
+            <button
+              ref={this.btnRefs['color']}
+              onClick={() => this._showSelect('color')}
+              className='add-text-btn'
+              style={{backgroundColor: color}}
+            />
+            <button
+              onClick={() => this.change('textAlign', Aligns)}
+              className='add-text-btn'
+              style={{backgroundImage: `url(${alignImg})`}}
+            />
+            <button
+              ref={this.btnRefs['font']}
+              onClick={() => this._showSelect("font")}
+              className='add-text-btn'
+              style={{backgroundImage: `url(${images.edit_text_size})`}}
+            />
+            <button
+              onClick={this._newline}
+              className='add-text-newline'>换行
+            </button>
           </div>
         </div>
         {this._renderColorOverlay()}
+        {this._renderFontOverlay()}
       </div>
     )
   }

@@ -11,7 +11,7 @@ export default function opacityWrapper(Container) {
     }
 
     componentDidMount() {
-      super.componentDidMount()
+      super.componentDidMount && super.componentDidMount()
       setTimeout(() => {
         this.setState({
           __opacity: 1
@@ -32,7 +32,6 @@ export default function opacityWrapper(Container) {
       return (
         <div
           style={{
-
             opacity: __opacity,
             transition: `opacity 300ms ease-out`
           }}

@@ -20,4 +20,12 @@ export default {
   edit_up_icon: require('./img/edit_up_icon.png'),
   edit_down_icon: require('./img/edit_down_icon.png'),
   edit_image_icons: require('./img/edit_image_icons.png'),
+
+  edit_text: require('./img/edit_text.png'),
+  edit_text_bold: require('./img/edit_text_bold.png'),
+  edit_text_center: require('./img/edit_text_center.png'),
+  edit_text_left: require('./img/edit_text_left.png'),
+  edit_text_right: require('./img/edit_text_right.png'),
+  edit_text_size: require('./img/edit_text_size.png'),
+
 }
