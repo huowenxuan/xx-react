@@ -140,7 +140,7 @@ export default class DetailPage extends PureComponent {
 
     // 判断封面是否需要上传
     const {headbacimgurl, coverKey} = this.state.post
-    if (!coverKey && headbacimgurl) {
+    if (!coverKey && headbacimgurl && !uploadMedias.find(i=>i.item.body === headbacimgurl)) {
       uploadMedias.unshift({
         index: -1,
         isCover: true,
