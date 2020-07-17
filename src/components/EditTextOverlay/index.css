@@ -25,6 +25,10 @@
 .add-text-left-btns {
 }
 
+.add-text-left-btn {
+    margin: 0 5px;
+}
+
 
 .edit-text-overlay {
     position: fixed;

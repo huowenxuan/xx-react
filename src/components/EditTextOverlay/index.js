@@ -28,15 +28,20 @@ class EditTextOverlay extends PureComponent {
   }
 
   componentDidMount() {
-    this._showColors()
   }
 
-  _showColors() {
+  _showColors = ()=> {
     let rect = this.colorBtn.current.getBoundingClientRect()
-    console.log(rect)
     this.setState({
       colorRect: rect,
       colorShow: true
+    })
+  }
+
+  _clickColor(color) {
+    this.setState({
+      color,
+      colorShow: false
     })
   }
 
@@ -93,6 +98,7 @@ class EditTextOverlay extends PureComponent {
           {Colors.map(color => (
             <div
               key={color}
+              onClick={()=>this._clickColor(color)}
               className='edit-text-color'
               style={{backgroundColor: color}}
             />
@@ -161,26 +167,27 @@ class EditTextOverlay extends PureComponent {
             <div className='add-text-left-btns'>
               <button
                 onClick={() => this.change('fontWeight', Weights)}
-                className='add-text-left-btns'
+                className='add-text-left-btn'
               >
                 粗细
               </button>
               <button
                 ref={this.colorBtn}
-                onClick={() => this.change('color', Colors)}
-                className='add-text-left-btns'
+                onClick={this._showColors}
+                // onClick={() => this.change('color', Colors)}
+                className='add-text-left-btn'
               >
                 颜色
               </button>
               <button
                 onClick={() => this.change('textAlign', Aligns)}
-                className='add-text-left-btns'
+                className='add-text-left-btn'
               >
                 居中
               </button>
               <button
                 onClick={() => this.change('fontSize', Sizes)}
-                className='add-text-left-btns'
+                className='add-text-left-btn'
               >
                 大小
               </button>
