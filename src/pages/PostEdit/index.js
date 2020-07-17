@@ -88,8 +88,15 @@ export default class DetailPage extends PureComponent {
   }
 
   // 弹出选择图片和权限遮罩
-  _showBottomEdit(status) {
-    overlays.show(<EditBottomOverlay status={status}/>)
+  _showBottomEdit(type) {
+    const {audio_id, status} = this.state.post
+    overlays.show(
+      <EditBottomOverlay
+        type={type}
+        audio={audio_id}
+        status={status}
+      />
+    )
   }
 
   _setPostState(field, data, cb) {
@@ -143,7 +150,7 @@ export default class DetailPage extends PureComponent {
 
     // 判断封面是否需要上传
     const {headbacimgurl, coverKey} = this.state.post
-    if (!coverKey && headbacimgurl && !uploadMedias.find(i=>i.item.body === headbacimgurl)) {
+    if (!coverKey && headbacimgurl && !uploadMedias.find(i => i.item.body === headbacimgurl)) {
       uploadMedias.unshift({
         index: -1,
         isCover: true,
@@ -316,8 +323,8 @@ export default class DetailPage extends PureComponent {
   _del(index) {
     let media = this.state.post.media
     media.splice(index, 1)
-    this._setPostState('media', media, ()=>{
-      if (this.state.post.media.length ===0) {
+    this._setPostState('media', media, () => {
+      if (this.state.post.media.length === 0) {
         this._openAdd(0)
       }
     })
@@ -612,8 +619,8 @@ export default class DetailPage extends PureComponent {
         {this._renderAddOverlay()}
 
         <EditBottomButtons
-          onLeftClick={() => this._showBottomEdit('music')}
-          onRightClick={() => this._showBottomEdit('permission')}
+          onLeftClick={() => this._showBottomEdit('audio')}
+          onRightClick={() => this._showBottomEdit('status')}
         />
         <div style={{height: EditBottomHeight}}/>
         {this._renderPercent()}

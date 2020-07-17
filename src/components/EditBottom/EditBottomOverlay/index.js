@@ -2,8 +2,8 @@ import React, {PureComponent} from 'react';
 import OverlayView from '../../overlays/OverlayView'
 import EditBottomButtons, {EditBottomHeight} from '../../EditBottom/EditBottomButtons/'
 import './index.css'
-import EditMusic from '../EditMusic/'
-import EditPermission from '../EditPermission/'
+import EditAudio from '../EditAudio/'
+import EditStatus from '../EditStatus/'
 
 const windowHeight = window.screen.height
 const Duration = 300
@@ -11,29 +11,28 @@ export default class OverlayViewFade extends OverlayView {
   constructor(props) {
     super(props)
 
-    // permission music
-    let status = props.status || 'permission'
+    let type = props.type || 'status'
     this.state = {
       fadeOpacity: 0,
       bottom: -windowHeight,
-      status,
-      height: this.getHeight(status),
-      x: this.getX(status),
+      type,
+      height: this.getHeight(type),
+      x: this.getX(type),
     }
   }
 
-  getHeight(status) {
-    if (status === 'music') {
+  getHeight(type) {
+    if (type === 'audio') {
       return `calc(100% - ${EditBottomHeight}px)`
-    } else if (status === 'permission') {
+    } else if (type === 'status') {
       return '180px'
     }
   }
 
-  getX(status) {
-    if (status === 'music') {
+  getX(type) {
+    if (type === 'audio') {
       return '0'
-    } else if (status === 'permission') {
+    } else if (type === 'status') {
       return '-50%'
     }
   }
@@ -42,12 +41,12 @@ export default class OverlayViewFade extends OverlayView {
     super.componentDidMount()
   }
 
-  _update(status) {
+  _update(type) {
     this.setState((prevState) => {
       return {
-        status,
-        height: this.getHeight(status),
-        x: this.getX(status),
+        type,
+        height: this.getHeight(type),
+        x: this.getX(type),
       }
     })
   }
@@ -76,27 +75,27 @@ export default class OverlayViewFade extends OverlayView {
     }, Duration)
   }
 
-  _renderMusic() {
+  _renderAudio() {
     return (
-      <EditMusic
+      <EditAudio
         onBack={this.disappear}
       />
     )
   }
 
-  _renderPermission() {
+  _renderStatus() {
     return (
-      <EditPermission/>
+      <EditStatus/>
     )
   }
 
   render() {
-    const {bottom, height, status, x} = this.state
+    const {bottom, height, type, x} = this.state
     let view
-    if (status === 'music')
-      view = this._renderMusic()
+    if (type === 'audio')
+      view = this._renderAudio()
     else
-      view = this._renderPermission()
+      view = this._renderStatus()
 
     return (
       <div
@@ -118,9 +117,9 @@ export default class OverlayViewFade extends OverlayView {
         </div>
 
         <EditBottomButtons
-          active={status}
-          onLeftClick={() => this._update('music')}
-          onRightClick={() => this._update('permission')}
+          active={type}
+          onLeftClick={() => this._update('audio')}
+          onRightClick={() => this._update('status')}
         />
       </div>
     )

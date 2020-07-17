@@ -43,7 +43,7 @@ const EditBottom = (props) => {
     <div id='edit-bottom' style={{height: EditBottomHeight}}>
       {_renderBtn(
         '背景音频',
-        props.active === 'music',
+        props.active === 'audio',
         images.icon_music_red,
         images.icon_music,
         onLeftClick,
@@ -52,7 +52,7 @@ const EditBottom = (props) => {
       )}
       {_renderBtn(
         '谁可以看',
-        props.active === 'permission',
+        props.active === 'status',
         images.icon_limit_red,
         images.icon_limit,
         onRightClick,
