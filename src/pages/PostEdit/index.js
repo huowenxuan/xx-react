@@ -32,9 +32,10 @@ export default class DetailPage extends PureComponent {
       openedAddItem: -1,
       post: {
         media: [],
-        coverHidden: true
+        coverHidden: false,
+        status: 'public'
       },
-      overlayType: MediaTypes.Text,
+      overlayType: MediaTypes.None,
       // 当前更新的media
       currentEdit: {
         index: -1, // 包含media的item和添加按钮
@@ -138,7 +139,7 @@ export default class DetailPage extends PureComponent {
 
     // 判断封面是否需要上传
     const {headbacimgurl, coverKey} = this.state.post
-    if(!coverKey && headbacimgurl) {
+    if (!coverKey && headbacimgurl) {
       uploadMedias.unshift({
         index: -1,
         isCover: true,
@@ -239,6 +240,17 @@ export default class DetailPage extends PureComponent {
         delete item.isCover
         item.info = JSON.stringify(item.info || {})
         item.style = JSON.stringify(item.style || {})
+      }
+
+      const {media, coverKey, title, coverHidden} = this.state.post
+      let data = {
+        media,
+        title,
+        coverKey: coverKey,
+        coverHidden: coverHidden,
+        // status: this.state.status,
+        // audio_id: this.state.audio,
+        // protect: this.state.protect,
       }
       console.log(newMedias)
     } catch (e) {
@@ -348,16 +360,24 @@ export default class DetailPage extends PureComponent {
   _mediaIsCover(item) {
     const {headbacimgurl, coverKey} = this.state.post
     if (!item) return false
-    return headbacimgurl === item.body || coverKey === item.key
+    if (headbacimgurl === item.body) return true
+    if (coverKey && coverKey === item.key) return true
+    return false
   }
 
   async _choosePhoto(isImage) {
     let data = null
     try {
       data = await utils.choosePhoto(isImage, true)
+      if (!data || data.length === 0) throw new Error('未选择图片')
     } catch (e) {
       overlays.showToast(e.message)
       return
+    }
+
+    // 如果没封面，就把第一张设为封面
+    if (isImage && !this.state.post.headbacimgurl) {
+      this._setLocalImageToCover(data[0].src, data[0].file)
     }
 
     for (let item of data) {
@@ -370,8 +390,21 @@ export default class DetailPage extends PureComponent {
           : {width, height, size, duration},
         file
       })
-
     }
+  }
+
+
+  _onCoverClick = async () => {
+    let photos = await utils.choosePhoto(true, false)
+    let photo = photos[0]
+    const {file, src} = photo
+    this._setLocalImageToCover(src, file)
+  }
+
+  _setLocalImageToCover(src, file) {
+    this._setPostState('headbacimgurl', src)
+    this._setPostState('coverKey', '')
+    this._coverFile = file
   }
 
   _onAddClick(type, index) {
@@ -464,15 +497,6 @@ export default class DetailPage extends PureComponent {
         />
       </div>
     )
-  }
-
-  _onCoverClick = async () => {
-    let photos = await utils.choosePhoto(true, false)
-    let photo = photos[0]
-    const {file, src} = photo
-    this._setPostState('headbacimgurl', src)
-    this._setPostState('coverKey', '')
-    this._coverFile = file
   }
 
   _renderCover() {
