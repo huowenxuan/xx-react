@@ -1,11 +1,12 @@
 import React, {PureComponent, useEffect} from "react"
 import {withStateHandlers, compose, pure} from "recompose"
-
+import {Statuses} from '../EditStatus'
 import './index.css'
 import images from "../../../assets/images"
 
 export const EditBottomHeight = 63
 const EditBottom = (props) => {
+  const {audio, status} = props
   const show = () => {
     // overlays.show(<EditBottomOverlay/>)
   }
@@ -47,7 +48,7 @@ const EditBottom = (props) => {
         images.icon_music_red,
         images.icon_music,
         onLeftClick,
-        '残影月 - faded钢琴独奏版',
+        audio ? audio.filename : '',
         {marginLeft: 50}
       )}
       {_renderBtn(
@@ -56,7 +57,7 @@ const EditBottom = (props) => {
         images.icon_limit_red,
         images.icon_limit,
         onRightClick,
-        '公开'
+        status ? Statuses.find(i=>i.type===status).title : ''
       )}
     </div>
   )

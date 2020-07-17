@@ -6,13 +6,13 @@ import {get, post, API} from '../../../request'
 import overlays from '../../overlays/'
 import OverlayViewFade from "../../overlays/OverlayViewFade";
 
-const permissions = [
+export const Statuses = [
   {title: '公开', type: 'public', description: '任何用户都可见，首次发布时自动推送到好友动态'},
   {title: '保护', type: 'protect', description: '设置密码问题，只有回答正确才能打开'},
   {title: '私密', type: 'private', description: '仅自己可见'},
 ]
 export default (props) => {
-  const [permission, setPermission] = useState(props.permission || permissions[0].type)
+  const [permission, setPermission] = useState(props.status || Statuses[0].type)
   const [question, setQuestion] = useState('')
   const [password, setPassword] = useState('')
 
@@ -43,12 +43,13 @@ export default (props) => {
       _showProtect()
     } else {
       setPermission(type)
+      props.onUpdate('status', type)
     }
   }
 
   return (
     <ul style={{backgroundColor: 'white'}}>
-      {permissions.map(({type, title, description}) => (
+      {Statuses.map(({type, title, description}) => (
         <li
           onClick={(e) => _onClick(e, type)}
           key={type}

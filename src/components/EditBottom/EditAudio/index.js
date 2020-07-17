@@ -12,7 +12,7 @@ export default class EditAudio extends PureComponent {
       curType: null,
       allCount: '',
       musics: [],
-      choose: null,
+      choose: props.audio,
       playState: {
         isPlaying: false,
         url: ''
@@ -105,6 +105,9 @@ export default class EditAudio extends PureComponent {
 
   _done = () => {
     console.log(this.state.choose)
+    const {onUpdate, onBack} = this.props
+    onUpdate('audio_id', this.state.choose)
+    onBack()
   }
 
   _renderTypes() {

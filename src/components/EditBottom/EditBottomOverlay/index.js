@@ -18,6 +18,8 @@ export default class OverlayViewFade extends OverlayView {
       type,
       height: this.getHeight(type),
       x: this.getX(type),
+      status: props.status,
+      audio: props.audio
     }
   }
 
@@ -71,26 +73,39 @@ export default class OverlayViewFade extends OverlayView {
     })
     setTimeout(() => {
       super.onDisappearCompleted()
-      console.log('done')
     }, Duration)
   }
 
+  _onUpdate = (field, data) => {
+    const {audio, onUpdate} = this.props
+    onUpdate(field, data)
+    if (field === 'audio_id') field = 'audio'
+    this.setState({[field]: data})
+  }
+
   _renderAudio() {
+    const {audio, onUpdate} = this.props
     return (
       <EditAudio
         onBack={this.disappear}
+        audio={audio}
+        onUpdate={this._onUpdate}
       />
     )
   }
 
   _renderStatus() {
+    const {status, onUpdate} = this.props
     return (
-      <EditStatus/>
+      <EditStatus
+        status={status}
+        onUpdate={this._onUpdate}
+      />
     )
   }
 
   render() {
-    const {bottom, height, type, x} = this.state
+    const {bottom, height, type, x, status, audio} = this.state
     let view
     if (type === 'audio')
       view = this._renderAudio()
@@ -118,6 +133,8 @@ export default class OverlayViewFade extends OverlayView {
 
         <EditBottomButtons
           active={type}
+          status={status}
+          audio={audio}
           onLeftClick={() => this._update('audio')}
           onRightClick={() => this._update('status')}
         />

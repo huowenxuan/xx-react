@@ -95,11 +95,12 @@ export default class DetailPage extends PureComponent {
         type={type}
         audio={audio_id}
         status={status}
+        onUpdate={this._setPostState}
       />
     )
   }
 
-  _setPostState(field, data, cb) {
+  _setPostState = (field, data, cb) => {
     this.setState((preState) => ({
       post: {
         ...preState.post,
@@ -590,7 +591,7 @@ export default class DetailPage extends PureComponent {
 
   render() {
     const {post, completeBtnEnabled} = this.state
-    const {title, media} = post
+    const {title, media, audio_id, status} = post
     return (
       <div>
         <NavBar
@@ -619,6 +620,8 @@ export default class DetailPage extends PureComponent {
         {this._renderAddOverlay()}
 
         <EditBottomButtons
+          audio={audio_id}
+          status={status}
           onLeftClick={() => this._showBottomEdit('audio')}
           onRightClick={() => this._showBottomEdit('status')}
         />
