@@ -95,9 +95,10 @@ export default class OverlayViewFade extends OverlayView {
   }
 
   _renderStatus() {
-    const {status, onUpdate} = this.props
+    const {status, onUpdate, protect} = this.props
     return (
       <EditStatus
+        protect={protect}
         status={status}
         onUpdate={this._onUpdate}
       />

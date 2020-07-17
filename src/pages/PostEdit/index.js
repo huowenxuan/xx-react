@@ -89,12 +89,13 @@ export default class DetailPage extends PureComponent {
 
   // 弹出选择图片和权限遮罩
   _showBottomEdit(type) {
-    const {audio_id, status} = this.state.post
+    const {audio_id, status, protect} = this.state.post
     overlays.show(
       <EditBottomOverlay
         type={type}
         audio={audio_id}
         status={status}
+        protect={protect}
         onUpdate={this._setPostState}
       />
     )

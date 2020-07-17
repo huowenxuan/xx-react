@@ -12,9 +12,10 @@ export const Statuses = [
   {title: '私密', type: 'private', description: '仅自己可见'},
 ]
 export default (props) => {
+  const {protect} = props
   const [permission, setPermission] = useState(props.status || Statuses[0].type)
-  const [question, setQuestion] = useState('')
-  const [password, setPassword] = useState('')
+  const [question, setQuestion] = useState(protect ? protect.answer : '')
+  const [answer, setAnswer] = useState(protect ? protect.question : 'protect')
 
   useEffect(() => {
     console.log('componentDidMount')
@@ -24,13 +25,14 @@ export default (props) => {
     let key = overlays.show(
       <OverlayViewFade>
         <EditProtect
-          password={password}
+          answer={answer}
           question={question}
           onBack={() => overlays.dismiss(key)}
-          onDone={(question, password) => {
+          onDone={(answer, question) => {
             setPermission('protect')
-            setPassword(password)
+            setAnswer(answer)
             setQuestion(question)
+            props.onUpdate('protect', {answer, question})
           }}
         />
       </OverlayViewFade>
@@ -86,7 +88,7 @@ export default (props) => {
 
 
 const EditProtect = (props) => {
-  const [password, setPassword] = useState(props.password || '')
+  const [answer, setAnswer] = useState(props.answer || '')
   const [question, setQuestion] = useState(props.question || '')
 
   return (
@@ -99,9 +101,9 @@ const EditProtect = (props) => {
           onClick: () => {
             if (!question)
               return overlays.showToast('请输入问题')
-            if (!password)
+            if (!answer)
               return overlays.showToast('请输入密码')
-            props.onDone(question, password)
+            props.onDone(answer, question)
             props.onBack()
           }
         }]}
@@ -110,14 +112,14 @@ const EditProtect = (props) => {
         <input
           className='protect-input'
           placeholder='请输入问题'
-          value={question}
-          onChange={(e) => setQuestion(e.target.value)}
+          value={answer}
+          onChange={(e) => setAnswer(e.target.value)}
         />
         <input
           className='protect-input'
-          placeholder='请输入密码'
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          placeholder='请输入答案'
+          value={question}
+          onChange={(e) => setQuestion(e.target.value)}
         />
       </div>
 
