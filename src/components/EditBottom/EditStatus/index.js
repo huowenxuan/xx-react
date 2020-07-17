@@ -15,7 +15,7 @@ export default (props) => {
   const {protect} = props
   const [permission, setPermission] = useState(props.status || Statuses[0].type)
   const [question, setQuestion] = useState(protect ? protect.answer : '')
-  const [answer, setAnswer] = useState(protect ? protect.question : 'protect')
+  const [answer, setAnswer] = useState(protect ? protect.question : '')
 
   useEffect(() => {
   }, [])
