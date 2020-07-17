@@ -53,6 +53,7 @@ export default class DetailPage extends PureComponent {
     this._coverFile = null // 原生图片选择器选择图片后的file文件，设置为封面图
     this.overlay = React.createRef()
     this.addBtn = React.createRef()
+    this.postId = ''
   }
 
   componentDidMount() {
@@ -63,6 +64,7 @@ export default class DetailPage extends PureComponent {
     const {id} = this.props.match.params
     const {photos} = this.props.location
     if (id) {
+      this.postId = id
       // 编辑旧帖子
       let data = await get(API.postEdit + id, {},
         'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjU4YTE2NDkzMDRhZjE1OTgwYWZlNDk2YSIsInBob25lIjoiMTg4NDA5MTY3NDIiLCJpYXQiOjE1ODEzMjY4NDV9.jYNFFZWf0DcO5Wu5is21Htywds2zCDGH31YiLZSEeBw')
@@ -80,8 +82,9 @@ export default class DetailPage extends PureComponent {
     } else if (photos) {
       // 根据照片创建新帖子
       this._onPhotoChoose(photos, true)
+    } else {
+      this._openAdd(0)
     }
-
   }
 
   // 弹出选择图片和权限遮罩
@@ -89,13 +92,13 @@ export default class DetailPage extends PureComponent {
     overlays.show(<EditBottomOverlay status={status}/>)
   }
 
-  _setPostState(field, data) {
+  _setPostState(field, data, cb) {
     this.setState((preState) => ({
       post: {
         ...preState.post,
         [field]: data
       }
-    }))
+    }), cb)
   }
 
   _resetProgress = () => {
@@ -313,7 +316,11 @@ export default class DetailPage extends PureComponent {
   _del(index) {
     let media = this.state.post.media
     media.splice(index, 1)
-    this._setPostState('media', media)
+    this._setPostState('media', media, ()=>{
+      if (this.state.post.media.length ===0) {
+        this._openAdd(0)
+      }
+    })
   }
 
   _up(index) {
@@ -330,7 +337,7 @@ export default class DetailPage extends PureComponent {
     this._setPostState('media', media)
   }
 
-  _onAddOpen = (index) => {
+  _openAdd = (index) => {
     this.setState({openedAddItem: index}, () => {
       let rect = this.addBtn.current.getBoundingClientRect()
       let key = overlays.show(
@@ -431,7 +438,7 @@ export default class DetailPage extends PureComponent {
       <div
         ref={openedAddItem === index ? this.addBtn : null}
         className='add-row'
-        onClick={() => this._onAddOpen(index)}
+        onClick={() => this._openAdd(index)}
       >
         <img className='add-icon' src={images.add_spe_icon}/>
       </div>
