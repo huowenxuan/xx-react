@@ -5,7 +5,7 @@ import NavBar from "../../components/NavBar"
 import images from "../../assets/images"
 import * as utils from "../../utils"
 
-const PostNew = (props) => {
+export default compose(pure)((props) => {
   const addImage = async () => {
     let photos = await utils.choosePhoto(true, true)
     props.history.push({
@@ -36,6 +36,4 @@ const PostNew = (props) => {
       </div>
     </div>
   )
-}
-
-export default compose(pure)(PostNew)
+})

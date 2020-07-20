@@ -26,6 +26,15 @@ const MediaTypes = {
 }
 
 export default class DetailPage extends PureComponent {
+  state: any
+  props: any
+
+  _coverFile = null // 原生图片选择器选择图片后的file文件，设置为封面图
+  overlay: any = React.createRef()
+  addBtn: any = React.createRef()
+  postId = ''
+  _uploadCancel = false
+
   constructor(props) {
     super(props)
     this.state = {
@@ -50,10 +59,6 @@ export default class DetailPage extends PureComponent {
       },
       completeBtnEnabled: true
     }
-    this._coverFile = null // 原生图片选择器选择图片后的file文件，设置为封面图
-    this.overlay = React.createRef()
-    this.addBtn = React.createRef()
-    this.postId = ''
   }
 
   componentDidMount() {
@@ -100,8 +105,8 @@ export default class DetailPage extends PureComponent {
     )
   }
 
-  _setPostState = (field, data, cb) => {
-    this.setState((preState) => ({
+  _setPostState = (field, data, cb?) => {
+    this.setState((preState: any) => ({
       post: {
         ...preState.post,
         [field]: data
@@ -177,7 +182,7 @@ export default class DetailPage extends PureComponent {
     for (let i = 0; i < uploadMedias.length; i++) {
       let beforeDate = new Date()
       let {index, item, isCover} = uploadMedias[i]
-      this.setState((prev) => ({
+      this.setState((prev: any) => ({
         upload: {
           ...prev.upload,
           currentIndex: i,
@@ -198,10 +203,7 @@ export default class DetailPage extends PureComponent {
         }, 300)
         const onProgress = (percent) => {
           console.log(percent)
-          if (new Date() - 300 <= beforeDate)
-            return
-          beforeDate = new Date()
-          this.setState((prev) => ({
+          this.setState((prev: any) => ({
             upload: {
               ...prev.upload,
               currentPercent: percent,
@@ -212,7 +214,7 @@ export default class DetailPage extends PureComponent {
         try {
           uploading = await utils.uploadPhoto(body, file, onProgress)
           let key = await uploading.start()
-          this.setState((prev) => ({
+          this.setState((prev: any) => ({
             upload: {
               ...prev.upload,
               currentPercent: 100,

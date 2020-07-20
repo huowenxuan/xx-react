@@ -4,6 +4,9 @@ import PropTypes from 'prop-types'
 import images from '../../assets/images'
 
 export default class NavBar extends PureComponent {
+  props: any
+  state: any
+
   constructor(props) {
     super(props)
   }
@@ -28,7 +31,7 @@ export default class NavBar extends PureComponent {
     return [{
       custom: (
         <div className='nav-center nav-button'>
-            <img className='back-button-img' src={images.back_left}/>
+          <img className='back-button-img' src={images.back_left}/>
           {backText}
         </div>
       ),
@@ -102,7 +105,7 @@ export default class NavBar extends PureComponent {
     )
   }
 
-  _renderButtons(buttons, style) {
+  _renderButtons(buttons, style={}) {
     return (
       <div className='nav-center' style={style}>
         {buttons

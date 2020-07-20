@@ -1,4 +1,4 @@
-import React, {PureComponent} from "react";
+import React, {PureComponent} from "react"
 import './index.css'
 import opacityWrapper from '../../Wrappers/opacityWrapper'
 import NavBar from '../../NavBar/'
@@ -14,9 +14,12 @@ const imgs = [
 ]
 
 class EditTextOverlay extends PureComponent {
+  props: any
+  state: any
+
   constructor(props) {
     super(props)
-    const {body} = props.data || {}
+    const {body = ''} = props.data || {}
     this.state = {
       body
     }
