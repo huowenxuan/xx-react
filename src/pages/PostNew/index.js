@@ -1,6 +1,6 @@
 import React from 'react'
 import {withStateHandlers, compose, pure} from "recompose"
-import './index.css'
+import './index.less'
 import NavBar from "../../components/NavBar"
 import images from "../../assets/images"
 import * as utils from "../../utils"
