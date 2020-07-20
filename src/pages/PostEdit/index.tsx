@@ -244,6 +244,15 @@ export default class DetailPage extends PureComponent {
     const {post} = this.state
     const {media} = post
 
+    if (!post.title) {
+      overlays.showToast('请输入标题')
+      return
+    }
+    if (post.media.length === 0) {
+      overlays.showToast('请添加图片或者文字')
+      return
+    }
+
     this.setState({completeBtnEnabled: false})
     try {
       await this._uploadFiles(media)
