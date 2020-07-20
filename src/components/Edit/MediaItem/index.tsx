@@ -1,37 +1,33 @@
-import React, {PureComponent} from "react";
+import React, {PureComponent} from "react"
 import './index.css'
 import * as utils from '../../../utils/'
 import images from "../../../assets/images"
+import {compose, pure} from 'recompose'
 
-export default class MediaItem extends PureComponent {
-  constructor(props) {
-    super(props)
-  }
-
-  _action(e, func) {
+const EditMediaItem = (props) => {
+  const {data, onDelete, onUp, onDown, onClick, onSetCover, isCover} = props
+  const _action = (e, func) => {
     e.stopPropagation()
     func && func()
   }
 
-  _renderText(item) {
+  const _renderText = (item) => {
     const {style = {}, body} = item
     const {fontSize = 16, fontWeight = 'normal', color = '#222', textAlign = 'left'} = style
+    const inlineStyle = {
+      fontSize: fontSize + 'px',
+      fontWeight,
+      color,
+      textAlign
+    }
     return (
-      <div
-        className='text-item'
-        style={{
-          fontSize: fontSize + 'px',
-          fontWeight,
-          color,
-          textAlign
-        }}
-      >
+      <div className='text-item' style={inlineStyle}>
         {body}
       </div>
     )
   }
 
-  _renderImage(item) {
+  const _renderImage = (item) => {
     const {style = 0, info = {}} = item
     const {width, height} = info
     let scale = 1
@@ -52,8 +48,7 @@ export default class MediaItem extends PureComponent {
       </div>
     )
   }
-
-  _renderSortVideo(item) {
+  const _renderSortVideo = (item) => {
     return (
       <div className='image-box'>
         <video
@@ -66,7 +61,7 @@ export default class MediaItem extends PureComponent {
     )
   }
 
-  _renderLink(item) {
+  const _renderLink = (item) => {
     const {body, data} = item
     return (
       <div className='text-item'>
@@ -76,7 +71,7 @@ export default class MediaItem extends PureComponent {
     )
   }
 
-  _renderVideo(item) {
+  const _renderVideo = (item) => {
     return (
       <div className='web-video-box'>
         <iframe
@@ -91,9 +86,7 @@ export default class MediaItem extends PureComponent {
     )
   }
 
-  _renderSetCoverBtn() {
-    const {data} = this.props
-    const {onDelete, onUp, onDown, onSetCover, isCover} = this.props
+  const _renderSetCoverBtn = () => {
     const {type} = data
     if (type !== 'image') return null
     return (
@@ -106,68 +99,66 @@ export default class MediaItem extends PureComponent {
     )
   }
 
-  _renderBtns() {
-    const {onDelete, onUp, onDown} = this.props
+
+  const _renderBtns = () => {
     return (
       <div className='item-btns'>
         <button
           className='item-btn item-btn-del'
-          onClick={e => this._action(e, onDelete)}
+          onClick={e => _action(e, onDelete)}
         >
           <img className='item-icon-del' src={images.edit_remove_icon}/>
         </button>
         <button
           className='item-btn item-btn-up'
-          onClick={e => this._action(e, onUp)}
+          onClick={e => _action(e, onUp)}
         >
           <img className='item-icon' src={images.edit_up_icon}/>
         </button>
         <button
           className='item-btn item-btn-down'
-          onClick={e => this._action(e, onDown)}
+          onClick={e => _action(e, onDown)}
         >
           <img className='item-icon' src={images.edit_down_icon}/>
         </button>
-        {this._renderSetCoverBtn()}
+        {_renderSetCoverBtn()}
       </div>
     )
   }
 
-  _onClick = () => {
-    const {data, onClick} = this.props
+  const _onClick = () => {
     onClick && onClick()
   }
 
-  render() {
-    const {data} = this.props
-    const {type} = data
-    let _renderItem = null
-    switch (type) {
-      case 'text':
-        _renderItem = this._renderText(data)
-        break
-      case 'image':
-        _renderItem = this._renderImage(data)
-        break
-      case 'sortvideo':
-        _renderItem = this._renderSortVideo(data)
-        break
-      case 'video':
-        _renderItem = this._renderVideo(data)
-        break
-      case 'link':
-        _renderItem = this._renderLink(data)
-        break
-    }
-    return (
-      <li
-        className='item'
-        onClick={this._onClick}
-      >
-        {_renderItem}
-        {this._renderBtns()}
-      </li>
-    )
+  const {type} = data
+  let _renderItem = null
+  switch (type) {
+    case 'text':
+      _renderItem = _renderText(data)
+      break
+    case 'image':
+      _renderItem = _renderImage(data)
+      break
+    case 'sortvideo':
+      _renderItem = _renderSortVideo(data)
+      break
+    case 'video':
+      _renderItem = _renderVideo(data)
+      break
+    case 'link':
+      _renderItem = _renderLink(data)
+      break
   }
+
+  return (
+    <li
+      className='item'
+      onClick={_onClick}
+    >
+      {_renderItem}
+      {_renderBtns()}
+    </li>
+  )
 }
 
+export default compose(pure)(EditMediaItem)

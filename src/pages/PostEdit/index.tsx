@@ -1,5 +1,5 @@
 import React, {PureComponent} from 'react'
-import MediaItem from "../../components/Edit/MediaItem/"
+import EditMediaItem from "../../components/Edit/MediaItem/"
 import EditAdd from "../../components/Edit/Add"
 import EditTextOverlay from '../../components/Edit/TextOverlay/'
 import EditImageOverlay from '../../components/Edit/ImageOverlay/'
@@ -490,7 +490,7 @@ export default class DetailPage extends PureComponent {
       // 每个item的key不变可保证每次修改元素后所有的视频不重新加载
       <ul key={`${data._id}-${data.body}`}>
         {this._renderAddItem(index)}
-        <MediaItem
+        <EditMediaItem
           isCover={this._mediaIsCover(data)}
           data={data}
           onClick={() => this._clickMedia(data, index)}
