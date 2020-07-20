@@ -1,18 +1,31 @@
-import React, {PureComponent} from 'react';
+import React, {PureComponent} from 'react'
+import PropTypes from 'prop-types'
 import OverlayView from './OverlayView'
 
 /**
- * 从下弹出，再掉落
+ * 从上掉下，再掉落
  */
 const windowHeight = window.screen.height
-const Duration = 250
+const Duration = 300
 export default class OverlayViewPopup extends OverlayView {
+  props: any
+  state: any
+
   constructor(props) {
     super(props)
     this.state = {
       fadeOpacity: 0,
-      upTop: windowHeight
+      upTop: -windowHeight
     }
+  }
+
+
+  static propTypes = {
+    duration: PropTypes.number
+  }
+
+  static defaultProps = {
+    duration: Duration,
   }
 
   componentDidMount() {
@@ -33,27 +46,29 @@ export default class OverlayViewPopup extends OverlayView {
   }
 
   disappear() {
+    const {duration} = this.props
     this.setState({
       fadeOpacity: 0,
       upTop: windowHeight
     })
     setTimeout(() => {
       super.onDisappearCompleted()
-    }, Duration)
+    }, duration)
 
   }
 
   render() {
     const {fadeOpacity, upTop} = this.state
+    const {duration} = this.props
     return (
       <div style={{
         ...styles.container,
-        transition: `opacity ${Duration}ms`,
+        transition: `opacity ${duration}ms`,
         opacity: fadeOpacity,
       }}>
         <div style={{
           ...styles.main,
-          transition: `transform ${Duration}ms ease-in-out`,
+          transition: `transform ${duration}ms ease-in-out`,
           transform: `translate(0, ${upTop}px)`
         }}>
           {this.props.children}
@@ -63,7 +78,7 @@ export default class OverlayViewPopup extends OverlayView {
   }
 }
 
-let styles = {
+let styles: any = {
   container: {
     backgroundColor: '#00000030',
     position: 'absolute',
@@ -79,6 +94,6 @@ let styles = {
     left: 0,
     right: 0,
     top: 0,
-    bottom: 0,
+    height: windowHeight
   }
 }

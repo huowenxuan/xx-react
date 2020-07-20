@@ -15,7 +15,7 @@ export default {
       </OverlayViewPopup>
     )
   },
-  showToast: (text, duration) => {
+  showToast: (text, duration?) => {
     TopView.show(
       <OverlayViewToast text={text} duration={duration}/>
     )

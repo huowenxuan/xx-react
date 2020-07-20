@@ -2,17 +2,18 @@ import React, {PureComponent} from 'react';
 import OverlayView from './OverlayView'
 
 /**
- * 渐现缩小，类似iOS
+ * 渐现
  */
-export default class OverlayViewFadeReduce extends OverlayView {
+const Duration = 300
+export default class OverlayViewFade extends OverlayView {
+  state: any
+  props: any
   constructor(props) {
     super(props)
 
     this.state = {
-      fadeOpacity: 0,
-      scale: 1.2,
+      fadeOpacity: 0
     }
-    this.duration = props.duration || 300
   }
 
   componentDidMount() {
@@ -25,32 +26,27 @@ export default class OverlayViewFadeReduce extends OverlayView {
 
   appear() {
     setTimeout(() => {
-      this.setState({
-        fadeOpacity: 1,
-        scale: 1
-      })
+      this.setState({fadeOpacity: 1})
     }, 20)
   }
 
   disappear() {
     this.setState({
-      fadeOpacity: 0,
-      scale: 1.2
+      fadeOpacity: 0
     })
     setTimeout(() => {
       super.onDisappearCompleted()
-    }, this.duration)
+    }, Duration)
 
   }
 
   render() {
-    const {fadeOpacity, scale} = this.state
     return (
       <div style={{
         ...styles.container,
-        transition: `opacity ${this.duration}ms ease-in-out, transform ${this.duration + 100}ms ease-in-out`,
-        opacity: fadeOpacity,
-        transform: `scale(${scale}, ${scale})`
+        transition: `opacity ${Duration}ms`,
+        opacity: this.state.fadeOpacity,
+        ...(this.props.style || {})
       }}>
         {this.props.children}
       </div>

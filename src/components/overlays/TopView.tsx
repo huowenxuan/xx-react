@@ -8,6 +8,7 @@ function randomString() {
 }
 
 class StaticContainer extends Component {
+  props: any
   shouldComponentUpdate(nextProps, nextState, nextContext) {
     return nextProps.shouldUpdate;
   }
@@ -18,6 +19,8 @@ class StaticContainer extends Component {
 }
 
 export default class TopView extends PureComponent {
+  state: any
+  props: any
   constructor(props) {
     super(props);
 
@@ -121,7 +124,7 @@ export default class TopView extends PureComponent {
   }
 }
 
-let styles = {
+let styles: any = {
   overlay: {
     backgroundColor: 'rgba(0, 0, 0, 0)',
     position: 'fixed',

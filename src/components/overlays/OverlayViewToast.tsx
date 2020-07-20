@@ -8,6 +8,8 @@ import PropTypes from "prop-types"
 const AnimDuration = 100
 const MinScale = 0.9
 export default class OverlayViewToast extends OverlayView {
+  state: any
+  props: any
   constructor(props) {
     super(props)
     this.state = {
@@ -78,7 +80,7 @@ export default class OverlayViewToast extends OverlayView {
   }
 }
 
-let styles = {
+let styles: any = {
   container: {
     backgroundColor: 'transparent',
     position: 'absolute',

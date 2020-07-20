@@ -1,6 +1,7 @@
 import React, {PureComponent} from 'react';
 import eventEmitter from './events'
 export default class OverlayView extends PureComponent {
+  props: any
   constructor(props) {
     super(props)
 
@@ -22,7 +23,6 @@ export default class OverlayView extends PureComponent {
   }
 
   static defaultProps = {
-    shouldBackPressDisappear: true
   }
 
   componentDidMount() {
@@ -88,7 +88,7 @@ export default class OverlayView extends PureComponent {
   }
 }
 
-let styles = {
+let styles: any = {
   container: {
     backgroundColor: 'transparent',
     position: 'absolute',
