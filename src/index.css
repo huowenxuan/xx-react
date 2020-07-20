@@ -35,6 +35,12 @@ textarea {
   outline: none;
 }
 
+input {
+  border: none;
+  outline: none;
+}
+
 .tint-color {
   color: #E97462
 }
+

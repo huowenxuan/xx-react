@@ -6,7 +6,7 @@ import EditImageOverlay from '../../components/EditImageOverlay/'
 import EditLinkOverlay from '../../components/EditLinkOverlay/'
 import EditWebVideoOverlay from '../../components/EditWebVideoOverlay/'
 import NavBar from '../../components/NavBar/'
-import './index.css'
+import './index.less'
 import overlay from "../../components/overlays"
 import EditBottomButtons, {EditBottomHeight} from "../../components/EditBottom/EditBottomButtons/"
 import overlays from "../../components/overlays"
@@ -17,7 +17,6 @@ import * as utils from '../../utils'
 import * as _ from 'lodash'
 
 const Token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjU4YTE2NDkzMDRhZjE1OTgwYWZlNDk2YSIsInBob25lIjoiMTg4NDA5MTY3NDIiLCJpYXQiOjE1ODEzMjY4NDV9.jYNFFZWf0DcO5Wu5is21Htywds2zCDGH31YiLZSEeBw'
-const post = require('../../tmp/post.json')
 const MediaTypes = {
   None: null,
   Text: 'text',
@@ -466,7 +465,7 @@ export default class DetailPage extends PureComponent {
         className='add-row'
         onClick={() => this._openAdd(index)}
       >
-        <img className='add-icon' src={images.add_spe_icon}/>
+        <img className='icon' src={images.add_spe_icon}/>
       </div>
     )
   }
@@ -555,15 +554,15 @@ export default class DetailPage extends PureComponent {
             className='cover'
             src={headbacimgurl}
           />
-          <div className='edit-cover-wrapper'>
+          <div className='wrapper'>
             <button
               onClick={() => this._setPostState('coverHidden', true)}
-              className='edit-cover-remove'>
-              <img className='edit-cover-remove-img' src={images.edit_remove_icon}/>
+              className='remove'>
+              <img className='remove-img' src={images.edit_remove_icon}/>
             </button>
             <button
               onClick={this._onCoverClick}
-              className='edit-cover-update'>
+              className='update'>
               更改封面
             </button>
           </div>
@@ -575,7 +574,7 @@ export default class DetailPage extends PureComponent {
           onClick={() => this._setPostState('coverHidden', false)}
           className='edit-cover-hidden'
         >
-          <img className='edit-cover-hidden-img' src={headbacimgurl}/>
+          <img className='img' src={headbacimgurl}/>
           显示封面
         </div>
       )
@@ -593,11 +592,11 @@ export default class DetailPage extends PureComponent {
     if (!show) return null
 
     return (
-      <div id='percent'>
-        <div id='percent-child'>
+      <div className='percent'>
+        <div className='child'>
           <p>正在上传第{currentIndex + 1}张{parseInt(currentPercent)}%，共{count}张</p>
           <button
-            className='percent-cancel'
+            className='cancel'
             onClick={this._cancelUpload}
           >
             取消上传
@@ -622,30 +621,30 @@ export default class DetailPage extends PureComponent {
           ]}
         />
 
-        {this._renderCover()}
-        <div id='wrapper'>
-          <div id='title-box'>
+        <div className='post-edit'>
+          {this._renderCover()}
+          <div id='wrapper'>
             <input
-              id='title-input'
+              className='title-input'
               placeholder="输入标题(2-50字)"
               value={title || ''}
               onChange={e => this._setPostState('title', e.target.value)}
             />
+            {/*<p>{post.description}</p>*/}
+            {this._renderMedia(media)}
           </div>
-          {/*<p>{post.description}</p>*/}
-          {this._renderMedia(media)}
+
+          {this._renderAddOverlay()}
+
+          <EditBottomButtons
+            audio={audio_id}
+            status={status}
+            onLeftClick={() => this._showBottomEdit('audio')}
+            onRightClick={() => this._showBottomEdit('status')}
+          />
+          <div style={{height: EditBottomHeight}}/>
+          {this._renderPercent()}
         </div>
-
-        {this._renderAddOverlay()}
-
-        <EditBottomButtons
-          audio={audio_id}
-          status={status}
-          onLeftClick={() => this._showBottomEdit('audio')}
-          onRightClick={() => this._showBottomEdit('status')}
-        />
-        <div style={{height: EditBottomHeight}}/>
-        {this._renderPercent()}
       </div>
     )
   }
