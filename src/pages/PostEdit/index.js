@@ -8,9 +8,9 @@ import EditWebVideoOverlay from '../../components/Edit/WebVideoOverlay/'
 import NavBar from '../../components/NavBar/'
 import './index.less'
 import overlay from "../../components/overlays"
-import EditBottomButtons, {EditBottomHeight} from "../../components/Edit/Bottom/EditBottomButtons/"
+import EditBottomButtons, {EditBottomHeight} from "../../components/Edit/Bottom/Buttons/"
 import overlays from "../../components/overlays"
-import EditBottomOverlay from "../../components/Edit/Bottom/EditBottomOverlay"
+import EditBottomOverlay from "../../components/Edit/Bottom/BottomOverlay"
 import images from '../../assets/images'
 import * as request from '../../request'
 import * as utils from '../../utils'
