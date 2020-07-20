@@ -5,6 +5,7 @@ import NavBar from "../../NavBar";
 import * as utils from '../../../utils/'
 import overlays from '../../overlays/'
 
+
 class EditTextOverlay extends PureComponent {
   constructor(props) {
     super(props)
