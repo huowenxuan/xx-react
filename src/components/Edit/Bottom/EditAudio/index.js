@@ -1,8 +1,8 @@
 import React, {PureComponent} from "react"
-import images from "../../../assets/images"
+import images from "../../../../assets/images"
 import './index.css'
-import NavBar from "../../NavBar"
-import {get, post, API} from '../../../request'
+import NavBar from "../../../NavBar"
+import {get, post, API} from '../../../../request'
 
 export default class EditAudio extends PureComponent {
   constructor(props) {

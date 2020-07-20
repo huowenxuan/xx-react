@@ -1,16 +1,16 @@
 import React, {PureComponent} from 'react'
-import MediaItem from "../../components/MediaItem/"
-import EditAdd from "../../components/EditAdd/"
-import EditTextOverlay from '../../components/EditTextOverlay/'
-import EditImageOverlay from '../../components/EditImageOverlay/'
-import EditLinkOverlay from '../../components/EditLinkOverlay/'
-import EditWebVideoOverlay from '../../components/EditWebVideoOverlay/'
+import MediaItem from "../../components/Edit/MediaItem/"
+import EditAdd from "../../components/Edit/Add"
+import EditTextOverlay from '../../components/Edit/TextOverlay/'
+import EditImageOverlay from '../../components/Edit/ImageOverlay/'
+import EditLinkOverlay from '../../components/Edit/LinkOverlay/'
+import EditWebVideoOverlay from '../../components/Edit/WebVideoOverlay/'
 import NavBar from '../../components/NavBar/'
 import './index.less'
 import overlay from "../../components/overlays"
-import EditBottomButtons, {EditBottomHeight} from "../../components/EditBottom/EditBottomButtons/"
+import EditBottomButtons, {EditBottomHeight} from "../../components/Edit/Bottom/EditBottomButtons/"
 import overlays from "../../components/overlays"
-import EditBottomOverlay from "../../components/EditBottom/EditBottomOverlay"
+import EditBottomOverlay from "../../components/Edit/Bottom/EditBottomOverlay"
 import images from '../../assets/images'
 import * as request from '../../request'
 import * as utils from '../../utils'

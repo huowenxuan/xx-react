@@ -1,10 +1,9 @@
 import React, {PureComponent, useEffect, useState} from "react";
-import images from "../../../assets/images";
+import images from "../../../../assets/images";
 import './index.css'
-import NavBar from "../../NavBar";
-import {get, post, API} from '../../../request'
-import overlays from '../../overlays/'
-import OverlayViewFade from "../../overlays/OverlayViewFade";
+import NavBar from "../../../NavBar";
+import overlays from '../../../overlays/'
+import OverlayViewFade from "../../../overlays/OverlayViewFade";
 
 export const Statuses = [
   {title: '公开', type: 'public', description: '任何用户都可见，首次发布时自动推送到好友动态'},

@@ -1,9 +1,9 @@
 import React, {PureComponent} from "react";
 import './index.css'
-import opacityWrapper from '../Wrappers/opacityWrapper'
-import NavBar from "../NavBar";
-import * as utils from '../../utils/'
-import overlays from '../overlays/'
+import opacityWrapper from '../../Wrappers/opacityWrapper'
+import NavBar from "../../NavBar";
+import * as utils from '../../../utils/'
+import overlays from '../../overlays/'
 
 class EditTextOverlay extends PureComponent {
   constructor(props) {

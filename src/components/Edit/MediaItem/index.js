@@ -1,7 +1,7 @@
 import React, {PureComponent} from "react";
 import './index.css'
-import * as utils from '../../utils/'
-import images from "../../assets/images"
+import * as utils from '../../../utils/'
+import images from "../../../assets/images"
 
 export default class MediaItem extends PureComponent {
   constructor(props) {

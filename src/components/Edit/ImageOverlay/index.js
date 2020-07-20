@@ -1,7 +1,7 @@
 import React, {PureComponent} from "react"
 import './index.css'
-import opacityWrapper from '../Wrappers/opacityWrapper'
-import images from "../../assets/images"
+import opacityWrapper from '../../Wrappers/opacityWrapper'
+import images from "../../../assets/images"
 
 class EditTextOverlay extends PureComponent {
   constructor(props) {

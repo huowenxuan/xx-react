@@ -1,8 +1,8 @@
 import React, {PureComponent} from "react"
 import './index.css'
-import opacityWrapper from '../Wrappers/opacityWrapper'
-import images from "../../assets/images";
-import NavBar from "../NavBar";
+import opacityWrapper from '../../Wrappers/opacityWrapper'
+import images from "../../../assets/images";
+import NavBar from "../../NavBar";
 
 const Weights = ['normal', 'bold']
 const Colors = ['#323232', '#999999', '#E7511A',

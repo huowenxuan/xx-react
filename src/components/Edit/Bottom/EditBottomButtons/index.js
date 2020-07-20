@@ -2,7 +2,7 @@ import React, {PureComponent, useEffect} from "react"
 import {withStateHandlers, compose, pure} from "recompose"
 import {Statuses} from '../EditStatus'
 import './index.css'
-import images from "../../../assets/images"
+import images from "../../../../assets/images"
 
 export const EditBottomHeight = 63
 const EditBottom = (props) => {

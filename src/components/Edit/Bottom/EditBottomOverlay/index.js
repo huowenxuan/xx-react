@@ -1,6 +1,6 @@
 import React, {PureComponent} from 'react';
-import OverlayView from '../../overlays/OverlayView'
-import EditBottomButtons, {EditBottomHeight} from '../../EditBottom/EditBottomButtons/'
+import OverlayView from '../../../overlays/OverlayView'
+import EditBottomButtons, {EditBottomHeight} from '../../../Edit/Bottom/EditBottomButtons/'
 import './index.css'
 import EditAudio from '../EditAudio/'
 import EditStatus from '../EditStatus/'

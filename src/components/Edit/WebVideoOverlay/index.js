@@ -1,9 +1,9 @@
 import React, {PureComponent} from "react";
 import './index.css'
-import opacityWrapper from '../Wrappers/opacityWrapper'
-import NavBar from '../NavBar/'
-import * as utils from '../../utils/'
-import overlays from '../overlays'
+import opacityWrapper from '../../Wrappers/opacityWrapper'
+import NavBar from '../../NavBar/'
+import * as utils from '../../../utils/'
+import overlays from '../../overlays'
 
 const baseUrl = 'http://imgssl.tangshui.net/'
 const imgs = [

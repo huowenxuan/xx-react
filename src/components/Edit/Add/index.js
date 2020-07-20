@@ -1,7 +1,7 @@
-import OverlayViewFade from "../overlays/OverlayViewFade";
+import OverlayViewFade from "../../overlays/OverlayViewFade";
 import React from "react";
 import './index.css'
-import images from "../../assets/images";
+import images from "../../../assets/images";
 export default (props) => {
   const width = 267
   const {rect, onDismiss, onImage, onText, onLink, onVideo} = props
