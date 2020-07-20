@@ -4,12 +4,14 @@ import opacityWrapper from '../../Wrappers/opacityWrapper'
 import images from "../../../assets/images"
 
 class EditTextOverlay extends PureComponent {
+  props: any
+  state: any
   constructor(props) {
     super(props)
     // info = format size height width
     // style = 90
     // 后台把style直接设置为旋转角度
-    const {body, style} = props.data || {}
+    const {body='', style=''} = props.data || {}
     this.state = {
       body,
       rotate: style ? parseInt(style) : 0,
@@ -72,7 +74,7 @@ class EditTextOverlay extends PureComponent {
             <div className='add-img-bottom-btns'>
               <div
                 className='set-cover-btn'
-                onClick={isCover ? null : () => this.setState(({choose}) => ({choose: !choose}))}>
+                onClick={isCover ? null : () => this.setState(({choose}: any) => ({choose: !choose}))}>
                 {isCover ? '当前封面' : [
                   <button
                     style={{

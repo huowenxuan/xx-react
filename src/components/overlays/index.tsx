@@ -23,7 +23,11 @@ export default {
   showAlert: (title, description, buttons) => {
     TopView.show(
       <OverlayViewFadeReduce duration={200}>
-        <Alert title={title} description={description} buttons={buttons}/>
+        <Alert
+          title={title}
+          description={description}
+          buttons={buttons}
+        />
       </OverlayViewFadeReduce>
     )
   },

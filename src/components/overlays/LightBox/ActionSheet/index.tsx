@@ -3,16 +3,20 @@ import PropTypes from 'prop-types'
 import './index.css'
 
 export default class ActionSheet extends PureComponent {
+  props: any
+
   constructor(props) {
     super(props)
 
     this.state = {
-      buttons: this.props.buttons
+      buttons: props.buttons
     }
   }
 
   static defaultProps = {
-    buttons:[]
+    buttons: [],
+    onDismiss: () => {
+    }
   }
 
   static propTypes = {
@@ -74,7 +78,7 @@ export default class ActionSheet extends PureComponent {
   }
 }
 
-let styles = {
+let styles: any = {
   line: {
     backgroundColor: '#F8F8F8',
     height: 1,

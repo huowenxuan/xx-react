@@ -4,16 +4,19 @@ import './index.css'
 import TopView from '../../TopView'
 
 export default class Alert extends PureComponent {
+  props: any
+  state: any
   constructor(props) {
     super(props)
 
     this.state = {
-      buttons: this.props.buttons
+      buttons: props.buttons
     }
   }
 
   static defaultProps = {
     title: '确定?',
+    description: '',
     buttons: [
       {text: '好的', onPress: null,},
       {type: 'cancel', onPress: null},
@@ -89,7 +92,7 @@ export default class Alert extends PureComponent {
 }
 
 let width = '70%'
-let styles = {
+let styles: any = {
   container: {
     height: '100%',
     width: '100%',
@@ -151,7 +154,7 @@ let styles = {
   },
   input: {
     marginLeft: 20,
-    width: width - 40,
+    width: `calc(${width}- 40px)`,
     height: 30,
     backgroundColor: 'white',
     marginBottom: 15,
