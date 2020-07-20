@@ -7,12 +7,14 @@ import overlays from '../../overlays/'
 
 
 class EditTextOverlay extends PureComponent {
+  props: any
+  state: any
   constructor(props) {
     super(props)
-    const {body, data} = props.data || {}
+    const {body='', data=''} = props.data || {}
     this.state = {
-      text: body || '',
-      url: data || ''
+      text: body,
+      url: data
     }
   }
 
@@ -74,7 +76,6 @@ class EditTextOverlay extends PureComponent {
           />
         </div>
       </div>
-
     )
   }
 }

@@ -16,23 +16,25 @@ const Sizes = [
 ]
 
 class EditTextOverlay extends PureComponent {
+  state: any
+  props: any
+  btnRefs: any = {
+    color: React.createRef(),
+    font: React.createRef()
+  }
+
   constructor(props) {
     super(props)
     // style = fontWeight: "normal", textAlign: "left", fontSize: 16
-    const {body, style = {}} = props.data || {}
+    const {body='', style = {}} = props.data || {}
     this.state = {
       fontWeight: style.fontWeight,
       color: style.color,
       fontSize: style.fontSize,
       textAlign: style.textAlign,
-      text: body || '',
+      text: body,
       selectType: null,
       selectBtnRect: {}
-    }
-
-    this.btnRefs = {
-      color: React.createRef(),
-      font: React.createRef()
     }
   }
 
@@ -51,7 +53,7 @@ class EditTextOverlay extends PureComponent {
 
   _newline = ()=> {
     console.log('newline')
-    this.setState(({text})=>({
+    this.setState(({text}: any)=>({
       text: (text || '') + '\n'
     }))
   }
@@ -67,7 +69,7 @@ class EditTextOverlay extends PureComponent {
   _done = () => {
     const {onChange, data} = this.props
     const {text, fontWeight, textAlign, fontSize, color} = this.state
-    let style = {}
+    let style: any = {}
     if (fontWeight) style.fontWeight = fontWeight
     if (textAlign) style.textAlign = textAlign
     if (fontSize) style.fontSize = fontSize
