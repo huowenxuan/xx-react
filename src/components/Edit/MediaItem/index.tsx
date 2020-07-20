@@ -1,5 +1,5 @@
 import React, {PureComponent} from "react"
-import './index.css'
+import './index.less'
 import * as utils from '../../../utils/'
 import images from "../../../assets/images"
 import {compose, pure} from 'recompose'
@@ -91,7 +91,7 @@ const EditMediaItem = (props) => {
     if (type !== 'image') return null
     return (
       <button
-        className='item-btn item-btn-set-cover'
+        className='btn set-cover'
         onClick={isCover ? null : e => this._action(e, onSetCover)}
       >
         {isCover ? '当前封面' : '设为封面'}
@@ -102,24 +102,24 @@ const EditMediaItem = (props) => {
 
   const _renderBtns = () => {
     return (
-      <div className='item-btns'>
+      <div className='btns'>
         <button
-          className='item-btn item-btn-del'
+          className='btn del'
           onClick={e => _action(e, onDelete)}
         >
-          <img className='item-icon-del' src={images.edit_remove_icon}/>
+          <img className='icon' src={images.edit_remove_icon}/>
         </button>
         <button
-          className='item-btn item-btn-up'
+          className='btn up'
           onClick={e => _action(e, onUp)}
         >
-          <img className='item-icon' src={images.edit_up_icon}/>
+          <img className='icon' src={images.edit_up_icon}/>
         </button>
         <button
-          className='item-btn item-btn-down'
+          className='btn down'
           onClick={e => _action(e, onDown)}
         >
-          <img className='item-icon' src={images.edit_down_icon}/>
+          <img className='icon' src={images.edit_down_icon}/>
         </button>
         {_renderSetCoverBtn()}
       </div>
@@ -152,7 +152,7 @@ const EditMediaItem = (props) => {
 
   return (
     <li
-      className='item'
+      className='edit-media-item'
       onClick={_onClick}
     >
       {_renderItem}
