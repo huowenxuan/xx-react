@@ -191,7 +191,7 @@ export function toJson(data) {
 export function openApp(toStore) {
   if (isIOS) {
     if (toStore) {
-      window.location.href = "/applinks"
+      window.location.href = "#/applinks"
     } else {
       setTimeout(function () {
         window.location.href = "http://a.app.qq.com/o/simple.jsp?pkgname=com.girtu.girtu"

@@ -6,7 +6,12 @@ import images from "../../assets/images"
 import * as utils from "../../utils"
 
 export default compose(pure)((props) => {
+  const toStore = () => {
+    window.location.href='http://a.app.qq.com/o/simple.jsp?pkgname=com.girtu.girtu';
+  }
+
   const _renderMask = () => {
+    if (!utils.isWxOrQQ) return null
     return (
       <div id="mask" style={{display: 'block'}}>
         <p className="openL">
@@ -24,13 +29,12 @@ export default compose(pure)((props) => {
       style={{backgroundImage: `url(${images.ts_bg})`}}
       className="app-link"
     >
+      <NavBar onBack={() => props.history.goBack()}/>
       {_renderMask()}
       <img src={images.ts_logo} className="logo"/>
       <p className="app-name">糖水</p>
       <div
-        onClick={() => {
-          console.log('ssss')
-        }}
+        onClick={toStore}
         className="store-btn"
       >
         前往应用商店下载
