@@ -1,5 +1,5 @@
 @width: 70%;
-
+@line-color: #CCCCCC;
 .alert {
   height: 100%;
   width: 100%;
@@ -36,14 +36,14 @@
 
 
     .line {
-      background-color: #CCCCCC;
+      background-color: @line-color;
       height: 1px;
       width: 100%;
       transform: scaleY(.5)
     }
 
     .vertical-line {
-      background-color: #CCCCCC;
+      background-color: @line-color;
       width: 1px;
       height: 44px;
       transform: scaleX(.5)

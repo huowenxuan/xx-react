@@ -63,7 +63,7 @@ export default class DetailPage extends PureComponent {
 
   componentDidMount() {
     this._initData()
-    overlays.showAlert('s', 's', [
+    overlays.showActionSheet([
       {text: 'a'},
       {text: 'b'},
     ])

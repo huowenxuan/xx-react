@@ -1,6 +1,6 @@
 import React, {PureComponent} from 'react'
 import PropTypes from 'prop-types'
-import './index.css'
+import './index.less'
 
 export default class ActionSheet extends PureComponent {
   props: any
@@ -27,10 +27,8 @@ export default class ActionSheet extends PureComponent {
     return (
       <button
         onClick={() => this._onButtonPress(data.onPress)}
-        style={{
-          ...styles.button,
-          color: data.textColor || '#191919'
-        }}
+        className='button'
+        style={{color: data.textColor || '#191919'}}
       >
         {data.text}
       </button>
@@ -51,57 +49,30 @@ export default class ActionSheet extends PureComponent {
   render() {
     const {buttons} = this.props
     return (
-      <div className='actionsheet-container'>
+      <div className='action-sheet'>
         <div
-          style={{flex: 1}}
+          className='blank'
           onTouchStart={this._dismiss}
-          onClick={this._dismiss}/>
+          onClick={this._dismiss}
+        />
         <div>
           <div>
             {buttons.map((button, i) => (
               <div key={i}>
-                <div style={styles.buttonBox}>
+                <div className='button-box'>
                   {this._renderOneButton(button)}
                 </div>
-                <div style={styles.line}/>
+                <div className='line'/>
               </div>
             ))}
           </div>
 
-          <div style={styles.cancelButtonBox}>
+          <div className='button-box cancel'>
             {this._renderOneButton({text: '取消'})}
           </div>
-
         </div>
       </div>
     )
   }
 }
 
-let styles: any = {
-  line: {
-    backgroundColor: '#F8F8F8',
-    height: 1,
-    width: '100%'
-  },
-  buttonBox: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  cancelButtonBox: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    backgroundColor: '#F8F8F8',
-    paddingTop: 10,
-  },
-  button: {
-    height: 40,
-    textAlign: 'center',
-    width: '100%',
-    fontSize: 12,
-    color: '#191919',
-    backgroundColor: 'white'
-  }
-}
