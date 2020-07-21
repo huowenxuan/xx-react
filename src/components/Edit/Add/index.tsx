@@ -1,6 +1,6 @@
 import OverlayViewFade from "../../overlays/OverlayViewFade";
 import React from "react";
-import './index.css'
+import './index.less'
 import images from "../../../assets/images";
 export default (props) => {
   const width = 267
@@ -22,9 +22,9 @@ export default (props) => {
       <div
         onClick={action}
         key={text}
-        className='add-action'
+        className='action'
       >
-        <img  className='add-action-icon' src={icon}/>
+        <img  className='icon' src={icon}/>
         {text}
       </div>
     ))
@@ -38,22 +38,22 @@ export default (props) => {
     >
       <div
         onTouchStart={onDismiss}
-        style={{width: '100%', height: '100%'}}
+        className='edit-add-overlay'
       >
         <div
-          id='add-overlay-box'
+          className='box'
           style={{
             width,
             top: rect.top + rect.height,
             left: rect.left + rect.width / 2 - width / 2
           }}
         >
-          <div className='add-triangle-box'>
-            <div className='add-triangle'/>
+          <div className='triangle-box'>
+            <div className='triangle'/>
           </div>
           <div
             onTouchStart={e => e.stopPropagation()}
-            className='add-actions'
+            className='actions'
           >
             {_renderActions()}
           </div>

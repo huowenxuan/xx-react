@@ -1,8 +1,9 @@
 import React, {PureComponent} from "react"
 import images from "../../../../assets/images"
-import './index.css'
+import './index.less'
 import NavBar from "../../../NavBar"
 import {get, post, API} from '../../../../request'
+import {EditBottomHeight} from "../Buttons"
 
 export default class EditAudio extends PureComponent {
   constructor(props) {
@@ -112,13 +113,13 @@ export default class EditAudio extends PureComponent {
   _renderTypes() {
     const {types, curType} = this.state
     return (
-      <div id='audio-types-box'>
-        <ul id='audio-types'>
+      <div className='types-box'>
+        <ul className='types'>
           {types.map(type => (
             <li
               key={type._id}
               onClick={(e) => this._onTypeClick(e, type)}
-              className={`audio-type-btn ${type === curType ? 'audio-type-btn-checked' : ''}`}
+              className={`btn ${type === curType ? 'checked' : ''}`}
             >
               {type.title}
             </li>
@@ -134,14 +135,11 @@ export default class EditAudio extends PureComponent {
     return (
       <div
         onClick={() => this._chooseMusic(music)}
-        className='music-item'
+        className='audio'
         key={_id}
         style={choose && choose._id === _id ? {color: '#FF4542'} : {}}
       >
-        <img
-          className='music-cover'
-          src={cover}
-        />
+        <img className='cover' src={cover}/>
         {filename}
       </div>
     )
@@ -161,26 +159,21 @@ export default class EditAudio extends PureComponent {
     if (!choose) return null
     return (
       <div
-        id='music-img-bg'
+        className='header'
         style={{backgroundImage: `url(${images.MUSIC_BG})`}}
       >
         <div
-          id='music-img-bg-icon-box'
+          className='icon-box'
           onClick={playState.isPlaying ? this._onPause : this._onPlay}
         >
           <img
-            id='music-img-bg-icon'
+            className='icon'
             src={playState.isPlaying ? images.music_play_white : images.music_pause_white}
           />
-          <p id='music-img-bg-name'>
-            {choose.filename}
-          </p>
+          <p className='name'>{choose.filename}</p>
         </div>
 
-        <button
-          onClick={this._onCancel}
-          id='music-img-bg-cancel'
-        >
+        <button onClick={this._onCancel} className='cancel'>
           取消
         </button>
       </div>
@@ -193,7 +186,8 @@ export default class EditAudio extends PureComponent {
     return (
       <div
         onClick={(e) => e.stopPropagation()}
-        id='edit-music-container'>
+        className='edit-audio'
+      >
         <NavBar
           title='背景音乐'
           onBack={onBack}
@@ -204,16 +198,15 @@ export default class EditAudio extends PureComponent {
         />
         {this._renderHeader()}
 
-        <div id='edit-music-box'>
+        <div className='main'>
           {this._renderTypes()}
-          <p id='music-hot-text'>共有 {allCount} 首乐曲</p>
+          <p className='hot-text'>共有 {allCount} 首乐曲</p>
           {this._renderMusics()}
         </div>
 
-        <p id='more-music-text'>
+        <p className='more'>
           - 更多背景音乐，请到糖水App中设置 -
         </p>
-
         <audio autoPlay={true} ref={this.audio}/>
       </div>
     )

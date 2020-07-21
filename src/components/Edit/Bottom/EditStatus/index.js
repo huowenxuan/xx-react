@@ -1,6 +1,6 @@
 import React, {PureComponent, useEffect, useState} from "react";
 import images from "../../../../assets/images";
-import './index.css'
+import './index.less'
 import NavBar from "../../../NavBar";
 import overlays from '../../../overlays/'
 import OverlayViewFade from "../../../overlays/OverlayViewFade";
@@ -50,27 +50,23 @@ export default (props) => {
   }
 
   return (
-    <ul style={{backgroundColor: 'white'}}>
+    <ul className='edit-status'>
       {Statuses.map(({type, title, description}) => (
         <li
           onClick={(e) => _onClick(e, type)}
           key={type}
-          className='permission-item'
+          className='item'
         >
-          <div className='permission-item-radio-and-title'>
+          <div className='radio-and-title'>
 
             {permission === type
-              ? <img className='permission-item-radio' src={images.icon_check}/>
-              : <img className='permission-item-radio' src={images.icon_check_un}/>
+              ? <img className='radio' src={images.icon_check}/>
+              : <img className='radio' src={images.icon_check_un}/>
             }
 
             <div>
-              <p className='permission-item-title'>
-                {title}
-              </p>
-              <p className='permission-item-description'>
-                {description}
-              </p>
+              <p className='title'>{title}</p>
+              <p className='description'>{description}</p>
             </div>
 
           </div>
@@ -92,7 +88,7 @@ const EditProtect = (props) => {
   const [question, setQuestion] = useState(props.question || '')
 
   return (
-    <div className='protect-container'>
+    <div className='edit-protect'>
       <NavBar
         title='设置密码问题'
         onBack={props.onBack}
@@ -108,21 +104,20 @@ const EditProtect = (props) => {
           }
         }]}
       />
-      <div className='protect-wrapper'>
+      <div className='main'>
         <input
-          className='protect-input'
+          className='input'
           placeholder='请输入问题'
           value={answer}
           onChange={(e) => setAnswer(e.target.value)}
         />
         <input
-          className='protect-input'
+          className='input'
           placeholder='请输入答案'
           value={question}
           onChange={(e) => setQuestion(e.target.value)}
         />
       </div>
-
     </div>
   )
 }

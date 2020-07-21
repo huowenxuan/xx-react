@@ -1,5 +1,5 @@
 import React, {PureComponent} from "react"
-import './index.css'
+import './index.less'
 import opacityWrapper from '../../Wrappers/opacityWrapper'
 import NavBar from '../../NavBar/'
 import * as utils from '../../../utils/'
@@ -50,29 +50,29 @@ class EditTextOverlay extends PureComponent {
     const {body} = this.state
     const {onCancel} = this.props
     return (
-      <div className='web-video-wrapper'>
+      <div className='edit-web-video'>
         <NavBar
           title='视频链接'
           onBack={onCancel}
         />
 
-        <div className='web-video-container'>
+        <div className='main'>
           <input
             className='input'
             placeholder='输入或粘贴视频链接（腾讯视频、优酷视频）'
             value={body || ''}
             onChange={(v) => this.setState({body: v.target.value})}
           />
-          <div className='web-video-btns'>
+          <div className='btns'>
             <button
-              className='web-video-btn web-video-btn-clear'
+              className='btn clear'
               onClick={() => {
                 this.setState({body: ''})
               }}>
               清空
             </button>
             <button
-              className='web-video-btn web-video-btn-confirm'
+              className='btn confirm'
               onClick={this._done}>
               确定
             </button>

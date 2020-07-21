@@ -1,58 +1,60 @@
-#edit-bottom {
-    position: fixed;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: white;
-    transition: height .3s ease-out;
-    display: flex;
-    justify-content: space-around;
-    pointer-events: auto;
-    box-shadow: 0 4px 8px 0 black;
-}
+.edit-bottom {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: white;
+  transition: height .3s ease-out;
+  display: flex;
+  justify-content: space-around;
+  pointer-events: auto;
+  box-shadow: 0 4px 8px 0 black;
 
-.edit-btn-box {
+  .button-box {
     height: 100%;
     width: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
+
+    .button {
+      height: 100%;
+      width: 100%;
+      color: #231815;
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      .img {
+        flex: 0 0 20px; /* 防止宽度被挤压 */
+        height: 20px;
+        margin-right: 6px;
+      }
+
+      .title {
+        font-size: 12px;
+        white-space: nowrap;
+        margin-right: 12px;
+
+        &.active {
+          color: #FF4542
+        }
+      }
+
+      .desc {
+        color: #9B9B9B;
+        font-size: 12px;
+        text-align: left;
+        height: 12px;
+        line-height: 12px;
+        overflow: hidden;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 1;
+      }
+    }
+  }
+
 }
 
-.edit-btn {
-    height: 100%;
-    width: 100%;
-    color: #231815;
-    font-size: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.edit-btn-img {
-    flex: 0 0 20px; /* 防止宽度被挤压 */
-    height: 20px;
-    margin-right: 6px;
-}
-
-.edit-btn-title {
-    font-size: 12px;
-    white-space: nowrap;
-    margin-right: 12px;
-}
-
-.edit-btn-active {
-    color: #FF4542
-}
-
-.edit-btn-desc {
-    color: #9B9B9B;
-    font-size: 12px;
-    text-align: left;
-    height: 12px;
-    line-height: 12px;
-    overflow: hidden;
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 1;
-}

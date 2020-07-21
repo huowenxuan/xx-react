@@ -1,7 +1,7 @@
-import React, {PureComponent} from "react";
-import './index.css'
+import React, {PureComponent} from "react"
+import './index.less'
 import opacityWrapper from '../../Wrappers/opacityWrapper'
-import NavBar from "../../NavBar";
+import NavBar from "../../NavBar"
 import * as utils from '../../../utils/'
 import overlays from '../../overlays/'
 
@@ -9,9 +9,10 @@ import overlays from '../../overlays/'
 class EditTextOverlay extends PureComponent {
   props: any
   state: any
+
   constructor(props) {
     super(props)
-    const {body='', data=''} = props.data || {}
+    const {body = '', data = ''} = props.data || {}
     this.state = {
       text: body,
       url: data
@@ -48,7 +49,7 @@ class EditTextOverlay extends PureComponent {
     const {url, text} = this.state
     const {onCancel} = this.props
     return (
-      <div className='add-link-wrapper'>
+      <div className='edit-line-overlay'>
         <NavBar
           title='网址链接'
           onBack={onCancel}
@@ -61,15 +62,15 @@ class EditTextOverlay extends PureComponent {
           ]}
         />
 
-        <div className='add-link-container'>
+        <div className='main'>
           <input
-            className='input-link-url'
+            className='input'
             placeholder='添加网址(如:https://www.baidu.com)'
             value={url}
             onChange={e => this.setState({url: e.target.value})}
           />
           <input
-            className='input-link-url'
+            className='input'
             placeholder='显示文字(如:百度)'
             value={text}
             onChange={e => this.setState({text: e.target.value})}

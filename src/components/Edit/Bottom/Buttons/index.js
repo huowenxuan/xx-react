@@ -1,7 +1,7 @@
 import React, {PureComponent, useEffect} from "react"
 import {withStateHandlers, compose, pure} from "recompose"
 import {Statuses} from '../EditStatus'
-import './index.css'
+import './index.less'
 import images from "../../../../assets/images"
 
 export const EditBottomHeight = 63
@@ -26,22 +26,25 @@ const EditBottom = (props) => {
   const _renderBtn = (text, isActive, activeImg, unActiveImg, action, desc, style) => {
     // 设置权限永远居中，音乐：没音乐则居中，有音乐就居左，设置marinleft
     return (
-      <div className='edit-btn-box'>
+      <div className='button-box'>
         <button
           onClick={action}
-          className='edit-btn'
+          className='button'
           style={style}
         >
-          <img className='edit-btn-img' src={isActive ? activeImg : unActiveImg}/>
-          <p className={`edit-btn-title ${isActive ? 'edit-btn-active' : ''}`}>{text}</p>
-          <p className='edit-btn-desc'>{desc}</p>
+          <img className='img' src={isActive ? activeImg : unActiveImg}/>
+          <p className={`title ${isActive ? 'active' : ''}`}>{text}</p>
+          <p className='desc'>{desc}</p>
         </button>
       </div>
     )
   }
 
   return (
-    <div id='edit-bottom' style={{height: EditBottomHeight}}>
+    <div
+      className='edit-bottom'
+      style={{height: EditBottomHeight}}
+    >
       {_renderBtn(
         '背景音频',
         props.active === 'audio',

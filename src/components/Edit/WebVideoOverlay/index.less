@@ -1,4 +1,4 @@
-.web-video-wrapper {
+.edit-web-video {
     position: fixed;
     left: 0;
     top: 0;
@@ -7,38 +7,37 @@
     background-color: white;
     /* 让absolute可滚动 */
     overflow: auto;
-}
 
-.web-video-container {
-    padding: 20px;
-}
+    .main {
+        padding: 20px;
 
-.input {
-    box-sizing: border-box;
-    padding: 10px;
-    height: 100px;
-    border: #F4F4F4 1px solid;
-    width: 100%;
-}
+        .input {
+            box-sizing: border-box;
+            padding: 10px;
+            height: 100px;
+            border: #F4F4F4 1px solid;
+            width: 100%;
+        }
 
-.web-video-btns {
-    display: flex;
-    justify-content: space-around;
-}
-
-.web-video-btn-clear {
-    background-color: #FAFAFA;
-}
-.web-video-btn-confirm {
-    background-color: #E97462;
-    color: white;
-}
-.web-video-btn {
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    padding: 10px 40px;
-    border-radius: 35px;
-    margin-top: 30px;
-    font-size: 15px;
+        .btns {
+            display: flex;
+            justify-content: space-around;
+            .btn {
+                display: flex;
+                justify-content: space-around;
+                align-items: center;
+                padding: 10px 40px;
+                border-radius: 35px;
+                margin-top: 30px;
+                font-size: 15px;
+                &.clear {
+                    background-color: #FAFAFA;
+                }
+                &.confirm {
+                    background-color: #E97462;
+                    color: white;
+                }
+            }
+        }
+    }
 }

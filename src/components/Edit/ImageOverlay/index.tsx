@@ -1,5 +1,5 @@
 import React, {PureComponent} from "react"
-import './index.css'
+import './index.less'
 import opacityWrapper from '../../Wrappers/opacityWrapper'
 import images from "../../../assets/images"
 
@@ -52,28 +52,25 @@ class EditTextOverlay extends PureComponent {
     const {onCancel, isCover} = this.props
     return (
       <div
-        className='add-image-wrapper'
+        className='edit-image-overlay'
         onClick={onCancel}
       >
-        <div style={{position: 'relative', height: '100%'}}>
-          <div className='add-img-box'>
+        <div className='main'>
+          <div className='img-box'>
             <img
-              className='add-img'
+              className='img'
               src={body}
-              style={{
-                // backgroundImage: `url(${body})`,
-                transform: `rotate(${rotate}deg)`
-              }}
+              style={{transform: `rotate(${rotate}deg)`}}
             />
           </div>
 
           <div
-            className='add-img-bottom'
+            className='bottom'
             onClick={e => e.stopPropagation()}
           >
-            <div className='add-img-bottom-btns'>
+            <div className='btns'>
               <div
-                className='set-cover-btn'
+                className='set-cover'
                 onClick={isCover ? null : () => this.setState(({choose}: any) => ({choose: !choose}))}>
                 {isCover ? '当前封面' : [
                   <button
@@ -94,7 +91,7 @@ class EditTextOverlay extends PureComponent {
               </button>
             </div>
 
-            <div className='add-img-confirm-box'>
+            <div className='confirm-box'>
               <div onClick={onCancel}>取消</div>
               <div onClick={this._done}>确认</div>
               <div className='white-line'/>

@@ -1,6 +1,5 @@
 import React from 'react';
 import {HashRouter, Route, Switch} from 'react-router-dom';
-import Home from './pages/Home';
 import PostEdit from './pages/PostEdit/';
 import PostNew from './pages/PostNew/';
 

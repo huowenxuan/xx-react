@@ -1,57 +1,63 @@
-.permission-item {
+.edit-status {
+  background-color: white;
+  .item {
     height: 60px;
     width: 100%;
     display: flex;
     align-items: center;
     justify-content: space-between;
-}
-.permission-item-radio-and-title {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-.permission-item-radio {
-    width: 16px;
-    height: 16px;
-    margin-right: 14px;
-    margin-left: 20px;
-    border-radius: 8px;
-    box-sizing: border-box;
+
+    .radio-and-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      .radio {
+        width: 16px;
+        height: 16px;
+        margin-right: 14px;
+        margin-left: 20px;
+        border-radius: 8px;
+        box-sizing: border-box;
+      }
+
+      .title {
+        color: #191919;
+        font-size: 14px;
+      }
+    }
+
+    .description {
+      color: #9B9B9B;
+      font-size: 12px;
+    }
+
+    .protect-right-arrow {
+      width: 15px;
+      height: 15px;
+      margin-right: 20px;
+    }
+  }
 }
 
-.permission-item-title {
-    color: #191919;
-    font-size: 14px;
-}
-
-.permission-item-description {
-    color: #9B9B9B;
-    font-size: 12px;
-}
-
-.protect-right-arrow {
-    width: 15px;
-    height: 15px;
-    margin-right: 20px;
-}
-
-.protect-container {
-    width: 100%;
-    height: 100%;
-    background-color: white;
-}
-
-.protect-wrapper {
+.edit-protect {
+  width: 100%;
+  height: 100%;
+  background-color: white;
+  .main {
     padding: 0 20px;
+    .input {
+      display: block;
+      width: 100%;
+      height: 50px;
+      margin-top: 20px;
+      padding: 10px;
+      box-sizing: border-box;
+      border: #E6E6E6 1px solid;
+      border-radius: 3px;
+    }
+  }
 }
 
-.protect-input {
-    display: block;
-    width: 100%;
-    height: 50px;
-    margin-top: 20px;
-    padding: 10px;
-    box-sizing: border-box;
-    border: #E6E6E6 1px solid;
-    border-radius: 3px;
-}
+
+

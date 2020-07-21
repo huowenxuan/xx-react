@@ -63,10 +63,6 @@ export default class DetailPage extends PureComponent {
 
   componentDidMount() {
     this._initData()
-    overlays.showActionSheet([
-      {text: 'a'},
-      {text: 'b'},
-    ])
   }
 
   async _initData() {

@@ -1,5 +1,5 @@
 import React, {PureComponent} from "react"
-import './index.css'
+import './index.less'
 import PropTypes from 'prop-types'
 import images from '../../assets/images'
 
@@ -30,8 +30,8 @@ export default class NavBar extends PureComponent {
     const {onBack, backText} = this.props
     return [{
       custom: (
-        <div className='nav-center nav-button'>
-          <img className='back-button-img' src={images.back_left}/>
+        <div className='center button'>
+          <img className='back-img' src={images.back_left}/>
           {backText}
         </div>
       ),
@@ -78,7 +78,7 @@ export default class NavBar extends PureComponent {
     let button
     if (data.text) {
       button = (
-        <div className='nav-button nav-center text-button' style={data.style}>
+        <div className='button center text' style={data.style}>
           <div className='button-text' style={data.textStyle}>
             {data.text}
           </div>
@@ -86,7 +86,7 @@ export default class NavBar extends PureComponent {
       )
     } else if (data.icon) {
       button = (
-        <div className='nav-button nav-center icon-button' style={data.style}>
+        <div className='button center icon' style={data.style}>
           {data.icon}
         </div>
       )
@@ -98,7 +98,7 @@ export default class NavBar extends PureComponent {
       <button
         onClick={data.onClick}
         key={key}
-        className='nav-center'
+        className='center'
       >
         {button}
       </button>
@@ -107,7 +107,7 @@ export default class NavBar extends PureComponent {
 
   _renderButtons(buttons, style={}) {
     return (
-      <div className='nav-center' style={style}>
+      <div className='center' style={style}>
         {buttons
           ? buttons.map((item, idx) => this._renderButton(item, idx))
           : null}
@@ -118,7 +118,7 @@ export default class NavBar extends PureComponent {
   _renderNavBar(navHeight) {
     const {title, leftButtons, rightButtons, style, titleView} = this.props
     return (
-      <nav style={{height: navHeight, ...style}} className='nav-wrapper'>
+      <nav style={{height: navHeight, ...style}} className='nav-bar'>
         <div className='title-box'>
           <div style={{pointerEvents: 'auto'}}>
             {titleView || <p className='title'>
