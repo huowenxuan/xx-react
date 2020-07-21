@@ -1,7 +1,7 @@
-import React, {PureComponent} from 'react';
+import React, {PureComponent} from 'react'
 import OverlayView from '../../../overlays/OverlayView'
 import EditBottomButtons, {EditBottomHeight} from '../../../Edit/Bottom/Buttons/'
-import './index.css'
+import './index.less'
 import EditAudio from '../EditAudio/'
 import EditStatus from '../EditStatus/'
 
@@ -120,18 +120,18 @@ export default class OverlayViewFade extends OverlayView {
     return (
       <div
         onClick={this.disappear}
+        className='edit-bottom-overlay'
         style={{
-          ...styles.container,
           transition: `opacity ${Duration}ms`,
           opacity: this.state.fadeOpacity
-        }}>
-
+        }}
+      >
         <div
+          className="container"
           style={{
             bottom: bottom + EditBottomHeight,
             height,
           }}
-          className="bottom-overlay-container"
         >
           {view}
         </div>
@@ -145,18 +145,5 @@ export default class OverlayViewFade extends OverlayView {
         />
       </div>
     )
-  }
-}
-
-let styles = {
-  container: {
-    backgroundColor: '#00000030',
-    position: 'absolute',
-    left: 0,
-    top: 0,
-    right: 0,
-    bottom: 0,
-    overflow: 'auto',
-    pointerEvents: 'auto'
   }
 }

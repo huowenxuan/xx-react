@@ -1,4 +1,14 @@
-.bottom-overlay-container {
+.edit-bottom-overlay {
+  background-color: #00000030;
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  overflow: auto;
+  pointer-events: auto;
+
+  &>.container {
     position: absolute;
     left: 0;
     width: 100%;
@@ -7,4 +17,6 @@
     flex-direction: column;
     display: flex;
     background-color: white;
+  }
+
 }
