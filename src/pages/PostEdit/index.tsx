@@ -63,6 +63,10 @@ export default class DetailPage extends PureComponent {
 
   componentDidMount() {
     this._initData()
+    overlays.showAlert('s', 's', [
+      {text: 'a'},
+      {text: 'b'},
+    ])
   }
 
   async _initData() {
