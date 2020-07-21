@@ -1,14 +1,13 @@
 import * as wechat from './wechat'
 import qiniu from './qiniu'
-import {get, API} from "../request"
 
 const u = window.navigator.userAgent
 export const isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1 //android终端
 export const isIOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/) //ios终端
 export const isWeibo = u.toLowerCase().match(/weibo/i) == "weibo"
-export const isWxOrQQ = u.toLowerCase().match(/MicroMessenger/i) == "micromessenger" || u.toLowerCase().match(/QQ/i) == "qq"
 export const isQQ = u.toLowerCase().match(/qq/i) == "qq" && u.toLowerCase().match(/MicroMessenger/i) == null
 export const isWeixin = u.toLowerCase().match(/MicroMessenger/i) == "micromessenger"
+export const isWxOrQQ = isWeixin || isQQ
 export const isUC = u.toLowerCase().match(/UCBrowser/i) == "ucbrowser"
 
 function choosePhotoBrowser(isImage, multiple, cb) {
@@ -186,35 +185,26 @@ export function toJson(data) {
 
 /**
  * 打开app
- * @param toStore true为去商店，false为打开app
+ * @param toPostId 需要跳转的帖子id
  */
-export function openApp(toStore) {
-  if (isIOS) {
-    if (toStore) {
-      window.location.href = "#/applinks"
-    } else {
-      setTimeout(function () {
-        window.location.href = "http://a.app.qq.com/o/simple.jsp?pkgname=com.girtu.girtu"
-      }, 1000)
-    }
+export function openApp(toPostId) {
+  toStore()
+  return
+
+  let params = toPostId ? 'type=post&target_id=' + toPostId : ''
+  const applinks = '#/applinks?' + params // for iOS
+  const deeplink = 'tangshui://com.girtu.girtu/deeplink?' + params // for android
+
+  if (isWxOrQQ) {
+    toStore()
+  } else if (isIOS) {
+    window.location.href = applinks
   } else {
-    if (isWxOrQQ) {
-      let div = document.createElement("div")
-      div.innerHTML = `
-<div class="navBox">
-  <p>如果您已安装糖水,</p>
-  <p>请使用<span class="system">浏览器</span>打开此页面</p>
-</div>`
-      document.body.appendChild(div)
-    } else {
-      if (toStore) {
-        window.location.href = "tangshui://com.girtu.girtu/deeplink"
-      } else {
-        setTimeout(function () {
-          // TODO: 改为安卓apk或官网，将来改为应用宝链接
-          window.location.href = "http://a.app.qq.com/o/simple.jsp?pkgname=com.girtu.girtu"
-        }, 1000)
-      }
-    }
+    window.location.href = deeplink
+    setTimeout(toStore, 1000)
   }
+}
+
+export function toStore() {
+  window.location.href = "http://a.app.qq.com/o/simple.jsp?pkgname=com.girtu.girtu"
 }

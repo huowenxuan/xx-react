@@ -6,10 +6,6 @@ import images from "../../assets/images"
 import * as utils from "../../utils"
 
 export default compose(pure)((props) => {
-  const openApp = ()=>{
-    props.history.push('applinks')
-  }
-
   const addImage = async () => {
     let photos = await utils.choosePhoto(true, true)
     props.history.push({
@@ -32,7 +28,7 @@ export default compose(pure)((props) => {
           </div>
         </div>
         <p className='text'>可上传100张图片，一键分享朋友圈</p>
-        <div className='open-app-box' onClick={openApp}>
+        <div className='open-app-box' onClick={utils.openApp}>
           <div className='open-app'>
             打开糖水App，探索更多有趣玩法
           </div>
