@@ -27,5 +27,9 @@ export default {
   edit_text_left: require('./img/edit_text_left.png'),
   edit_text_right: require('./img/edit_text_right.png'),
   edit_text_size: require('./img/edit_text_size.png'),
+  safari: require('./img/safari.png'),
+  ts_leader: require('./img/ts_leader.png'),
+  ts_logo: require('./img/ts_logo.png'),
+  ts_bg: require('./img/ts_bg.png'),
 
 }

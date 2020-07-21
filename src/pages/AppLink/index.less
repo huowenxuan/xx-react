@@ -1,0 +1,116 @@
+.app-link {
+  background-size: cover;
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  top: 0;
+
+
+  .logo {
+    width: 96px;
+    height: 96px;
+    margin: 0 auto;
+    margin-top: 168px;
+    display: block;
+    border-radius: 20px;
+  }
+
+  .app-name {
+    font-size: 19px;
+    color: #23232B;
+    margin-top: 13px;
+    text-align: center;
+  }
+
+  .store-btn {
+    display: block;
+    width: 172px;
+    height: 52px;
+    line-height: 52px;
+    text-align: center;
+    margin: 0 auto;
+    margin-top: 48px;
+    font-size: 16px;
+    border: 1px solid #00AAFF;
+    background: none;
+    border-radius: 30px;
+    color: #00AAFF;
+    &:active {
+      opacity: .5;
+    }
+  }
+}
+
+#mask {
+  z-index: 100;
+  width: 100%;
+  position: fixed;
+  top: 0;
+  overflow: hidden;
+  background: #23232B;
+  opacity: 0.9;
+  height: 72px;
+  font-size: 17px;
+  color: #FFFFFF;
+  display: none;
+}
+
+.openL {
+  line-height: 25px;
+  padding-left: 19.2px;
+  padding-top: 6.67px;
+}
+
+.openL img {
+  width: 20px;
+  vertical-align: middle;
+  margin: 0 3px;
+}
+
+.leader {
+  width: 66.28px;
+  position: absolute;
+  top: 18.24px;
+  right:18.24px;
+}
+
+.open {
+  color: #FF7B4D;
+}
+
+.warning {
+  font-size: 19.2px;
+  color: #23232B;
+  line-height: 28.8px;
+}
+
+#hand {
+  width: 52.8px;
+  height: 42.24px;
+  position: absolute;
+  right: -11.52px;
+  top: 32.64px;
+  display: none;
+}
+
+#hand {
+  animation: box ease-out 2s infinite;
+}
+
+@keyframes box {
+  0% {
+    opacity: 0;
+    -webkit-transform: translateY(28.8px);
+  }
+  15% {
+    opacity: 1;
+    -webkit-transform: translateY(0);
+  }
+  100% {
+    opacity: 1;
+    -webkit-transform: translateY(120px);
+    -moz-transform: translateY(120px);
+    transform: translateY(120px);
+  }
+}
