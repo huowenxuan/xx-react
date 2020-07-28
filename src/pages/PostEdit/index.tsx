@@ -33,6 +33,34 @@ let overlay: any = React.createRef()
 let addBtn: any = React.createRef()
 let uploadCancel = false
 
+
+function findDrafts(userId) {
+  let data = localStorage.getItem(`draft-${userId}`)
+  if (!data) return {}
+  return JSON.parse(data)
+}
+
+function saveDraft(userId, draftId, data) {
+  let drafts = findDrafts(userId)
+  if (!draftId) draftId = Date.now()
+  drafts[draftId] = data
+  localStorage.setItem(`draft-${userId}`, JSON.stringify(drafts))
+}
+
+function deleteDraft(userId, draftId) {
+  let drafts = findDrafts(userId)
+  delete drafts[draftId]
+  localStorage.setItem(`draft-${userId}`, JSON.stringify(drafts))
+}
+
+saveDraft(1, 1, {a: 1})
+saveDraft(1, 2, {a: 2})
+saveDraft(1, null, {a: 3})
+saveDraft(2, 4, {a: 4})
+deleteDraft(1, 2)
+console.log(findDrafts(1))
+console.log(findDrafts(2))
+
 export default (props) => {
   const [openedAddItem, setOpenedAddItem] = useState(-1)
   const [post, setPost]: any = useState({
@@ -308,7 +336,7 @@ export default (props) => {
       console.log(result)
       console.log(result._id)
       // props.history.replace(`/postedit?postId=${result._id}`)
-      window.location.href=`/postedit?postId=${result._id}`
+      window.location.href = `/postedit?postId=${result._id}`
     } catch (e) {
       overlays.showToast(e.message)
       setCompleteBtnEnabled(true)
