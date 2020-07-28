@@ -5,12 +5,12 @@ import PostNew from './pages/PostNew/'
 import AppLink from './pages/AppLink/'
 import createHistory from 'history/createBrowserHistory'
 import {Provider} from "react-redux"
-import {storeInstance} from "./store"
+import store from "./store"
 
 const history = createHistory()
 
 export default (props) => (
-  <Provider store={props.store || storeInstance}>
+  <Provider store={props.store || store}>
     <BrowserRouter history={props.history || history}>
       <Switch>
         <Route exact path="/" component={PostNew}/>

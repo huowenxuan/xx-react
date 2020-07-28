@@ -1,5 +1,4 @@
 import React, {PureComponent} from 'react';
-import logo from './logo.svg';
 import './App.css';
 import Router from './Router'
 import TopView from "./components/overlays/TopView";
