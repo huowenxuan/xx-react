@@ -307,7 +307,8 @@ export default (props) => {
       }
       console.log(result)
       console.log(result._id)
-      props.history.replace(`/postedit?postId=${result._id}`)
+      // props.history.replace(`/postedit?postId=${result._id}`)
+      window.location.href=`/postedit?postId=${result._id}`
     } catch (e) {
       overlays.showToast(e.message)
       setCompleteBtnEnabled(true)
