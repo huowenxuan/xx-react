@@ -27,10 +27,10 @@ const MediaTypes = {
 }
 
 let postId = ''
-let _coverFile = null // 原生图片选择器选择图片后的file文件，设置为封面图
+let coverFile = null // 原生图片选择器选择图片后的file文件，设置为封面图
 let overlay: any = React.createRef()
 let addBtn: any = React.createRef()
-let _uploadCancel = false
+let uploadCancel = false
 
 export default (props) => {
   const [openedAddItem, setOpenedAddItem] = useState(-1)
@@ -51,10 +51,8 @@ export default (props) => {
 
   useEffect(() => {
     console.log('init data')
-    _initData()
-    return ()=>{
-      console.log('unmount')
-    }
+    initData()
+    return () => console.log('unmount')
   }, [])
 
   useEffect(() => {
@@ -70,15 +68,19 @@ export default (props) => {
           setOpenedAddItem(-1)
         }}
         rect={rect}
-        onText={() => _onAddClick(MediaTypes.Text, openedAddItem)}
-        onImage={() => _onAddClick(MediaTypes.Image, openedAddItem)}
-        onLink={() => _onAddClick(MediaTypes.Link, openedAddItem)}
-        onVideo={() => _onAddClick(MediaTypes.Video, openedAddItem)}
+        onText={() => onAddClick(MediaTypes.Text, openedAddItem)}
+        onImage={() => onAddClick(MediaTypes.Image, openedAddItem)}
+        onLink={() => onAddClick(MediaTypes.Link, openedAddItem)}
+        onVideo={() => onAddClick(MediaTypes.Video, openedAddItem)}
       />
     )
   }, [openedAddItem])
 
-  const _initData = async () => {
+  const initData = async () => {
+    postId = ''
+    coverFile = null
+    uploadCancel = false
+
     const {id} = props.match.params
     const {photos} = props.location
     if (id) {
@@ -98,14 +100,14 @@ export default (props) => {
       setPost(postData)
     } else if (photos) {
       // 根据照片创建新帖子
-      _onPhotoChoose(0, photos, true)
+      onPhotoChoose(0, photos, true)
     } else {
-      _openAdd(0)
+      openAdd(0)
     }
   }
 
   // 弹出选择图片和权限遮罩
-  const _showBottomEdit = (type) => {
+  const showBottomEdit = (type) => {
     const {audio_id, status, protect} = post
     overlays.show(
       <EditBottomOverlay
@@ -113,12 +115,12 @@ export default (props) => {
         audio={audio_id}
         status={status}
         protect={protect}
-        onUpdate={_setPostState}
+        onUpdate={setPostState}
       />
     )
   }
 
-  const _setPostState = (field, data) => {
+  const setPostState = (field, data) => {
     setPost(prevPost => ({
       ...prevPost,
       [field]: data
@@ -138,12 +140,12 @@ export default (props) => {
   const _cancelUpload = () => {
     overlays.showAlert('是否取消上传', '', [
       {text: '取消'},
-      {text: '确定', onPress: () => _uploadCancel = true}
+      {text: '确定', onPress: () => uploadCancel = true}
     ])
   }
 
-  const _uploadFiles = async (media) => {
-    _uploadCancel = false
+  const uploadFiles = async (media) => {
+    uploadCancel = false
 
     let uploadMedias = []
     for (let i = 0; i < media.length; i++) {
@@ -170,7 +172,7 @@ export default (props) => {
         index: -1,
         isCover: true,
         item: {
-          file: _coverFile,
+          file: coverFile,
           body: headbacimgurl
         }
       })
@@ -201,7 +203,7 @@ export default (props) => {
         const error = (e) => reject(e)
         // 检查是否点击了取消
         timer = setInterval(() => {
-          if (_uploadCancel) {
+          if (uploadCancel) {
             uploading && uploading.cancel()
             error(new Error('cancel'))
           }
@@ -232,10 +234,10 @@ export default (props) => {
 
       if (isCover) {
         console.log('封面上传完成 ', key)
-        _setPostState('coverKey', key)
+        setPostState('coverKey', key)
       } else {
         console.log('上传完成 ', key)
-        _updateMedia(index, {key})
+        updateMedia(index, {key})
       }
     }
     _resetProgress()
@@ -255,7 +257,7 @@ export default (props) => {
     }
     setCompleteBtnEnabled(false)
     try {
-      await _uploadFiles(media)
+      await uploadFiles(media)
     } catch (e) {
       setCompleteBtnEnabled(true)
       if (e.message === 'cancel') {
@@ -301,7 +303,7 @@ export default (props) => {
       }
       console.log(result)
       console.log(result._id)
-      props.history.push(`/postedit/${result._id}`)
+      props.history.replace(`/postedit/${result._id}`)
     } catch (e) {
       overlays.showToast(e.message)
       setCompleteBtnEnabled(true)
@@ -309,62 +311,62 @@ export default (props) => {
     setCompleteBtnEnabled(true)
   }
 
-  const _insertMedias = (index, medias) => {
+  const insertMedias = (index, medias) => {
     const {media} = post
     let arr1 = media.slice(0, index)
     let arr2 = media.slice(index, media.length + 1)
     arr1.push(...medias)
     let newMedia = arr1.concat(arr2)
-    _setPostState('media', newMedia)
+    setPostState('media', newMedia)
   }
 
-  const _updateMedia = (index, updateParams) => {
+  const updateMedia = (index, updateParams) => {
     const {media} = post
     media[index] = {
       ...media[index],
       ...updateParams
     }
-    _setPostState('media', media)
+    setPostState('media', media)
     if (updateParams.isCover) {
-      _setItemToCover(index, media[index])
+      setItemToCover(index, media[index])
     }
   }
 
   // 把某项media设置为封面图
-  const _setItemToCover = (index, item) => {
-    _setPostState('headbacimgurl', item.body)
-    _setPostState('coverKey', item.key)
+  const setItemToCover = (index, item) => {
+    setPostState('headbacimgurl', item.body)
+    setPostState('coverKey', item.key)
   }
 
-  const _clickMedia = (data, index) => {
-    _showAddOverlay(data.type, index, false)
+  const clickMedia = (data, index) => {
+    showAddOverlay(data.type, index, false)
   }
 
-  const _del = (index) => {
+  const del = (index) => {
     let {media} = post
     media.splice(index, 1)
-    _setPostState('media', media)
+    setPostState('media', media)
   }
 
-  const _up = (index) => {
+  const up = (index) => {
     let {media} = post
     if (index === 0) return
     [media[index - 1], media[index]] = [media[index], media[index - 1]]
-    _setPostState('media', media)
+    setPostState('media', media)
   }
 
-  const _down = (index) => {
+  const down = (index) => {
     let {media} = post
     if (index === media.length - 1) return
     [media[index], media[index + 1]] = [media[index + 1], media[index]]
-    _setPostState('media', media)
+    setPostState('media', media)
   }
 
-  const _openAdd = (index) => {
+  const openAdd = (index) => {
     setOpenedAddItem(index)
   }
 
-  const _mediaIsCover = (item) => {
+  const mediaIsCover = (item) => {
     const {headbacimgurl, coverKey} = post
     if (!item) return false
     if (headbacimgurl === item.body) return true
@@ -372,11 +374,11 @@ export default (props) => {
     return false
   }
 
-  const _onPhotoChoose = (index, photos, isImage) => {
+  const onPhotoChoose = (index, photos, isImage) => {
     if (!photos || photos.length === 0) return
     // 如果没封面，就把第一张设为封面
     if (isImage && !post.headbacimgurl && !post.coverKey) {
-      _setLocalImageToCover(photos[0].src, photos[0].file)
+      setLocalImageToCover(photos[0].src, photos[0].file)
     }
 
     let insertData = []
@@ -391,14 +393,14 @@ export default (props) => {
         file
       })
     }
-    _insertMedias(index, insertData)
+    insertMedias(index, insertData)
   }
 
-  const _choosePhoto = async (index, isImage) => {
+  const choosePhoto = async (index, isImage) => {
     let data = null
     try {
       data = await utils.choosePhoto(isImage, true)
-      return _onPhotoChoose(index, data, isImage)
+      return onPhotoChoose(index, data, isImage)
     } catch (e) {
       overlays.showToast(e.message)
       return
@@ -409,41 +411,41 @@ export default (props) => {
     let photos = await utils.choosePhoto(true, false)
     let photo = photos[0]
     const {file, src} = photo
-    _setLocalImageToCover(src, file)
+    setLocalImageToCover(src, file)
   }
 
-  const _setLocalImageToCover = (src, file) => {
-    _setPostState('headbacimgurl', src)
-    _setPostState('coverKey', '')
-    _coverFile = file
+  const setLocalImageToCover = (src, file) => {
+    setPostState('headbacimgurl', src)
+    setPostState('coverKey', '')
+    coverFile = file
   }
 
-  const _onAddClick = (type, index) => {
+  const onAddClick = (type, index) => {
     if (type === MediaTypes.Image) {
-      _choosePhoto(index, true)
+      choosePhoto(index, true)
     } else if (type === MediaTypes.Video) {
       overlays.showActionSheet([
-        {text: '本地', onPress: () => _choosePhoto(index, false)},
-        {text: '网络', onPress: () => _showAddOverlay(type, index, true)},
+        {text: '本地', onPress: () => choosePhoto(index, false)},
+        {text: '网络', onPress: () => showAddOverlay(type, index, true)},
       ])
     } else {
-      _showAddOverlay(type, index, true)
+      showAddOverlay(type, index, true)
     }
   }
 
   const _onOverlayChange = (data, index, isNew) => {
     if (isNew)
-      _insertMedias(index, [data])
+      insertMedias(index, [data])
     else
-      _updateMedia(index, data)
+      updateMedia(index, data)
   }
 
-  const _renderAddItem = (index) => {
+  const renderAddItem = (index) => {
     return (
       <div
         ref={openedAddItem === index ? addBtn : null}
         className='add-row'
-        onClick={() => _openAdd(index)}
+        onClick={() => openAdd(index)}
       >
         <img className='icon' src={images.add_spe_icon}/>
       </div>
@@ -453,29 +455,29 @@ export default (props) => {
   const _renderMedia = (media) => {
     const {coverKey, headbacimgurl} = post
     if (!media || media.length === 0) {
-      return _renderAddItem(0)
+      return renderAddItem(0)
     }
     return media.map((data, index) => (
       // 每个item的key不变可保证每次修改元素后所有的视频不重新加载
       <ul key={`${data._id}-${data.body}`}>
-        {_renderAddItem(index)}
+        {renderAddItem(index)}
         <EditMediaItem
-          isCover={_mediaIsCover(data)}
+          isCover={mediaIsCover(data)}
           data={data}
-          onClick={() => _clickMedia(data, index)}
-          onDelete={() => _del(index)}
-          onUp={() => _up(index)}
-          onDown={() => _down(index)}
-          onSetCover={() => _setItemToCover(index, data)}
+          onClick={() => clickMedia(data, index)}
+          onDelete={() => del(index)}
+          onUp={() => up(index)}
+          onDown={() => down(index)}
+          onSetCover={() => setItemToCover(index, data)}
         />
         {index === media.length - 1
-          ? _renderAddItem(index + 1)
+          ? renderAddItem(index + 1)
           : null}
       </ul>
     ))
   }
 
-  const _showAddOverlay = (type, index, isNew) => {
+  const showAddOverlay = (type, index, isNew) => {
     let curData = isNew ? null : post.media[index]
     let OverlayView = null
     switch (type) {
@@ -500,7 +502,7 @@ export default (props) => {
         <OverlayView
           ref={overlay}
           data={curData}
-          isCover={_mediaIsCover(curData)}
+          isCover={mediaIsCover(curData)}
           onChange={(data) => {
             _onOverlayChange(data, index, isNew)
             overlays.dismiss(key)
@@ -531,7 +533,7 @@ export default (props) => {
           />
           <div className='wrapper'>
             <button
-              onClick={() => _setPostState('coverHidden', true)}
+              onClick={() => setPostState('coverHidden', true)}
               className='remove'>
               <img className='remove-img' src={images.edit_remove_icon}/>
             </button>
@@ -546,7 +548,7 @@ export default (props) => {
     } else {
       return (
         <div
-          onClick={() => _setPostState('coverHidden', false)}
+          onClick={() => setPostState('coverHidden', false)}
           className='edit-cover-hidden'
         >
           <img className='img' src={headbacimgurl}/>
@@ -601,7 +603,7 @@ export default (props) => {
             className='title-input'
             placeholder="输入标题(2-50字)"
             value={title || ''}
-            onChange={e => _setPostState('title', e.target.value)}
+            onChange={e => setPostState('title', e.target.value)}
           />
           {/*<p>{post.description}</p>*/}
           {_renderMedia(media)}
@@ -610,8 +612,8 @@ export default (props) => {
         <EditBottomButtons
           audio={audio_id}
           status={status}
-          onLeftClick={() => _showBottomEdit('audio')}
-          onRightClick={() => _showBottomEdit('status')}
+          onLeftClick={() => showBottomEdit('audio')}
+          onRightClick={() => showBottomEdit('status')}
         />
         <div style={{height: EditBottomHeight}}/>
         {_renderPercent()}
