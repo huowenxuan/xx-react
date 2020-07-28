@@ -131,7 +131,7 @@ export default (props) => {
     }))
   }
 
-  const _resetProgress = () => {
+  const resetProgress = () => {
     setUpload({
       show: false,
       currentIndex: 0,
@@ -141,7 +141,7 @@ export default (props) => {
     })
   }
 
-  const _cancelUpload = () => {
+  const cancelUpload = () => {
     overlays.showAlert('是否取消上传', '', [
       {text: '取消'},
       {text: '确定', onPress: () => uploadCancel = true}
@@ -244,11 +244,11 @@ export default (props) => {
         updateMedia(index, {key})
       }
     }
-    _resetProgress()
+    resetProgress()
   }
 
 
-  const _complete = async () => {
+  const complete = async () => {
     const {media} = post
 
     if (!post.title) {
@@ -269,7 +269,7 @@ export default (props) => {
       } else {
         console.error(e)
         overlays.showAlert('上传失败，是否重新上传？', '', [
-          {text: '确定', onPress: async () => _complete()},
+          {text: '确定', onPress: async () => complete()},
           {type: 'cancel'},
         ])
       }
@@ -411,7 +411,7 @@ export default (props) => {
     }
   }
 
-  const _onCoverClick = async () => {
+  const onCoverClick = async () => {
     let photos = await utils.choosePhoto(true, false)
     let photo = photos[0]
     const {file, src} = photo
@@ -437,7 +437,7 @@ export default (props) => {
     }
   }
 
-  const _onOverlayChange = (data, index, isNew) => {
+  const onOverlayChange = (data, index, isNew) => {
     if (isNew)
       insertMedias(index, [data])
     else
@@ -456,7 +456,7 @@ export default (props) => {
     )
   }
 
-  const _renderMedia = (media) => {
+  const renderMedia = (media) => {
     const {coverKey, headbacimgurl} = post
     if (!media || media.length === 0) {
       return renderAddItem(0)
@@ -508,7 +508,7 @@ export default (props) => {
           data={curData}
           isCover={mediaIsCover(curData)}
           onChange={(data) => {
-            _onOverlayChange(data, index, isNew)
+            onOverlayChange(data, index, isNew)
             overlays.dismiss(key)
           }}
           onCancel={() => overlays.dismiss(key)}
@@ -517,12 +517,12 @@ export default (props) => {
     )
   }
 
-  const _renderCover = () => {
+  const renderCover = () => {
     const {coverKey, headbacimgurl, coverHidden} = post
     if (!headbacimgurl) {
       return (
         <div
-          onClick={_onCoverClick}
+          onClick={onCoverClick}
           className='edit-cover edit-cover-none'
         >
           上传封面
@@ -542,7 +542,7 @@ export default (props) => {
               <img className='remove-img' src={images.edit_remove_icon}/>
             </button>
             <button
-              onClick={_onCoverClick}
+              onClick={onCoverClick}
               className='update'>
               更改封面
             </button>
@@ -562,7 +562,7 @@ export default (props) => {
     }
   }
 
-  const _renderPercent = () => {
+  const renderPercent = () => {
     const {
       currentIndex,
       currentPercent,
@@ -578,7 +578,7 @@ export default (props) => {
           <p>正在上传第{currentIndex + 1}张{parseInt(currentPercent.toString())}%，共{count}张</p>
           <button
             className='cancel'
-            onClick={_cancelUpload}
+            onClick={cancelUpload}
           >
             取消上传
           </button>
@@ -595,13 +595,13 @@ export default (props) => {
         onBack={props.history.goBack}
         rightButtons={[
           completeBtnEnabled
-            ? {text: '完成', onClick: _complete}
+            ? {text: '完成', onClick: complete}
             : {text: ''},
         ]}
       />
 
       <div className='post-edit'>
-        {_renderCover()}
+        {renderCover()}
         <div id='wrapper'>
           <input
             className='title-input'
@@ -610,7 +610,7 @@ export default (props) => {
             onChange={e => setPostState('title', e.target.value)}
           />
           {/*<p>{post.description}</p>*/}
-          {_renderMedia(media)}
+          {renderMedia(media)}
         </div>
 
         <EditBottomButtons
@@ -620,7 +620,7 @@ export default (props) => {
           onRightClick={() => showBottomEdit('status')}
         />
         <div style={{height: EditBottomHeight}}/>
-        {_renderPercent()}
+        {renderPercent()}
       </div>
     </div>
   )
