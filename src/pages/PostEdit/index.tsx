@@ -1,4 +1,4 @@
-import React, {PureComponent} from 'react'
+import React, {PureComponent, useEffect, useState} from 'react'
 import EditMediaItem from "../../components/Edit/MediaItem/"
 import EditAdd from "../../components/Edit/Add"
 import EditTextOverlay from '../../components/Edit/TextOverlay/'
@@ -26,55 +26,68 @@ const MediaTypes = {
   Video: 'video'
 }
 
-export default class DetailPage extends PureComponent {
-  state: any
-  props: any
+export default (props) => {
+  let _coverFile = null // 原生图片选择器选择图片后的file文件，设置为封面图
+  let overlay: any = React.createRef()
+  let addBtn: any = React.createRef()
+  let postId = ''
+  let _uploadCancel = false
 
-  _coverFile = null // 原生图片选择器选择图片后的file文件，设置为封面图
-  overlay: any = React.createRef()
-  addBtn: any = React.createRef()
-  postId = ''
-  _uploadCancel = false
+  const [openedAddItem, setOpenedAddItem] = useState(-1)
+  const [post, setPost]: any = useState({
+    media: [],
+    coverHidden: false,
+    status: 'public'
+  })
+  const [overlayType, setOverlayType] = useState(MediaTypes.None)
+  // 当前编辑的media
+  const [currentEdit, setCurrentEdit] = useState({
+    index: -1, // 包含media的item和添加按钮
+    isNew: false  // 区分是修改item还是新增
+  })
+  const [upload, setUpload] = useState({
+    show: false,
+    currentIndex: 0,
+    currentPercent: 0,
+    count: 0,
+    percent: 0
+  })
+  const [completeBtnEnabled, setCompleteBtnEnabled] = useState(true)
 
-  constructor(props) {
-    super(props)
-    this.state = {
-      openedAddItem: -1,
-      post: {
-        media: [],
-        coverHidden: false,
-        status: 'public'
-      },
-      overlayType: MediaTypes.None,
-      // 当前编辑的media
-      currentEdit: {
-        index: -1, // 包含media的item和添加按钮
-        isNew: false  // 区分是修改item还是新增
-      },
-      upload: {
-        show: false,
-        currentIndex: 0,
-        currentPercent: 0,
-        count: 0,
-        percent: 0
-      },
-      completeBtnEnabled: true
-    }
-  }
+  useEffect(() => {
+    _initData()
+  }, [])
 
-  componentDidMount() {
-    this._initData()
-  }
+  useEffect(() => {
+  }, [post])
 
-  async _initData() {
-    const {id} = this.props.match.params
-    const {photos} = this.props.location
+  useEffect(()=>{
+    if (openedAddItem === -1) return
+    let rect = addBtn.current.getBoundingClientRect()
+    let key = overlays.show(
+      <EditAdd
+        onDismiss={() => {
+          overlays.dismiss(key)
+          setOpenedAddItem(-1)
+        }}
+        rect={rect}
+        onText={() =>  _onAddClick(MediaTypes.Text, openedAddItem)}
+        onImage={() =>  _onAddClick(MediaTypes.Image, openedAddItem)}
+        onLink={() =>  _onAddClick(MediaTypes.Link, openedAddItem)}
+        onVideo={() =>  _onAddClick(MediaTypes.Video, openedAddItem)}
+      />
+    )
+  }, [openedAddItem])
+
+  const _initData = async () => {
+    const {id} = props.match.params
+    const {photos} = props.location
     if (id) {
-      this.postId = id
+      postId = id
       // 编辑旧帖子
       let data = await request.get(request.API.postEdit + id, {}, Token)
-      let post = data.post
-      const {media} = post
+      let postData = data.post
+      const {media} = postData
       for (let item of media) {
         const {info, type, style} = item
         if (type === 'image') {
@@ -82,60 +95,56 @@ export default class DetailPage extends PureComponent {
           item.style = utils.toJson(style)
         }
       }
-      console.log(post)
-      this.setState({post})
+      console.log(postData)
+      setPost(postData)
     } else if (photos) {
       // 根据照片创建新帖子
-      this._onPhotoChoose(photos, true)
+      _onPhotoChoose(photos, true)
     } else {
-      this._openAdd(0)
+      _openAdd(0)
     }
   }
 
   // 弹出选择图片和权限遮罩
-  _showBottomEdit(type) {
-    const {audio_id, status, protect} = this.state.post
+  const _showBottomEdit = (type) => {
+    const {audio_id, status, protect} = post
     overlays.show(
       <EditBottomOverlay
         type={type}
         audio={audio_id}
         status={status}
         protect={protect}
-        onUpdate={this._setPostState}
+        onUpdate={_setPostState}
       />
     )
   }
 
-  _setPostState = (field, data, cb?) => {
-    this.setState((preState: any) => ({
-      post: {
-        ...preState.post,
-        [field]: data
-      }
-    }), cb)
+  const _setPostState = (field, data) => {
+    setPost(prevPost => ({
+      ...prevPost,
+      [field]: data
+    }))
   }
 
-  _resetProgress = () => {
-    this.setState({
-      upload: {
-        show: false,
-        currentIndex: 0,
-        currentPercent: 0,
-        count: 0,
-        percent: 0
-      },
+  const _resetProgress = () => {
+    setUpload({
+      show: false,
+      currentIndex: 0,
+      currentPercent: 0,
+      count: 0,
+      percent: 0
     })
   }
 
-  _cancelUpload = () => {
+  const _cancelUpload = () => {
     overlays.showAlert('是否取消上传', '', [
       {text: '取消'},
-      {text: '确定', onPress: () => this._uploadCancel = true}
+      {text: '确定', onPress: () => _uploadCancel = true}
     ])
   }
 
-  async _uploadFiles(media) {
-    this._uploadCancel = false
+  const _uploadFiles = async (media) => {
+    _uploadCancel = false
 
     let uploadMedias = []
     for (let i = 0; i < media.length; i++) {
@@ -156,13 +165,13 @@ export default class DetailPage extends PureComponent {
     }
 
     // 判断封面是否需要上传
-    const {headbacimgurl, coverKey} = this.state.post
+    const {headbacimgurl, coverKey} = post
     if (!coverKey && headbacimgurl && !uploadMedias.find(i => i.item.body === headbacimgurl)) {
       uploadMedias.unshift({
         index: -1,
         isCover: true,
         item: {
-          file: this._coverFile,
+          file: _coverFile,
           body: headbacimgurl
         }
       })
@@ -170,26 +179,22 @@ export default class DetailPage extends PureComponent {
 
     let uploadCount = uploadMedias.length
     if (uploadCount > 0) {
-      this.setState({
-        upload: {
-          show: true,
-          count: uploadCount,
-          percent: 0,
-          currentIndex: 0,
-          currentPercent: 0
-        }
+      setUpload({
+        show: true,
+        count: uploadCount,
+        percent: 0,
+        currentIndex: 0,
+        currentPercent: 0
       })
     }
     for (let i = 0; i < uploadMedias.length; i++) {
       let beforeDate = new Date()
       let {index, item, isCover} = uploadMedias[i]
-      this.setState((prev: any) => ({
-        upload: {
-          ...prev.upload,
-          currentIndex: i,
-          currentPercent: 0,
-          percent: (i / uploadCount) * 100
-        }
+      setUpload((prevUpload) => ({
+        ...prevUpload,
+        currentIndex: i,
+        currentPercent: 0,
+        percent: (i / uploadCount) * 100
       }))
       const {body, file} = item
       let key = await new Promise(async (resolve, reject) => {
@@ -197,30 +202,26 @@ export default class DetailPage extends PureComponent {
         const error = (e) => reject(e)
         // 检查是否点击了取消
         timer = setInterval(() => {
-          if (this._uploadCancel) {
+          if (_uploadCancel) {
             uploading && uploading.cancel()
             error(new Error('cancel'))
           }
         }, 300)
         const onProgress = (percent) => {
           console.log(percent)
-          this.setState((prev: any) => ({
-            upload: {
-              ...prev.upload,
-              currentPercent: percent,
-              percent: ((i / uploadCount) * 100) + (percent / uploadCount)
-            }
+          setUpload((prevUpload) => ({
+            ...prevUpload,
+            currentPercent: percent,
+            percent: ((i / uploadCount) * 100) + (percent / uploadCount)
           }))
         }
         try {
           uploading = await utils.uploadPhoto(body, file, onProgress)
           let key = await uploading.start()
-          this.setState((prev: any) => ({
-            upload: {
-              ...prev.upload,
-              currentPercent: 100,
-              percent: ((i / uploadCount) * 100) + (100 / uploadCount)
-            }
+          setUpload((prevUpload) => ({
+            ...prevUpload,
+            currentPercent: 100,
+            percent: ((i / uploadCount) * 100) + (100 / uploadCount)
           }))
           resolve(key)
         } catch (e) {
@@ -232,17 +233,17 @@ export default class DetailPage extends PureComponent {
 
       if (isCover) {
         console.log('封面上传完成 ', key)
-        this._setPostState('coverKey', key)
+        _setPostState('coverKey', key)
       } else {
         console.log('上传完成 ', key)
-        this._updateMedia(index, {key})
+        _updateMedia(index, {key})
       }
     }
-    this._resetProgress()
+    _resetProgress()
   }
 
-  _complete = async () => {
-    const {post} = this.state
+
+  const _complete = async () => {
     const {media} = post
 
     if (!post.title) {
@@ -253,25 +254,23 @@ export default class DetailPage extends PureComponent {
       overlays.showToast('请添加图片或者文字')
       return
     }
-
-    this.setState({completeBtnEnabled: false})
+    setCompleteBtnEnabled(false)
     try {
-      await this._uploadFiles(media)
+      await _uploadFiles(media)
     } catch (e) {
-      this._resetProgress()
-      this.setState({completeBtnEnabled: true})
+      setCompleteBtnEnabled(true)
       if (e.message === 'cancel') {
         overlays.showToast('取消上传')
       } else {
         console.error(e)
         overlays.showAlert('上传失败，是否重新上传？', '', [
-          {text: '确定', onPress: async () => this._complete()},
+          {text: '确定', onPress: async () => _complete()},
           {type: 'cancel'},
         ])
       }
     }
 
-    let newPost = _.cloneDeep(this.state.post)
+    let newPost = _.cloneDeep(post)
     let newMedias = newPost.media
     for (let item of newMedias) {
       delete item.file
@@ -294,8 +293,8 @@ export default class DetailPage extends PureComponent {
     console.log(data)
     let result
     try {
-      if (this.postId) {
-        result = await request.post(request.API.postUpdate + this.postId, {data}, Token)
+      if (postId) {
+        result = await request.post(request.API.postUpdate + postId, {data}, Token)
         overlays.showToast('更新成功')
       } else {
         result = await request.post(request.API.postCreate, {data}, Token)
@@ -304,109 +303,93 @@ export default class DetailPage extends PureComponent {
       console.log(result)
     } catch (e) {
       overlays.showToast(e.message)
-      this.setState({completeBtnEnabled: true})
+      setCompleteBtnEnabled(true)
     }
-
-    this.setState({completeBtnEnabled: true})
+    setCompleteBtnEnabled(true)
   }
 
-  _hiddenOverlay = () => {
-    this.overlay.current && this.overlay.current.hidden(() => {
-      this.setState({overlayType: MediaTypes.None})
+  const _hiddenOverlay = () => {
+    overlay.current && overlay.current.hidden(() => {
+      setOverlayType(MediaTypes.None)
     })
   }
 
-  _insertMedias(index, medias) {
-    const {media} = this.state.post
+  const _insertMedias = (index, medias) => {
+    console.log(index, 'insertMedias')
+    const {media} = post
     let arr1 = media.slice(0, index)
     let arr2 = media.slice(index, media.length + 1)
     arr1.push(...medias)
     let newMedia = arr1.concat(arr2)
-    this._setPostState('media', newMedia)
+    _setPostState('media', newMedia)
   }
 
-  _updateMedia(index, updateParams) {
-    const {media} = this.state.post
+  const _updateMedia = (index, updateParams) => {
+    const {media} = post
     media[index] = {
       ...media[index],
       ...updateParams
     }
-    this._setPostState('media', media)
+    _setPostState('media', media)
     if (updateParams.isCover) {
-      this._setItemToCover(index, media[index])
+      _setItemToCover(index, media[index])
     }
   }
 
   // 把某项media设置为封面图
-  _setItemToCover(index, item) {
-    this._setPostState('headbacimgurl', item.body)
-    this._setPostState('coverKey', item.key)
+  const _setItemToCover = (index, item) => {
+    _setPostState('headbacimgurl', item.body)
+    _setPostState('coverKey', item.key)
   }
 
-  _clickMedia(data, index) {
-    this.setState({
-      overlayType: data.type,
-      currentEdit: {index, isNew: false}
-    })
+  const _clickMedia = (data, index) => {
+    setOverlayType(data.type)
+    setCurrentEdit({index, isNew: false})
   }
 
-  _del(index) {
-    let media = this.state.post.media
+  const _del = (index) => {
+    let {media} = post
     media.splice(index, 1)
-    this._setPostState('media', media, () => {
-      if (this.state.post.media.length === 0) {
-        this._openAdd(0)
-      }
-    })
+    _setPostState('media', media)
   }
 
-  _up(index) {
-    let media = this.state.post.media
+  const _up = (index) => {
+    let {media} = post
     if (index === 0) return
     [media[index - 1], media[index]] = [media[index], media[index - 1]]
-    this._setPostState('media', media)
+    _setPostState('media', media)
   }
 
-  _down(index) {
-    let media = this.state.post.media
+  const _down = (index) => {
+    let {media} = post
     if (index === media.length - 1) return
     [media[index], media[index + 1]] = [media[index + 1], media[index]]
-    this._setPostState('media', media)
+    _setPostState('media', media)
   }
 
-  _openAdd = (index) => {
-    this.setState({openedAddItem: index}, () => {
-      let rect = this.addBtn.current.getBoundingClientRect()
-      let key = overlays.show(
-        <EditAdd
-          onDismiss={() => overlays.dismiss(key)}
-          rect={rect}
-          onText={() => this._onAddClick(MediaTypes.Text, index)}
-          onImage={() => this._onAddClick(MediaTypes.Image, index)}
-          onLink={() => this._onAddClick(MediaTypes.Link, index)}
-          onVideo={() => this._onAddClick(MediaTypes.Video, index)}
-        />
-      )
-    })
+  const _openAdd = (index) => {
+    setOpenedAddItem(index)
+    console.log(index, 'open')
   }
 
-  _mediaIsCover(item) {
-    const {headbacimgurl, coverKey} = this.state.post
+  const _mediaIsCover = (item) => {
+    const {headbacimgurl, coverKey} = post
     if (!item) return false
     if (headbacimgurl === item.body) return true
     if (coverKey && coverKey === item.key) return true
     return false
   }
 
-  _onPhotoChoose(photos, isImage) {
+  const _onPhotoChoose = (photos, isImage) => {
     if (!photos || photos.length === 0) return
     // 如果没封面，就把第一张设为封面
-    if (isImage && !this.state.post.headbacimgurl) {
-      this._setLocalImageToCover(photos[0].src, photos[0].file)
+    if (isImage && !post.headbacimgurl) {
+      _setLocalImageToCover(photos[0].src, photos[0].file)
     }
 
     let insertData = []
-    const {index} = this.state.currentEdit
+    const {index} = currentEdit
+    console.log(index, 'onPhotoChoose')
     for (let item of photos) {
       const {width, height, size, src, duration, file} = item
       insertData.push({
@@ -418,14 +401,16 @@ export default class DetailPage extends PureComponent {
         file
       })
     }
-    this._insertMedias(index, insertData)
+    _insertMedias(index, insertData)
   }
 
-  async _choosePhoto(isImage) {
+  const _choosePhoto = async (isImage) => {
     let data = null
+    console.log(currentEdit.index, 'before choosePhoto')
     try {
       data = await utils.choosePhoto(isImage, true)
-      return this._onPhotoChoose(data, isImage)
+      console.log(currentEdit.index, 'after choosePhoto')
+      return _onPhotoChoose(data, isImage)
     } catch (e) {
       overlays.showToast(e.message)
       return
@@ -433,83 +418,81 @@ export default class DetailPage extends PureComponent {
   }
 
 
-  _onCoverClick = async () => {
+  const _onCoverClick = async () => {
     let photos = await utils.choosePhoto(true, false)
     let photo = photos[0]
     const {file, src} = photo
-    this._setLocalImageToCover(src, file)
+    _setLocalImageToCover(src, file)
   }
 
-  _setLocalImageToCover(src, file) {
-    this._setPostState('headbacimgurl', src)
-    this._setPostState('coverKey', '')
-    this._coverFile = file
+  const _setLocalImageToCover = (src, file) => {
+    _setPostState('headbacimgurl', src)
+    _setPostState('coverKey', '')
+    _coverFile = file
   }
 
-  _onAddClick(type, index) {
-    this.setState({currentEdit: {index, isNew: true}})
+  const _onAddClick = (type, index) => {
+    console.log(index, 'on add click')
+    setCurrentEdit({index, isNew: true})
     if (type === MediaTypes.Image) {
-      this._choosePhoto(true)
+      _choosePhoto(true)
     } else if (type === MediaTypes.Video) {
       overlay.showActionSheet([
-        {text: '本地', onPress: () => this._choosePhoto(false)},
-        {text: '网络', onPress: () => this.setState({overlayType: type})},
+        {text: '本地', onPress: () => _choosePhoto(false)},
+        {text: '网络', onPress: () => setOverlayType(type)},
       ])
     } else {
-      this.setState({overlayType: type})
+      setOverlayType(type)
     }
   }
 
-  _onOverlayChange = (data, isNew) => {
-    const {index} = this.state.currentEdit
-    this._hiddenOverlay()
+  const _onOverlayChange = (data, isNew) => {
+    const {index} = currentEdit
+    _hiddenOverlay()
     if (isNew)
-      this._insertMedias(index, [data])
+      _insertMedias(index, [data])
     else
-      this._updateMedia(index, data)
+      _updateMedia(index, data)
   }
 
-  _renderAddItem(index) {
-    const {openedAddItem} = this.state
+  const _renderAddItem = (index) => {
     return (
       <div
-        ref={openedAddItem === index ? this.addBtn : null}
+        ref={openedAddItem === index ? addBtn : null}
         className='add-row'
-        onClick={() => this._openAdd(index)}
+        onClick={()=> _openAdd(index)}
       >
         <img className='icon' src={images.add_spe_icon}/>
       </div>
     )
   }
 
-  _renderMedia(media) {
-    const {coverKey, headbacimgurl} = this.state.post
+  const _renderMedia = (media) => {
+    const {coverKey, headbacimgurl} = post
     if (!media || media.length === 0) {
-      return this._renderAddItem(0)
+      return _renderAddItem(0)
     }
     return media.map((data, index) => (
       // 每个item的key不变可保证每次修改元素后所有的视频不重新加载
       <ul key={`${data._id}-${data.body}`}>
-        {this._renderAddItem(index)}
+        {_renderAddItem(index)}
         <EditMediaItem
-          isCover={this._mediaIsCover(data)}
+          isCover={_mediaIsCover(data)}
           data={data}
-          onClick={() => this._clickMedia(data, index)}
-          onDelete={() => this._del(index)}
-          onUp={() => this._up(index)}
-          onDown={() => this._down(index)}
-          onSetCover={() => this._setItemToCover(index, data)}
+          onClick={() => _clickMedia(data, index)}
+          onDelete={() => _del(index)}
+          onUp={() => _up(index)}
+          onDown={() => _down(index)}
+          onSetCover={() => _setItemToCover(index, data)}
         />
         {index === media.length - 1
-          ? this._renderAddItem(index + 1)
+          ? _renderAddItem(index + 1)
           : null}
       </ul>
     ))
   }
 
-  _renderAddOverlay() {
-    const {overlayType} = this.state
-    const {post, currentEdit} = this.state
+  const _renderAddOverlay = () => {
     if (!post) return null
     const {isNew, index} = currentEdit
     let curData = isNew ? null : post.media[index]
@@ -537,23 +520,22 @@ export default class DetailPage extends PureComponent {
         position: 'relative', zIndex: 999
       }}>
         <OverlayView
-          ref={this.overlay}
+          ref={overlay}
           data={curData}
-          isCover={this._mediaIsCover(curData)}
-          onChange={(data) => this._onOverlayChange(data, isNew)}
-          onCancel={this._hiddenOverlay}
+          isCover={_mediaIsCover(curData)}
+          onChange={(data) => _onOverlayChange(data, isNew)}
+          onCancel={_hiddenOverlay}
         />
       </div>
     )
   }
 
-  _renderCover() {
-    const {post} = this.state
+  const _renderCover = () => {
     const {coverKey, headbacimgurl, coverHidden} = post
     if (!headbacimgurl) {
       return (
         <div
-          onClick={this._onCoverClick}
+          onClick={_onCoverClick}
           className='edit-cover edit-cover-none'
         >
           上传封面
@@ -568,12 +550,12 @@ export default class DetailPage extends PureComponent {
           />
           <div className='wrapper'>
             <button
-              onClick={() => this._setPostState('coverHidden', true)}
+              onClick={() => _setPostState('coverHidden', true)}
               className='remove'>
               <img className='remove-img' src={images.edit_remove_icon}/>
             </button>
             <button
-              onClick={this._onCoverClick}
+              onClick={_onCoverClick}
               className='update'>
               更改封面
             </button>
@@ -583,7 +565,7 @@ export default class DetailPage extends PureComponent {
     } else {
       return (
         <div
-          onClick={() => this._setPostState('coverHidden', false)}
+          onClick={() => _setPostState('coverHidden', false)}
           className='edit-cover-hidden'
         >
           <img className='img' src={headbacimgurl}/>
@@ -593,23 +575,23 @@ export default class DetailPage extends PureComponent {
     }
   }
 
-  _renderPercent() {
+  const _renderPercent = () => {
     const {
       currentIndex,
       currentPercent,
       count,
       percent,
       show
-    } = this.state.upload
+    } = upload
     if (!show) return null
 
     return (
       <div className='percent'>
         <div className='child'>
-          <p>正在上传第{currentIndex + 1}张{parseInt(currentPercent)}%，共{count}张</p>
+          <p>正在上传第{currentIndex + 1}张{parseInt(currentPercent.toString())}%，共{count}张</p>
           <button
             className='cancel'
-            onClick={this._cancelUpload}
+            onClick={_cancelUpload}
           >
             取消上传
           </button>
@@ -618,46 +600,43 @@ export default class DetailPage extends PureComponent {
     )
   }
 
-  render() {
-    const {post, completeBtnEnabled} = this.state
-    const {title, media, audio_id, status} = post
-    return (
-      <div>
-        <NavBar
-          title='写文章'
-          onBack={this.props.history.goBack}
-          rightButtons={[
-            completeBtnEnabled
-              ? {text: '完成', onClick: this._complete}
-              : {text: ''},
-          ]}
-        />
+  const {title, media, audio_id, status} = post
+  return (
+    <div>
+      <NavBar
+        title='写文章'
+        onBack={props.history.goBack}
+        rightButtons={[
+          completeBtnEnabled
+            ? {text: '完成', onClick: _complete}
+            : {text: ''},
+        ]}
+      />
 
-        <div className='post-edit'>
-          {this._renderCover()}
-          <div id='wrapper'>
-            <input
-              className='title-input'
-              placeholder="输入标题(2-50字)"
-              value={title || ''}
-              onChange={e => this._setPostState('title', e.target.value)}
-            />
-            {/*<p>{post.description}</p>*/}
-            {this._renderMedia(media)}
-          </div>
-
-          {this._renderAddOverlay()}
-
-          <EditBottomButtons
-            audio={audio_id}
-            status={status}
-            onLeftClick={() => this._showBottomEdit('audio')}
-            onRightClick={() => this._showBottomEdit('status')}
+      <div className='post-edit'>
+        {_renderCover()}
+        <div id='wrapper'>
+          <input
+            className='title-input'
+            placeholder="输入标题(2-50字)"
+            value={title || ''}
+            onChange={e => _setPostState('title', e.target.value)}
           />
-          <div style={{height: EditBottomHeight}}/>
-          {this._renderPercent()}
+          {/*<p>{post.description}</p>*/}
+          {_renderMedia(media)}
         </div>
+
+        {_renderAddOverlay()}
+
+        <EditBottomButtons
+          audio={audio_id}
+          status={status}
+          onLeftClick={() => _showBottomEdit('audio')}
+          onRightClick={() => _showBottomEdit('status')}
+        />
+        <div style={{height: EditBottomHeight}}/>
+        {_renderPercent()}
       </div>
-    )
-  }
+    </div>
+  )
 }

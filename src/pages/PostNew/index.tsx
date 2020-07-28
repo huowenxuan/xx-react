@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useState} from 'react'
 import {withStateHandlers, compose, pure} from "recompose"
 import './index.less'
 import NavBar from "../../components/NavBar"
