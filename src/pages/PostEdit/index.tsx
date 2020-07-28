@@ -15,6 +15,7 @@ import images from '../../assets/images'
 import * as request from '../../request'
 import * as utils from '../../utils'
 import * as _ from 'lodash'
+import {pageWrapper} from '../../components/HigherOrderStatelessComponents'
 
 const Token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjU4YTE2NDkzMDRhZjE1OTgwYWZlNDk2YSIsInBob25lIjoiMTg4NDA5MTY3NDIiLCJpYXQiOjE1ODEzMjY4NDV9.jYNFFZWf0DcO5Wu5is21Htywds2zCDGH31YiLZSEeBw'
 const MediaTypes = {

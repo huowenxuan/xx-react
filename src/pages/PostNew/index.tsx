@@ -4,8 +4,9 @@ import './index.less'
 import NavBar from "../../components/NavBar"
 import images from "../../assets/images"
 import * as utils from "../../utils"
+import {pageWrapper} from '../../components/HigherOrderStatelessComponents'
 
-export default compose(pure)((props) => {
+export default pageWrapper()((props) => {
   const addImage = async () => {
     let photos = await utils.choosePhoto(true, true)
     props.history.push({

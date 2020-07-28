@@ -1,5 +1,6 @@
 import * as wechat from './wechat'
 import qiniu from './qiniu'
+export const isDev = process.env.NODE_ENV !== 'production'
 
 const u = window.navigator.userAgent
 export const isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1 //android终端
