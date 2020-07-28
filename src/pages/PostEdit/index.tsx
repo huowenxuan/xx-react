@@ -16,6 +16,7 @@ import * as utils from '../../utils'
 import * as _ from 'lodash'
 import {pageWrapper} from '../../components/HigherOrderStatelessComponents'
 import OverlayViewFade from "../../components/overlays/OverlayViewFade"
+import qs from 'querystring'
 
 const Token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjU4YTE2NDkzMDRhZjE1OTgwYWZlNDk2YSIsInBob25lIjoiMTg4NDA5MTY3NDIiLCJpYXQiOjE1ODEzMjY4NDV9.jYNFFZWf0DcO5Wu5is21Htywds2zCDGH31YiLZSEeBw'
 const MediaTypes = {
@@ -81,12 +82,15 @@ export default (props) => {
     coverFile = null
     uploadCancel = false
 
-    const {id} = props.match.params
-    const {photos} = props.location
-    if (id) {
-      postId = id
+
+    // const {id} = props.match.params
+    let {photos, search} = props.location
+    search = qs.decode(search.substr(1))
+
+    if (search.postId) {
+      postId = search.postId
       // 编辑旧帖子
-      let data = await request.get(request.API.postEdit + id, {}, Token)
+      let data = await request.get(request.API.postEdit + postId, {}, Token)
       let postData = data.post
       const {media} = postData
       for (let item of media) {
@@ -303,7 +307,7 @@ export default (props) => {
       }
       console.log(result)
       console.log(result._id)
-      props.history.replace(`/postedit/${result._id}`)
+      props.history.replace(`/postedit?postId=${result._id}`)
     } catch (e) {
       overlays.showToast(e.message)
       setCompleteBtnEnabled(true)

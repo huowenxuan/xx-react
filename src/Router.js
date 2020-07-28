@@ -16,8 +16,7 @@ export default (props) => (
         <Route exact path="/" component={PostNew}/>
         <Route exact path="/postnew" component={PostNew}/>
         <Route exact path="/applinks" component={AppLink}/>
-        <Route exact path="/postedit/" component={PostEdit}/>
-        <Route exact path="/postedit/:id" component={PostEdit}/>
+        <Route exact path="/postedit" component={PostEdit}/>
       </Switch>
     </BrowserRouter>
   </Provider>

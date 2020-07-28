@@ -5,12 +5,13 @@ import NavBar from "../../components/NavBar"
 import images from "../../assets/images"
 import * as utils from "../../utils"
 import {pageWrapper} from '../../components/HigherOrderStatelessComponents'
+import qs from 'querystring'
 
 export default pageWrapper()((props) => {
   const addImage = async () => {
     let photos = await utils.choosePhoto(true, true)
     props.history.push({
-      pathname: 'postedit/',
+      pathname: 'postedit',
       photos
     })
   }
