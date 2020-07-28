@@ -48,7 +48,7 @@ const EditMediaItem = (props) => {
       </div>
     )
   }
-  const _renderSortVideo = (item) => {
+  const _renderShortVideo = (item) => {
     return (
       <div className='image-box'>
         <video
@@ -139,8 +139,8 @@ const EditMediaItem = (props) => {
     case 'image':
       _renderItem = _renderImage(data)
       break
-    case 'sortvideo':
-      _renderItem = _renderSortVideo(data)
+    case 'shortvideo':
+      _renderItem = _renderShortVideo(data)
       break
     case 'video':
       _renderItem = _renderVideo(data)

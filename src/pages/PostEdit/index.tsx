@@ -7,7 +7,6 @@ import EditLinkOverlay from '../../components/Edit/LinkOverlay/'
 import EditWebVideoOverlay from '../../components/Edit/WebVideoOverlay/'
 import NavBar from '../../components/NavBar/'
 import './index.less'
-import overlay from "../../components/overlays"
 import EditBottomButtons, {EditBottomHeight} from "../../components/Edit/Bottom/Buttons/"
 import overlays from "../../components/overlays"
 import EditBottomOverlay from "../../components/Edit/Bottom/BottomOverlay"
@@ -27,18 +26,19 @@ const MediaTypes = {
   Video: 'video'
 }
 
-export default (props) => {
-  let _coverFile = null // 原生图片选择器选择图片后的file文件，设置为封面图
-  let overlay: any = React.createRef()
-  let addBtn: any = React.createRef()
-  let postId = ''
-  let _uploadCancel = false
+let postId = ''
+let _coverFile = null // 原生图片选择器选择图片后的file文件，设置为封面图
+let overlay: any = React.createRef()
+let addBtn: any = React.createRef()
+let _uploadCancel = false
 
+export default (props) => {
   const [openedAddItem, setOpenedAddItem] = useState(-1)
   const [post, setPost]: any = useState({
     media: [],
     coverHidden: false,
-    status: 'public'
+    // status: 'public'
+    status: 'private'
   })
   const [upload, setUpload] = useState({
     show: false,
@@ -90,7 +90,7 @@ export default (props) => {
           item.style = utils.toJson(style)
         }
       }
-      console.log(postData)
+      console.log('postData', postData)
       setPost(postData)
     } else if (photos) {
       // 根据照片创建新帖子
@@ -148,7 +148,7 @@ export default (props) => {
       if (
         !key && (
           type === 'image' ||
-          type === 'sortvideo'
+          type === 'shortvideo'
         ) && (
           body.startsWith('blob') ||
           body.startsWith('wx') ||
@@ -263,6 +263,7 @@ export default (props) => {
           {type: 'cancel'},
         ])
       }
+      return
     }
 
     let newPost = _.cloneDeep(post)
@@ -285,7 +286,6 @@ export default (props) => {
       status,
       protect,
     }
-    console.log(data)
     let result
     try {
       if (postId) {
@@ -296,6 +296,7 @@ export default (props) => {
         overlays.showToast('创建成功')
       }
       console.log(result)
+      console.log(result._id)
     } catch (e) {
       overlays.showToast(e.message)
       setCompleteBtnEnabled(true)
@@ -304,7 +305,6 @@ export default (props) => {
   }
 
   const _insertMedias = (index, medias) => {
-    console.log(index, 'insertMedias')
     const {media} = post
     let arr1 = media.slice(0, index)
     let arr2 = media.slice(index, media.length + 1)
@@ -357,7 +357,6 @@ export default (props) => {
 
   const _openAdd = (index) => {
     setOpenedAddItem(index)
-    console.log(index, 'open')
   }
 
   const _mediaIsCover = (item) => {
@@ -371,16 +370,15 @@ export default (props) => {
   const _onPhotoChoose = (index, photos, isImage) => {
     if (!photos || photos.length === 0) return
     // 如果没封面，就把第一张设为封面
-    if (isImage && !post.headbacimgurl) {
+    if (isImage && !post.headbacimgurl && !post.coverKey) {
       _setLocalImageToCover(photos[0].src, photos[0].file)
     }
 
     let insertData = []
-    console.log(index, 'onPhotoChoose')
     for (let item of photos) {
       const {width, height, size, src, duration, file} = item
       insertData.push({
-        type: isImage ? 'image' : 'sortvideo',
+        type: isImage ? 'image' : 'shortvideo',
         body: src,
         info: isImage
           ? {width, height, size}
@@ -402,7 +400,6 @@ export default (props) => {
     }
   }
 
-
   const _onCoverClick = async () => {
     let photos = await utils.choosePhoto(true, false)
     let photo = photos[0]
@@ -421,7 +418,7 @@ export default (props) => {
       _choosePhoto(index, true)
     } else if (type === MediaTypes.Video) {
       overlays.showActionSheet([
-        {text: '本地', onPress: () => _choosePhoto(index,  false)},
+        {text: '本地', onPress: () => _choosePhoto(index, false)},
         {text: '网络', onPress: () => _showAddOverlay(type, index, true)},
       ])
     } else {

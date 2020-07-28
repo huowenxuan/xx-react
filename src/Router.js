@@ -3,11 +3,11 @@ import {BrowserRouter, Route, Switch} from 'react-router-dom'
 import PostEdit from './pages/PostEdit/'
 import PostNew from './pages/PostNew/'
 import AppLink from './pages/AppLink/'
-import createHistory from 'history/createBrowserHistory'
+import {createBrowserHistory} from 'history'
 import {Provider} from "react-redux"
 import store from "./store"
 
-const history = createHistory()
+const history = createBrowserHistory()
 
 export default (props) => (
   <Provider store={props.store || store}>

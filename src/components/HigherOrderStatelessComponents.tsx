@@ -27,7 +27,6 @@ export const reduxWrapper = () => {
  */
 export const pageWrapper = (params = {}) => {
   return (WrappedComponent) => {
-    console.log(WrappedComponent.props, 'ssss')
     return reduxWrapper()(WrappedComponent)
   }
 }

@@ -47,8 +47,11 @@ class Qiniu {
           reject(e)
           console.error('上传失败:', e)
         },
-        () => resolve(key))
+        () =>{
+          resolve(key)
+        })
     })
+    console.log(44444)
     observable.cancel = () => subscription.unsubscribe()
     return observable
   }

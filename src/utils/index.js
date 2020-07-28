@@ -134,6 +134,8 @@ export async function uploadPhoto(path, file, onProgress) {
   } else if (file) {
     let key = qiniu.generateKey(path)
     return qiniu.uploadFile(file, key, onProgress)
+  } else {
+    throw new Error('没有路径或文件')
   }
 }
 
