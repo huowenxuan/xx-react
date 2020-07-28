@@ -51,7 +51,6 @@ class Qiniu {
           resolve(key)
         })
     })
-    console.log(44444)
     observable.cancel = () => subscription.unsubscribe()
     return observable
   }

@@ -50,7 +50,11 @@ export default (props) => {
   const [completeBtnEnabled, setCompleteBtnEnabled] = useState(true)
 
   useEffect(() => {
+    console.log('init data')
     _initData()
+    return ()=>{
+      console.log('unmount')
+    }
   }, [])
 
   useEffect(() => {
@@ -297,6 +301,7 @@ export default (props) => {
       }
       console.log(result)
       console.log(result._id)
+      props.history.push(`/postedit/${result._id}`)
     } catch (e) {
       overlays.showToast(e.message)
       setCompleteBtnEnabled(true)
