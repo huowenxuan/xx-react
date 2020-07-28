@@ -16,6 +16,7 @@ import * as request from '../../request'
 import * as utils from '../../utils'
 import * as _ from 'lodash'
 import {pageWrapper} from '../../components/HigherOrderStatelessComponents'
+import OverlayViewFade from "../../components/overlays/OverlayViewFade"
 
 const Token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjU4YTE2NDkzMDRhZjE1OTgwYWZlNDk2YSIsInBob25lIjoiMTg4NDA5MTY3NDIiLCJpYXQiOjE1ODEzMjY4NDV9.jYNFFZWf0DcO5Wu5is21Htywds2zCDGH31YiLZSEeBw'
 const MediaTypes = {
@@ -39,12 +40,6 @@ export default (props) => {
     coverHidden: false,
     status: 'public'
   })
-  const [overlayType, setOverlayType] = useState(MediaTypes.None)
-  // 当前编辑的media
-  const [currentEdit, setCurrentEdit] = useState({
-    index: -1, // 包含media的item和添加按钮
-    isNew: false  // 区分是修改item还是新增
-  })
   const [upload, setUpload] = useState({
     show: false,
     currentIndex: 0,
@@ -61,7 +56,7 @@ export default (props) => {
   useEffect(() => {
   }, [post])
 
-  useEffect(()=>{
+  useEffect(() => {
     if (openedAddItem === -1) return
     let rect = addBtn.current.getBoundingClientRect()
     let key = overlays.show(
@@ -71,10 +66,10 @@ export default (props) => {
           setOpenedAddItem(-1)
         }}
         rect={rect}
-        onText={() =>  _onAddClick(MediaTypes.Text, openedAddItem)}
-        onImage={() =>  _onAddClick(MediaTypes.Image, openedAddItem)}
-        onLink={() =>  _onAddClick(MediaTypes.Link, openedAddItem)}
-        onVideo={() =>  _onAddClick(MediaTypes.Video, openedAddItem)}
+        onText={() => _onAddClick(MediaTypes.Text, openedAddItem)}
+        onImage={() => _onAddClick(MediaTypes.Image, openedAddItem)}
+        onLink={() => _onAddClick(MediaTypes.Link, openedAddItem)}
+        onVideo={() => _onAddClick(MediaTypes.Video, openedAddItem)}
       />
     )
   }, [openedAddItem])
@@ -99,7 +94,7 @@ export default (props) => {
       setPost(postData)
     } else if (photos) {
       // 根据照片创建新帖子
-      _onPhotoChoose(photos, true)
+      _onPhotoChoose(0, photos, true)
     } else {
       _openAdd(0)
     }
@@ -308,12 +303,6 @@ export default (props) => {
     setCompleteBtnEnabled(true)
   }
 
-  const _hiddenOverlay = () => {
-    overlay.current && overlay.current.hidden(() => {
-      setOverlayType(MediaTypes.None)
-    })
-  }
-
   const _insertMedias = (index, medias) => {
     console.log(index, 'insertMedias')
     const {media} = post
@@ -343,8 +332,7 @@ export default (props) => {
   }
 
   const _clickMedia = (data, index) => {
-    setOverlayType(data.type)
-    setCurrentEdit({index, isNew: false})
+    _showAddOverlay(data.type, index, false)
   }
 
   const _del = (index) => {
@@ -380,7 +368,7 @@ export default (props) => {
     return false
   }
 
-  const _onPhotoChoose = (photos, isImage) => {
+  const _onPhotoChoose = (index, photos, isImage) => {
     if (!photos || photos.length === 0) return
     // 如果没封面，就把第一张设为封面
     if (isImage && !post.headbacimgurl) {
@@ -388,7 +376,6 @@ export default (props) => {
     }
 
     let insertData = []
-    const {index} = currentEdit
     console.log(index, 'onPhotoChoose')
     for (let item of photos) {
       const {width, height, size, src, duration, file} = item
@@ -404,13 +391,11 @@ export default (props) => {
     _insertMedias(index, insertData)
   }
 
-  const _choosePhoto = async (isImage) => {
+  const _choosePhoto = async (index, isImage) => {
     let data = null
-    console.log(currentEdit.index, 'before choosePhoto')
     try {
       data = await utils.choosePhoto(isImage, true)
-      console.log(currentEdit.index, 'after choosePhoto')
-      return _onPhotoChoose(data, isImage)
+      return _onPhotoChoose(index, data, isImage)
     } catch (e) {
       overlays.showToast(e.message)
       return
@@ -432,23 +417,19 @@ export default (props) => {
   }
 
   const _onAddClick = (type, index) => {
-    console.log(index, 'on add click')
-    setCurrentEdit({index, isNew: true})
     if (type === MediaTypes.Image) {
-      _choosePhoto(true)
+      _choosePhoto(index, true)
     } else if (type === MediaTypes.Video) {
       overlay.showActionSheet([
-        {text: '本地', onPress: () => _choosePhoto(false)},
-        {text: '网络', onPress: () => setOverlayType(type)},
+        {text: '本地', onPress: () => _choosePhoto(index,  false)},
+        {text: '网络', onPress: () => _showAddOverlay(type, index, true)},
       ])
     } else {
-      setOverlayType(type)
+      _showAddOverlay(type, index, true)
     }
   }
 
-  const _onOverlayChange = (data, isNew) => {
-    const {index} = currentEdit
-    _hiddenOverlay()
+  const _onOverlayChange = (data, index, isNew) => {
     if (isNew)
       _insertMedias(index, [data])
     else
@@ -460,7 +441,7 @@ export default (props) => {
       <div
         ref={openedAddItem === index ? addBtn : null}
         className='add-row'
-        onClick={()=> _openAdd(index)}
+        onClick={() => _openAdd(index)}
       >
         <img className='icon' src={images.add_spe_icon}/>
       </div>
@@ -492,12 +473,10 @@ export default (props) => {
     ))
   }
 
-  const _renderAddOverlay = () => {
-    if (!post) return null
-    const {isNew, index} = currentEdit
+  const _showAddOverlay = (type, index, isNew) => {
     let curData = isNew ? null : post.media[index]
     let OverlayView = null
-    switch (overlayType) {
+    switch (type) {
       case 'text':
         OverlayView = EditTextOverlay
         break
@@ -514,19 +493,19 @@ export default (props) => {
         return null
     }
 
-    return (
-      <div style={{
-        // 防止被navbar遮挡
-        position: 'relative', zIndex: 999
-      }}>
+    let key = overlays.show(
+      <OverlayViewFade>
         <OverlayView
           ref={overlay}
           data={curData}
           isCover={_mediaIsCover(curData)}
-          onChange={(data) => _onOverlayChange(data, isNew)}
-          onCancel={_hiddenOverlay}
+          onChange={(data) => {
+            _onOverlayChange(data, index, isNew)
+            overlays.dismiss(key)
+          }}
+          onCancel={() => overlays.dismiss(key)}
         />
-      </div>
+      </OverlayViewFade>
     )
   }
 
@@ -625,8 +604,6 @@ export default (props) => {
           {/*<p>{post.description}</p>*/}
           {_renderMedia(media)}
         </div>
-
-        {_renderAddOverlay()}
 
         <EditBottomButtons
           audio={audio_id}
