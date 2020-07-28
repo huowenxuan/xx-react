@@ -420,7 +420,7 @@ export default (props) => {
     if (type === MediaTypes.Image) {
       _choosePhoto(index, true)
     } else if (type === MediaTypes.Video) {
-      overlay.showActionSheet([
+      overlays.showActionSheet([
         {text: '本地', onPress: () => _choosePhoto(index,  false)},
         {text: '网络', onPress: () => _showAddOverlay(type, index, true)},
       ])
