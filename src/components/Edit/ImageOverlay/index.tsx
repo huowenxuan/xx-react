@@ -6,12 +6,13 @@ import images from "../../../assets/images"
 class EditTextOverlay extends PureComponent {
   props: any
   state: any
+
   constructor(props) {
     super(props)
     // info = format size height width
     // style = 90
     // 后台把style直接设置为旋转角度
-    const {body='', style=''} = props.data || {}
+    const {body = '', style = ''} = props.data || {}
     this.state = {
       body,
       rotate: style ? parseInt(style) : 0,
@@ -74,6 +75,7 @@ class EditTextOverlay extends PureComponent {
                 onClick={isCover ? null : () => this.setState(({choose}: any) => ({choose: !choose}))}>
                 {isCover ? '当前封面' : [
                   <button
+                    key='image-overlay-set-cover-btn'
                     style={{
                       marginRight: 5,
                       backgroundImage: `url(${images.edit_image_icons})`,
@@ -81,7 +83,7 @@ class EditTextOverlay extends PureComponent {
                     }}
                     className='rotate-btn'>
                   </button>,
-                  '设为封面'
+                  <p key='image-overlay-set-cover-p'>设为封面</p>
                 ]}
               </div>
               <button
