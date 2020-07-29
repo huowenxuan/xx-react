@@ -121,6 +121,11 @@ export default pageWrapper()((props) => {
   }
 
   const onBack = () => {
+    if (!post.title && (!post.media || post.media.length === 0)) {
+      props.history.goBack()
+      return
+    }
+
     const saveAndBack = ()=>{
       props.history.goBack()
       props.actions.saveDraft(1, draftId, post)

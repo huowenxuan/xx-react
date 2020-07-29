@@ -27,6 +27,21 @@ const EditMediaItem = (props) => {
     )
   }
 
+  const _renderProgress = () => {
+    return (
+      <div className='progress-box'>
+        <div className='progress-row'>
+          <progress
+            className='progress'
+            value={.30}
+          />
+          <p className='cancel'>×</p>
+        </div>
+        正在上传...
+      </div>
+    )
+  }
+
   const _renderImage = (item) => {
     const {style = 0, info = {}} = item
     const {width, height} = info
@@ -45,6 +60,7 @@ const EditMediaItem = (props) => {
           src={item.body}
         />
         <div className='image-overlay'/>
+        {_renderProgress()}
       </div>
     )
   }
