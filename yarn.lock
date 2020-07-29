@@ -983,9 +983,9 @@
     "@babel/plugin-transform-typescript" "^7.9.0"
 
 "@babel/runtime-corejs2@^7.10.2":
-  version "7.10.4"
-  resolved "https://registry.npm.taobao.org/@babel/runtime-corejs2/download/@babel/runtime-corejs2-7.10.4.tgz?cache=0&sync_timestamp=1593522844670&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2F%40babel%2Fruntime-corejs2%2Fdownload%2F%40babel%2Fruntime-corejs2-7.10.4.tgz#5d48ee239624d511c88208da86c27a161ee01cf7"
-  integrity sha1-XUjuI5Yk1RHIggjahsJ6Fh7gHPc=
+  version "7.10.5"
+  resolved "https://registry.npm.taobao.org/@babel/runtime-corejs2/download/@babel/runtime-corejs2-7.10.5.tgz?cache=0&sync_timestamp=1594751955961&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2F%40babel%2Fruntime-corejs2%2Fdownload%2F%40babel%2Fruntime-corejs2-7.10.5.tgz#8daa1ceccc0468e5c2e15f124e3f51c2b3033b49"
+  integrity sha1-jaoc7MwEaOXC4V8STj9RwrMDO0k=
   dependencies:
     core-js "^2.6.5"
     regenerator-runtime "^0.13.4"
@@ -8637,10 +8637,10 @@ q@^1.1.2:
   resolved "https://registry.yarnpkg.com/q/-/q-1.5.1.tgz#7e32f75b41381291d04611f1bf14109ac00651d7"
   integrity sha1-fjL3W0E4EpHQRhHxvxQQmsAGUdc=
 
-qiniu-js@^3.0.3:
-  version "3.0.3"
-  resolved "https://registry.npm.taobao.org/qiniu-js/download/qiniu-js-3.0.3.tgz#632f8b378dba531b4fad72e1ea65a51e64159399"
-  integrity sha1-Yy+LN426UxtPrXLh6mWlHmQVk5k=
+qiniu-js@^3.1.0:
+  version "3.1.0"
+  resolved "https://registry.npm.taobao.org/qiniu-js/download/qiniu-js-3.1.0.tgz#4c60c1aae4cdd1de7853b621d39b9381db953176"
+  integrity sha1-TGDBquTN0d54U7Yh05uTgduVMXY=
   dependencies:
     "@babel/runtime-corejs2" "^7.10.2"
     exif-js "^2.3.0"

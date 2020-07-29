@@ -32,7 +32,7 @@ let postId = ''
 let draftId = ''
 let overlay: any = React.createRef()
 let addBtn: any = React.createRef()
-let uploadCancel = false
+let uploading
 
 export default pageWrapper()((props) => {
   const [openedAddItem, setOpenedAddItem] = useState(-1)
@@ -77,7 +77,6 @@ export default pageWrapper()((props) => {
 
   const initData = async () => {
     postId = ''
-    uploadCancel = false
     draftId = ''
 
     // const {id} = props.match.params
@@ -253,6 +252,79 @@ export default pageWrapper()((props) => {
     setOpenedAddItem(index)
   }
 
+  const getNewestPost = () => {
+    return new Promise(resolve => {
+      setPost((prevPost) => {
+        resolve(prevPost)
+        return prevPost
+      })
+    })
+  }
+
+  const updateMediaByBody = (body, cb) => {
+    setPost((newPost) => ({
+      ...newPost,
+      media: newPost.media.map(item => {
+        if (item.body === body) {
+          item = {
+            ...item,
+            ...cb(item, newPost)
+          }
+        }
+        return item
+      })
+    }))
+  }
+
+  const uploadMedia = async (media) => {
+    const {body, file} = media
+    updateMediaByBody(body, () => ({error: null}))
+    await new Promise(async (resolve, reject) => {
+      try {
+        setUpload({body, percent: 0})
+        uploading = await utils.uploadPhoto(
+          body,
+          file,
+          (percent) => {
+            console.log(percent)
+            setUpload((prev) => ({...prev, percent}))
+          }
+        )
+        let key = await uploading.start()
+        setUpload((prev) => ({...prev, percent: 100}))
+        updateMediaByBody(body, (item, newPost) => {
+          let newBody = item.type === 'image'
+            ? qiniu.getImageUrl(key)
+            : qiniu.getOriginUrl(key)
+          if (newPost.headbacimgurl === body) {
+            setPostState('coverKey', key)
+            setPostState('headbacimgurl', newBody)
+          }
+          return {key, body: newBody}
+        })
+        resolve()
+      } catch (e) {
+        console.error('upload error', e)
+        updateMediaByBody(body, () => ({error: e.message}))
+        resolve()
+      }
+    })
+  }
+
+  /* 递归上传，每次都从上往下找未上传和未出错的 */
+  const uploadNextMedia = async () => {
+    let newPost: any = await getNewestPost()
+    let nextUpload = newPost.media.find(item => !item.key && !item.error)
+    if (!nextUpload) {
+      console.log('全部上传完成')
+      return
+    }
+
+    await uploadMedia(nextUpload)
+    console.log('find next')
+    uploadNextMedia()
+  }
+
   const mediaIsCover = (item) => {
     const {headbacimgurl, coverKey} = post
     if (!item) return false
@@ -281,59 +353,14 @@ export default pageWrapper()((props) => {
         file
       })
     }
-
     insertMedias(index, insertData)
-
-    for (let {body, file} of insertData) {
-      let key = await new Promise(async (resolve, reject) => {
-        let timer, uploading
-        const error = (e) => reject(e)
-        // 检查是否点击了取消
-        timer = setInterval(() => {
-          if (uploadCancel) {
-            uploading && uploading.cancel()
-            error(new Error('cancel'))
-          }
-        }, 300)
-        try {
-          setUpload({body, percent: 0})
-          uploading = await utils.uploadPhoto(
-            body,
-            file,
-            (percent) => {
-              console.log(percent)
-              setUpload((prev) => ({...prev, percent}))
-            }
-          )
-          let key = await uploading.start()
-          setUpload((prev) => ({...prev, percent: 100}))
-          resolve(key)
-        } catch (e) {
-          error(e)
-        } finally {
-          timer && clearInterval(timer)
-        }
-      })
-      setPost((prevPost) => ({
-        ...prevPost,
-        media: prevPost.media.map(item => {
-          if (item.body === body) {
-            item.key = key
-            item.body = item.type === 'image'
-              ? qiniu.getImageUrl(key)
-              : qiniu.getOriginUrl(key)
-            if (prevPost.headbacimgurl === body) {
-              setPostState('coverKey', key)
-              setPostState('headbacimgurl', item.body)
-            }
-          }
-          return item
-        })
-      }))
-    }
+    uploadNextMedia()
   }
 
   const cancelUpload = (index, data) => {
+    if (uploading && uploading.path === data.body) {
+      uploading.cancel()
+    }
     del(index)
   }
 
@@ -397,7 +424,7 @@ export default pageWrapper()((props) => {
         <EditMediaItem
           upload={{
             progress: upload.body === data.body ? upload.percent : 0,
-            error: true
+            error: data.error
           }}
           isCover={mediaIsCover(data)}
           data={data}
@@ -406,7 +433,7 @@ export default pageWrapper()((props) => {
           onUp={() => up(index)}
           onDown={() => down(index)}
           onSetCover={() => setCover(data.body, data.key)}
-          onRetry={() => console.log('retry')}
+          onRetry={() => uploadMedia(data)}
           onCancel={() => cancelUpload(index, data)}
         />
         {index === media.length - 1

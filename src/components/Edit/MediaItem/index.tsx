@@ -41,7 +41,7 @@ const EditMediaItem = (props) => {
   }
 
   const _renderProgress = (item) => {
-    // if (item.key) return null
+    if (item.key) return null
     const {upload, onCancel, onRetry} = props
     const {progress, error} = upload
     if (error) {

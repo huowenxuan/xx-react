@@ -32,7 +32,9 @@ export async function chooseImage(multiple) {
 export async function uploadImage(localId, fakeOnProgress, fakeMaxDuration) {
   let wx = await getWechat()
   let obj = {}
+  let _reject
   obj.start = () => new Promise((resolve, reject) => {
+    _reject = reject
     // 假的进度
     let fakePercent = 0
     let maxDuration = fakeMaxDuration || 10 * 1000 // 假设上传最大时间
@@ -66,6 +68,8 @@ export async function uploadImage(localId, fakeOnProgress, fakeMaxDuration) {
     })
   })
   obj.cancel = () => {
+    // 微信不能取消，手动取消需要reject，让下面的代码继续执行
+    _reject(new Error('cancel'))
   }
   return obj
 

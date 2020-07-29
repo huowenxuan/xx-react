@@ -37,7 +37,9 @@ class Qiniu {
       disableStatisticsReport: true,
     })
     let subscription
-    observable.start = () => new Promise((resolve, reject) => {
+    let _reject
+    let promise = new Promise((resolve, reject) => {
+      _reject = reject
       // 第一个参数为进度回到方法，包含已上传、总数、百分比 total:{ loaded, total, percent }
       subscription = observable.subscribe(
         ({total}) => {
@@ -51,7 +53,12 @@ class Qiniu {
           resolve(key)
         })
     })
-    observable.cancel = () => subscription.unsubscribe()
+    observable.start = () => promise
+    observable.cancel = () => {
+      // 七牛在手动取消后不会执行错误回到，所以需要手动报错
+      _reject(new Error('cancel'))
+      subscription.unsubscribe()
+    }
     return observable
   }
 
