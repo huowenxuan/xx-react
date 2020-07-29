@@ -163,8 +163,6 @@ export default pageWrapper()((props) => {
   }
 
   const complete = async () => {
-    const {media} = post
-
     if (!post.title) {
       overlays.showToast('请输入标题')
       return

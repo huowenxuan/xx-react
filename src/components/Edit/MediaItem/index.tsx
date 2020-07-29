@@ -119,7 +119,7 @@ const EditMediaItem = (props) => {
     return (
       <button
         className='btn set-cover'
-        onClick={isCover ? null : e => this._action(e, onSetCover)}
+        onClick={isCover ? null : e => _action(e, onSetCover)}
       >
         {isCover ? '当前封面' : '设为封面'}
       </button>
