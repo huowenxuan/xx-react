@@ -6,6 +6,7 @@ import TopView from '../../TopView'
 export default class Alert extends PureComponent {
   props: any
   state: any
+
   constructor(props) {
     super(props)
 
@@ -20,15 +21,20 @@ export default class Alert extends PureComponent {
     buttons: [
       {text: '好的', onPress: null,},
       {type: 'cancel', onPress: null},
-    ]
+    ],
+    showClose: false, // 是否显示右上角的关闭按钮
   }
 
   static propTypes = {
     buttons: PropTypes.array.isRequired
   }
 
-  _onButtonPress(onPress) {
+  _hide() {
     TopView.hideTop()
+  }
+
+  _onButtonPress(onPress) {
+    this._hide()
     onPress && onPress()
   }
 
@@ -73,7 +79,7 @@ export default class Alert extends PureComponent {
   }
 
   render() {
-    const {title, description, buttons} = this.props
+    const {title, description, buttons, showClose} = this.props
 
     return (
       <div className='alert'>
@@ -85,6 +91,11 @@ export default class Alert extends PureComponent {
 
           <div className='line'/>
           {this._renderButtons(buttons)}
+
+          {showClose ? <div
+            className='close'
+            onClick={this._hide}
+          ><p className='child'>×</p></div> : null}
         </div>
       </div>
     )

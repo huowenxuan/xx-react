@@ -118,17 +118,17 @@ export default pageWrapper()((props) => {
       // 新建
       openAdd(0)
     }
-
-    // TODO 删掉
-    onBack()
   }
 
   const onBack = () => {
-    // props.history.goBack()
+    const saveAndBack = ()=>{
+      props.history.goBack()
+      props.actions.saveDraft(1, draftId, post)
+    }
     overlays.showAlert('是否保存草稿', '', [
-      {text: '取消'},
-      {text: '确定', onPress: () => uploadCancel = true}
-    ])
+      {text: '放弃更改', onPress: () => props.history.goBack()},
+      {text: '保存草稿', onPress: () => saveAndBack()},
+    ], {showClose: true})
   }
 
   // 弹出选择图片和权限遮罩
@@ -326,6 +326,7 @@ export default pageWrapper()((props) => {
         result = await request.post(request.API.postCreate, {data}, Token)
         overlays.showToast('创建成功')
       }
+      draftId && props.actions.removeDraft(1, draftId)
       console.log(result)
       console.log(result._id)
       // props.history.replace(`/postedit?postId=${result._id}`)
@@ -338,7 +339,7 @@ export default pageWrapper()((props) => {
   }
 
   const insertMedias = (index, medias) => {
-    const {media} = post
+    const {media=[]} = post
     let arr1 = media.slice(0, index)
     let arr2 = media.slice(index, media.length + 1)
     arr1.push(...medias)

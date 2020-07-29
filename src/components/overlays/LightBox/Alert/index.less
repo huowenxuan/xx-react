@@ -14,7 +14,25 @@
     border-radius: 8px;
     overflow: hidden;
     align-items: center;
+    position: relative;
 
+    .close {
+      position: absolute;
+      right: 0;
+      top: 0;
+      width: 30px;
+      height: 30px;
+      text-align: center;
+      vertical-align: middle;
+      display: table;
+      font-size: 25px;
+      line-height: 1;
+      opacity: .5;
+      .child {
+        display: table-cell;
+        vertical-align: middle;
+      }
+    }
     .text-box {
       padding: 34px 20px 26px 20px;
 

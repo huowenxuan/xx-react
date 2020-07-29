@@ -20,13 +20,15 @@ export default {
       <OverlayViewToast text={text} duration={duration}/>
     )
   },
-  showAlert: (title, description, buttons) => {
+  showAlert: (title, description, buttons, opts?) => {
+    opts = opts || {}
     TopView.show(
       <OverlayViewFadeReduce duration={200}>
         <Alert
           title={title}
           description={description}
           buttons={buttons}
+          showClose={opts.showClose}
         />
       </OverlayViewFadeReduce>
     )

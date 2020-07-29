@@ -3,7 +3,7 @@
 import * as types from './actionTypes'
 import {createAction} from 'redux-actions'
 
-function _findDrafyById(userId, draftId) {
+function _findDraftById(userId, draftId) {
   let drafts = _findDrafts(userId)
   return drafts[draftId] || null
 }
@@ -62,5 +62,5 @@ export const deleteAllDrafts = createAction(types.SYNC_DRAFTS, async (userId, dr
 })
 
 export const findDraftById = createAction('', async (userId, draftId) => {
-  return _findDrafyById(userId, draftId)
+  return _findDraftById(userId, draftId)
 })
