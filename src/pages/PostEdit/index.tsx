@@ -126,7 +126,7 @@ export default pageWrapper()((props) => {
       return
     }
 
-    const saveAndBack = ()=>{
+    const saveAndBack = () => {
       props.history.goBack()
       props.actions.saveDraft(1, draftId, post)
     }
@@ -344,7 +344,7 @@ export default pageWrapper()((props) => {
   }
 
   const insertMedias = (index, medias) => {
-    const {media=[]} = post
+    const {media = []} = post
     let arr1 = media.slice(0, index)
     let arr2 = media.slice(index, media.length + 1)
     arr1.push(...medias)
@@ -465,13 +465,6 @@ export default pageWrapper()((props) => {
     }
   }
 
-  const onOverlayChange = (data, index, isNew) => {
-    if (isNew)
-      insertMedias(index, [data])
-    else
-      updateMedia(index, data)
-  }
-
   const renderAddItem = (index) => {
     return (
       <div
@@ -511,22 +504,17 @@ export default pageWrapper()((props) => {
 
   const showAddOverlay = (type, index, isNew) => {
     let curData = isNew ? null : post.media[index]
-    let OverlayView = null
-    switch (type) {
-      case 'text':
-        OverlayView = EditTextOverlay
-        break
-      case 'image':
-        OverlayView = EditImageOverlay
-        break
-      case 'link':
-        OverlayView = EditLinkOverlay
-        break
-      case 'video':
-        OverlayView = EditWebVideoOverlay
-        break
-      default:
-        return null
+    let OverlayView
+    if (type === 'text') {
+      OverlayView = EditTextOverlay
+    } else if (type === 'image') {
+      OverlayView = EditImageOverlay
+    } else if (type === 'link') {
+      OverlayView = EditLinkOverlay
+    } else if (type === 'video') {
+      OverlayView = EditWebVideoOverlay
+    } else {
+      return
     }
 
     let key = overlays.show(
@@ -536,8 +524,9 @@ export default pageWrapper()((props) => {
           data={curData}
           isCover={mediaIsCover(curData)}
           onChange={(data) => {
-            onOverlayChange(data, index, isNew)
             overlays.dismiss(key)
+            if (isNew) insertMedias(index, [data])
+            else updateMedia(index, data)
           }}
           onCancel={() => overlays.dismiss(key)}
         />
