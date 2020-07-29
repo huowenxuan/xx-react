@@ -35,7 +35,13 @@ const EditMediaItem = (props) => {
             className='progress'
             value={.30}
           />
-          <p className='cancel'>×</p>
+          <p
+            className='cancel'
+            onClick={(e)=>{
+              e.stopPropagation()
+              console.log('cancel')
+            }}
+          >×</p>
         </div>
         正在上传...
       </div>
