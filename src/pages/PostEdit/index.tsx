@@ -44,11 +44,6 @@ export default pageWrapper()((props) => {
     status: 'private'
   })
   const [upload, setUpload] = useState({
-    // show: false,
-    // currentIndex: 0,
-    // currentPercent: 0,
-    // count: 0,
-
     body: '',
     percent: 0,
   })
@@ -160,122 +155,12 @@ export default pageWrapper()((props) => {
     }))
   }
 
-  const resetProgress = () => {
-    // setUpload({
-    //   show: false,
-    //   currentIndex: 0,
-    //   currentPercent: 0,
-    //   count: 0,
-    //   percent: 0
-    // })
-  }
-
   const cancelUpload = () => {
     overlays.showAlert('是否取消上传', '', [
       {text: '取消'},
       {text: '确定', onPress: () => uploadCancel = true}
     ])
   }
-
-  const uploadFiles = async (media) => {
-    uploadCancel = false
-
-    let uploadMedias = []
-    for (let i = 0; i < media.length; i++) {
-      let item = media[i]
-      let {type, body, key} = item
-      if (
-        !key && (
-          type === 'image' ||
-          type === 'shortvideo'
-        ) && (
-          body.startsWith('blob') ||
-          body.startsWith('wx') ||
-          body.startsWith('weixin')
-        )
-      ) {
-        uploadMedias.push({index: i, item})
-      }
-    }
-
-    // 判断封面是否需要上传
-    const {headbacimgurl, coverKey} = post
-    if (!coverKey && headbacimgurl && !uploadMedias.find(i => i.item.body === headbacimgurl)) {
-      uploadMedias.unshift({
-        index: -1,
-        isCover: true,
-        item: {
-          file: coverFile,
-          body: headbacimgurl
-        }
-      })
-    }
-
-    let uploadCount = uploadMedias.length
-    if (uploadCount > 0) {
-      // setUpload({
-      //   show: true,
-      //   count: uploadCount,
-      //   percent: 0,
-      //   currentIndex: 0,
-      //   currentPercent: 0
-      // })
-    }
-    for (let i = 0; i < uploadMedias.length; i++) {
-      let beforeDate = new Date()
-      let {index, item, isCover} = uploadMedias[i]
-      setUpload((prevUpload) => ({
-        ...prevUpload,
-        currentIndex: i,
-        currentPercent: 0,
-        percent: (i / uploadCount) * 100
-      }))
-      const {body, file} = item
-      let key = await new Promise(async (resolve, reject) => {
-        let timer, uploading
-        const error = (e) => reject(e)
-        // 检查是否点击了取消
-        timer = setInterval(() => {
-          if (uploadCancel) {
-            uploading && uploading.cancel()
-            error(new Error('cancel'))
-          }
-        }, 300)
-        const onProgress = (percent) => {
-          console.log(percent)
-          setUpload((prevUpload) => ({
-            ...prevUpload,
-            currentPercent: percent,
-            percent: ((i / uploadCount) * 100) + (percent / uploadCount)
-          }))
-        }
-        try {
-          uploading = await utils.uploadPhoto(body, file, onProgress)
-          let key = await uploading.start()
-          setUpload((prevUpload) => ({
-            ...prevUpload,
-            currentPercent: 100,
-            percent: ((i / uploadCount) * 100) + (100 / uploadCount)
-          }))
-          resolve(key)
-        } catch (e) {
-          error(e)
-        } finally {
-          timer && clearInterval(timer)
-        }
-      })
-
-      if (isCover) {
-        console.log('封面上传完成 ', key)
-        setPostState('coverKey', key)
-      } else {
-        console.log('上传完成 ', key)
-        updateMedia(index, {key})
-      }
-    }
-    resetProgress()
-  }
-
 
   const complete = async () => {
     const {media} = post
@@ -289,22 +174,6 @@ export default pageWrapper()((props) => {
       return
     }
     setCompleteBtnEnabled(false)
-    try {
-      await uploadFiles(media)
-    } catch (e) {
-      setCompleteBtnEnabled(true)
-      if (e.message === 'cancel') {
-        overlays.showToast('取消上传')
-      } else {
-        console.error(e)
-        overlays.showAlert('上传失败，是否重新上传？', '', [
-          {text: '确定', onPress: async () => complete()},
-          {type: 'cancel'},
-        ])
-      }
-      return
-    }
-
     let newPost = _.cloneDeep(post)
     let newMedias = newPost.media
     for (let item of newMedias) {
@@ -443,15 +312,18 @@ export default pageWrapper()((props) => {
             error(new Error('cancel'))
           }
         }, 300)
-        const onProgress = (percent) => {
-          console.log(percent)
-          setUpload((prev) => ({...prev, percent}))
-        }
         try {
-          setUpload({body, percent: 0,})
-          uploading = await utils.uploadPhoto(body, file, onProgress)
+          setUpload({body, percent: 0})
+          uploading = await utils.uploadPhoto(
+            body,
+            file,
+            (percent) => {
+              console.log(percent)
+              setUpload((prev) => ({...prev, percent}))
+            }
+          )
           let key = await uploading.start()
-          setUpload((prev) => ({...prev, percent: 100,}))
+          setUpload((prev) => ({...prev, percent: 100}))
           resolve(key)
         } catch (e) {
           error(e)
