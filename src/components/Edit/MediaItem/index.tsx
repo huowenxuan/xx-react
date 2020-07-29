@@ -70,6 +70,7 @@ const EditMediaItem = (props) => {
       </div>
     )
   }
+
   const _renderShortVideo = (item) => {
     return (
       <div className='image-box'>
@@ -79,6 +80,7 @@ const EditMediaItem = (props) => {
           src={item.body}
         />
         <div className='image-overlay'/>
+        {_renderProgress()}
       </div>
     )
   }

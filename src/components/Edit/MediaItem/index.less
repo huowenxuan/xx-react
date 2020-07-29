@@ -51,6 +51,7 @@
   }
 
   .btns {
+    // 让其他覆盖物可点击
     pointer-events: none;
     position: absolute;
     left: 0;
@@ -98,7 +99,6 @@
     }
   }
 
-
   .image-box {
     height: 188px;
     overflow: hidden;
@@ -109,6 +109,8 @@
   }
 
   .image-overlay {
+    // 让视频组件可点击
+    pointer-events: none;
     background-color: #00000030;
     position: absolute;
     left: 0;
