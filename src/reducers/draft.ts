@@ -1,21 +1,17 @@
-import { combineReducers } from "redux";
+import {handleActions} from 'redux-actions';
+import * as types from '../actions/actionTypes'
 
-const initialState = {
-  userId: "",
-  token: "",
-  userName: "",
-  phone: "",
-  openid: "",
-  avatar: "",
-};
+let defaultState = {
+  drafts: []
+}
 
-const draft = (state = initialState, action) => {
-  switch (action.type) {
-    case "login":
-      return { ...state, ...action.payload };
-    default:
-      return state;
-  }
-};
-
-export default combineReducers({ draft });
+export default handleActions({
+  [types.SYNC_DRAFTS]: ({
+    next(state, {payload}) {
+      return {
+        ...state,
+        drafts: payload
+      }
+    }
+  }),
+}, defaultState)

@@ -1,11 +1,13 @@
 import React from 'react'
-import {BrowserRouter, Route, Switch} from 'react-router-dom'
-import PostEdit from './pages/PostEdit/'
-import PostNew from './pages/PostNew/'
-import AppLink from './pages/AppLink/'
+import {Router as BrowserRouter, Route, Switch} from 'react-router-dom'
 import {createBrowserHistory} from 'history'
 import {Provider} from "react-redux"
 import store from "./store"
+
+import PostEdit from './pages/PostEdit/'
+import PostNew from './pages/PostNew/'
+import AppLink from './pages/AppLink/'
+import Draft from './pages/Draft/'
 
 const history = createBrowserHistory()
 
@@ -17,6 +19,7 @@ export default (props) => (
         <Route exact path="/postnew" component={PostNew}/>
         <Route exact path="/applinks" component={AppLink}/>
         <Route exact path="/postedit" component={PostEdit}/>
+        <Route exact path="/drafts" component={Draft}/>
       </Switch>
     </BrowserRouter>
   </Provider>

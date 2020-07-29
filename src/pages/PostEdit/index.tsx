@@ -28,40 +28,13 @@ const MediaTypes = {
 }
 
 let postId = ''
+let draftId = ''
 let coverFile = null // 原生图片选择器选择图片后的file文件，设置为封面图
 let overlay: any = React.createRef()
 let addBtn: any = React.createRef()
 let uploadCancel = false
 
-
-function findDrafts(userId) {
-  let data = localStorage.getItem(`draft-${userId}`)
-  if (!data) return {}
-  return JSON.parse(data)
-}
-
-function saveDraft(userId, draftId, data) {
-  let drafts = findDrafts(userId)
-  if (!draftId) draftId = Date.now()
-  drafts[draftId] = data
-  localStorage.setItem(`draft-${userId}`, JSON.stringify(drafts))
-}
-
-function deleteDraft(userId, draftId) {
-  let drafts = findDrafts(userId)
-  delete drafts[draftId]
-  localStorage.setItem(`draft-${userId}`, JSON.stringify(drafts))
-}
-
-saveDraft(1, 1, {a: 1})
-saveDraft(1, 2, {a: 2})
-saveDraft(1, null, {a: 3})
-saveDraft(2, 4, {a: 4})
-deleteDraft(1, 2)
-console.log(findDrafts(1))
-console.log(findDrafts(2))
-
-export default (props) => {
+export default pageWrapper()((props) => {
   const [openedAddItem, setOpenedAddItem] = useState(-1)
   const [post, setPost]: any = useState({
     media: [],
@@ -109,13 +82,14 @@ export default (props) => {
     postId = ''
     coverFile = null
     uploadCancel = false
-
+    draftId = ''
 
     // const {id} = props.match.params
     let {photos, search} = props.location
     search = qs.decode(search.substr(1))
 
     if (search.postId) {
+      // 编辑
       postId = search.postId
       // 编辑旧帖子
       let data = await request.get(request.API.postEdit + postId, {}, Token)
@@ -128,14 +102,33 @@ export default (props) => {
           item.style = utils.toJson(style)
         }
       }
-      console.log('postData', postData)
+      console.log('编辑', postData)
       setPost(postData)
     } else if (photos) {
       // 根据照片创建新帖子
       onPhotoChoose(0, photos, true)
+      console.log('照片', photos)
+    } else if (search.draftId) {
+      // 草稿
+      draftId = search.draftId
+      let {payload: draft} = await props.actions.findDraftById(1, draftId)
+      console.log('草稿', draft)
+      setPost(draft)
     } else {
+      // 新建
       openAdd(0)
     }
+
+    // TODO 删掉
+    onBack()
+  }
+
+  const onBack = () => {
+    // props.history.goBack()
+    overlays.showAlert('是否保存草稿', '', [
+      {text: '取消'},
+      {text: '确定', onPress: () => uploadCancel = true}
+    ])
   }
 
   // 弹出选择图片和权限遮罩
@@ -621,7 +614,7 @@ export default (props) => {
     <div>
       <NavBar
         title='写文章'
-        onBack={props.history.goBack}
+        onBack={onBack}
         rightButtons={[
           completeBtnEnabled
             ? {text: '完成', onClick: complete}
@@ -653,4 +646,4 @@ export default (props) => {
       </div>
     </div>
   )
-}
+})

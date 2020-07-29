@@ -1,5 +1,5 @@
 Arguments: 
-  /Users/huowenxuan/.nvm/versions/node/v11.15.0/bin/node /Users/huowenxuan/.nvm/versions/node/v11.15.0/bin/yarn add type-script
+  /Users/huowenxuan/.nvm/versions/node/v11.15.0/bin/node /Users/huowenxuan/.nvm/versions/node/v11.15.0/bin/yarn add handleActions
 
 PATH: 
   /usr/local/opt/gettext/bin:/usr/local/mysql/bin:/Users/huowenxuan/.nvm/versions/node/v11.15.0/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/opt/X11/bin:/Library/Frameworks/Mono.framework/Versions/Current/Commands:/Applications/Wireshark.app/Contents/MacOS:/Users/huowenxuan/Desktop/xx-react/node_modules/.bin:/Users/huowenxuan/dev/flutter/bin
@@ -14,7 +14,7 @@ Platform:
   darwin x64
 
 Trace: 
-  Error: https://registry.npm.taobao.org/type-script: Not found
+  Error: https://registry.npm.taobao.org/handleActions: Not found
       at Request.params.callback [as _callback] (/Users/huowenxuan/.nvm/versions/node/v11.15.0/lib/node_modules/yarn/lib/cli.js:66947:18)
       at Request.self.callback (/Users/huowenxuan/.nvm/versions/node/v11.15.0/lib/node_modules/yarn/lib/cli.js:140665:22)
       at Request.emit (events.js:193:13)
@@ -83,8 +83,13 @@ npm manifest:
       "react-app-polyfill": "^1.0.6",
       "react-dev-utils": "^10.2.1",
       "react-dom": "^16.13.1",
+      "react-redux": "^7.2.1",
       "react-router-dom": "^5.2.0",
       "recompose": "^0.30.0",
+      "redux": "^4.0.5",
+      "redux-logger": "^3.0.6",
+      "redux-promise": "^0.6.0",
+      "redux-thunk": "^2.3.0",
       "resolve": "1.15.0",
       "resolve-url-loader": "3.1.1",
       "sass-loader": "8.0.2",
@@ -92,6 +97,7 @@ npm manifest:
       "style-loader": "0.23.1",
       "terser-webpack-plugin": "2.3.5",
       "ts-pnp": "1.1.6",
+      "typescript": "^3.9.7",
       "url-loader": "2.3.0",
       "webpack": "4.42.0",
       "webpack-dev-server": "^3.11.0",
@@ -3761,6 +3767,11 @@ Lockfile:
     resolved "https://registry.yarnpkg.com/decode-uri-component/-/decode-uri-component-0.2.0.tgz#eb3913333458775cb84cd1a1fae062106bb87545"
     integrity sha1-6zkTMzRYd1y4TNGh+uBiEGu4dUU=
   
+  deep-diff@^0.3.5:
+    version "0.3.8"
+    resolved "https://registry.npm.taobao.org/deep-diff/download/deep-diff-0.3.8.tgz#c01de63efb0eec9798801d40c7e0dae25b582c84"
+    integrity sha1-wB3mPvsO7JeYgB1Ax+Da4ltYLIQ=
+  
   deep-equal@^1.0.1:
     version "1.1.1"
     resolved "https://registry.yarnpkg.com/deep-equal/-/deep-equal-1.1.1.tgz#b5c98c942ceffaf7cb051e24e1434a25a2e6076a"
@@ -4817,6 +4828,13 @@ Lockfile:
       inherits "^2.0.3"
       readable-stream "^2.3.6"
   
+  flux-standard-action@^2.0.3:
+    version "2.1.1"
+    resolved "https://registry.npm.taobao.org/flux-standard-action/download/flux-standard-action-2.1.1.tgz#b2e204145ea8e4294d6b0f178d8e8c416802948f"
+    integrity sha1-suIEFF6o5ClNaw8XjY6MQWgClI8=
+    dependencies:
+      lodash "^4.17.15"
+  
   follow-redirects@1.5.10:
     version "1.5.10"
     resolved "https://registry.npm.taobao.org/follow-redirects/download/follow-redirects-1.5.10.tgz?cache=0&sync_timestamp=1592518522667&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Ffollow-redirects%2Fdownload%2Ffollow-redirects-1.5.10.tgz#7b7a9f9aea2fdff36786a94ff643ed07f4ff5e2a"
@@ -5244,7 +5262,7 @@ Lockfile:
     resolved "https://registry.npm.taobao.org/hoist-non-react-statics/download/hoist-non-react-statics-2.5.5.tgz#c5903cf409c0dfd908f388e619d86b9c1174cb47"
     integrity sha1-xZA89AnA39kI84jmGdhrnBF0y0c=
   
-  hoist-non-react-statics@^3.1.0:
+  hoist-non-react-statics@^3.1.0, hoist-non-react-statics@^3.3.0:
     version "3.3.2"
     resolved "https://registry.npm.taobao.org/hoist-non-react-statics/download/hoist-non-react-statics-3.3.2.tgz#ece0acaf71d62c2969c2ec59feff42a4b1a85b45"
     integrity sha1-7OCsr3HWLClpwuxZ/v9CpLGoW0U=
@@ -8950,7 +8968,7 @@ Lockfile:
     resolved "https://registry.yarnpkg.com/react-error-overlay/-/react-error-overlay-6.0.7.tgz#1dcfb459ab671d53f660a991513cb2f0a0553108"
     integrity sha512-TAv1KJFh3RhqxNvhzxj6LeT5NWklP6rDr2a0jaTfsZ5wSZWHOGeqQyejUp3xxLfPt2UpyJEcVQB/zyPcmonNFA==
   
-  react-is@^16.12.0, react-is@^16.6.0, react-is@^16.7.0, react-is@^16.8.1, react-is@^16.8.4:
+  react-is@^16.12.0, react-is@^16.6.0, react-is@^16.7.0, react-is@^16.8.1, react-is@^16.8.4, react-is@^16.9.0:
     version "16.13.1"
     resolved "https://registry.yarnpkg.com/react-is/-/react-is-16.13.1.tgz#789729a4dc36de2999dc156dd6c1d9c18cea56a4"
     integrity sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==
@@ -8959,6 +8977,17 @@ Lockfile:
     version "3.0.4"
     resolved "https://registry.npm.taobao.org/react-lifecycles-compat/download/react-lifecycles-compat-3.0.4.tgz#4f1a273afdfc8f3488a8c516bfda78f872352362"
     integrity sha1-TxonOv38jzSIqMUWv9p4+HI1I2I=
+  
+  react-redux@^7.2.1:
+    version "7.2.1"
+    resolved "https://registry.npm.taobao.org/react-redux/download/react-redux-7.2.1.tgz?cache=0&sync_timestamp=1595762981869&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Freact-redux%2Fdownload%2Freact-redux-7.2.1.tgz#8dedf784901014db2feca1ab633864dee68ad985"
+    integrity sha1-je33hJAQFNsv7KGrYzhk3uaK2YU=
+    dependencies:
+      "@babel/runtime" "^7.5.5"
+      hoist-non-react-statics "^3.3.0"
+      loose-envify "^1.4.0"
+      prop-types "^15.7.2"
+      react-is "^16.9.0"
   
   react-router-dom@^5.2.0:
     version "5.2.0"
@@ -9103,6 +9132,34 @@ Lockfile:
     dependencies:
       indent-string "^4.0.0"
       strip-indent "^3.0.0"
+  
+  redux-logger@^3.0.6:
+    version "3.0.6"
+    resolved "https://registry.npm.taobao.org/redux-logger/download/redux-logger-3.0.6.tgz#f7555966f3098f3c88604c449cf0baf5778274bf"
+    integrity sha1-91VZZvMJjzyIYExEnPC69XeCdL8=
+    dependencies:
+      deep-diff "^0.3.5"
+  
+  redux-promise@^0.6.0:
+    version "0.6.0"
+    resolved "https://registry.npm.taobao.org/redux-promise/download/redux-promise-0.6.0.tgz#c64723b5213bb5603c11b74302883b682e06b319"
+    integrity sha1-xkcjtSE7tWA8EbdDAog7aC4Gsxk=
+    dependencies:
+      flux-standard-action "^2.0.3"
+      is-promise "^2.1.0"
+  
+  redux-thunk@^2.3.0:
+    version "2.3.0"
+    resolved "https://registry.npm.taobao.org/redux-thunk/download/redux-thunk-2.3.0.tgz#51c2c19a185ed5187aaa9a2d08b666d0d6467622"
+    integrity sha1-UcLBmhhe1Rh6qpotCLZm0NZGdiI=
+  
+  redux@^4.0.5:
+    version "4.0.5"
+    resolved "https://registry.npm.taobao.org/redux/download/redux-4.0.5.tgz?cache=0&sync_timestamp=1593529700795&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fredux%2Fdownload%2Fredux-4.0.5.tgz#4db5de5816e17891de8a80c424232d06f051d93f"
+    integrity sha1-TbXeWBbheJHeioDEJCMtBvBR2T8=
+    dependencies:
+      loose-envify "^1.4.0"
+      symbol-observable "^1.2.0"
   
   regenerate-unicode-properties@^8.2.0:
     version "8.2.0"
@@ -10208,7 +10265,7 @@ Lockfile:
       unquote "~1.1.1"
       util.promisify "~1.0.0"
   
-  symbol-observable@^1.0.4:
+  symbol-observable@^1.0.4, symbol-observable@^1.2.0:
     version "1.2.0"
     resolved "https://registry.npm.taobao.org/symbol-observable/download/symbol-observable-1.2.0.tgz#c22688aed4eab3cdc2dfeacbb561660560a00804"
     integrity sha1-wiaIrtTqs83C3+rLtWFmBWCgCAQ=
@@ -10479,6 +10536,11 @@ Lockfile:
     version "0.0.6"
     resolved "https://registry.yarnpkg.com/typedarray/-/typedarray-0.0.6.tgz#867ac74e3864187b1d3d47d996a78ec5c8830777"
     integrity sha1-hnrHTjhkGHsdPUfZlqeOxciDB3c=
+  
+  typescript@^3.9.7:
+    version "3.9.7"
+    resolved "https://registry.npm.taobao.org/typescript/download/typescript-3.9.7.tgz?cache=0&sync_timestamp=1595056693880&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Ftypescript%2Fdownload%2Ftypescript-3.9.7.tgz#98d600a5ebdc38f40cb277522f12dc800e9e25fa"
+    integrity sha1-mNYApevcOPQMsndSLxLcgA6eJfo=
   
   ua-parser-js@^0.7.18:
     version "0.7.21"
