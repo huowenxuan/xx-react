@@ -1,13 +1,12 @@
 import React, {useState} from 'react'
-import {withStateHandlers, compose, pure} from "recompose"
 import './index.less'
 import NavBar from "../../components/NavBar"
 import images from "../../assets/images"
 import * as utils from "../../utils"
 import {pageWrapper} from '../../components/HigherOrderStatelessComponents'
-import qs from 'querystring'
 
 export default pageWrapper()((props) => {
+  console.log(props.state.draft, 'ssss')
   const addImage = async () => {
     let photos = await utils.choosePhoto(true, true)
     props.history.push({
