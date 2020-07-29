@@ -27,13 +27,16 @@ const EditMediaItem = (props) => {
     )
   }
 
-  const _renderProgress = () => {
+  const _renderProgress = (item) => {
+    if (item.key) return null
+    const {progress} = props
     return (
       <div className='progress-box'>
         <div className='progress-row'>
           <progress
             className='progress'
-            value={.30}
+            value={progress}
+            max={100}
           />
           <p
             className='cancel'
@@ -66,7 +69,7 @@ const EditMediaItem = (props) => {
           src={item.body}
         />
         <div className='image-overlay'/>
-        {_renderProgress()}
+        {_renderProgress(item)}
       </div>
     )
   }
@@ -80,7 +83,7 @@ const EditMediaItem = (props) => {
           src={item.body}
         />
         <div className='image-overlay'/>
-        {_renderProgress()}
+        {_renderProgress(item)}
       </div>
     )
   }

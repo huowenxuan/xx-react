@@ -54,6 +54,14 @@ class Qiniu {
     observable.cancel = () => subscription.unsubscribe()
     return observable
   }
+
+  getImageUrl(key) {
+    return `${this.getOriginUrl(key)}?imageView2/1/w/800/interlace/1`
+  }
+
+  getOriginUrl(key) {
+    return `https://imgssl.tangshui.net/${key}`
+  }
 }
 
 export default new Qiniu()

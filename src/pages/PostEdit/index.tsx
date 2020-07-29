@@ -17,6 +17,7 @@ import * as _ from 'lodash'
 import {pageWrapper} from '../../components/HigherOrderStatelessComponents'
 import OverlayViewFade from "../../components/overlays/OverlayViewFade"
 import qs from 'querystring'
+import qiniu from "../../utils/qiniu"
 
 const Token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjU4YTE2NDkzMDRhZjE1OTgwYWZlNDk2YSIsInBob25lIjoiMTg4NDA5MTY3NDIiLCJpYXQiOjE1ODEzMjY4NDV9.jYNFFZWf0DcO5Wu5is21Htywds2zCDGH31YiLZSEeBw'
 const MediaTypes = {
@@ -43,11 +44,13 @@ export default pageWrapper()((props) => {
     status: 'private'
   })
   const [upload, setUpload] = useState({
-    show: false,
-    currentIndex: 0,
-    currentPercent: 0,
-    count: 0,
-    percent: 0
+    // show: false,
+    // currentIndex: 0,
+    // currentPercent: 0,
+    // count: 0,
+
+    body: '',
+    percent: 0,
   })
   const [completeBtnEnabled, setCompleteBtnEnabled] = useState(true)
 
@@ -158,13 +161,13 @@ export default pageWrapper()((props) => {
   }
 
   const resetProgress = () => {
-    setUpload({
-      show: false,
-      currentIndex: 0,
-      currentPercent: 0,
-      count: 0,
-      percent: 0
-    })
+    // setUpload({
+    //   show: false,
+    //   currentIndex: 0,
+    //   currentPercent: 0,
+    //   count: 0,
+    //   percent: 0
+    // })
   }
 
   const cancelUpload = () => {
@@ -210,13 +213,13 @@ export default pageWrapper()((props) => {
 
     let uploadCount = uploadMedias.length
     if (uploadCount > 0) {
-      setUpload({
-        show: true,
-        count: uploadCount,
-        percent: 0,
-        currentIndex: 0,
-        currentPercent: 0
-      })
+      // setUpload({
+      //   show: true,
+      //   count: uploadCount,
+      //   percent: 0,
+      //   currentIndex: 0,
+      //   currentPercent: 0
+      // })
     }
     for (let i = 0; i < uploadMedias.length; i++) {
       let beforeDate = new Date()
@@ -406,7 +409,8 @@ export default pageWrapper()((props) => {
     return false
   }
 
-  const onPhotoChoose = (index, photos, isImage) => {
+  /* 处理选择后的图片 */
+  const onPhotoChoose = async (index, photos, isImage) => {
     if (!photos || photos.length === 0) return
     // 如果没封面，就把第一张设为封面
     if (isImage && !post.headbacimgurl && !post.coverKey) {
@@ -425,17 +429,62 @@ export default pageWrapper()((props) => {
         file
       })
     }
+
     insertMedias(index, insertData)
+
+    for (let {body, file} of insertData) {
+      let key = await new Promise(async (resolve, reject) => {
+        let timer, uploading
+        const error = (e) => reject(e)
+        // 检查是否点击了取消
+        timer = setInterval(() => {
+          if (uploadCancel) {
+            uploading && uploading.cancel()
+            error(new Error('cancel'))
+          }
+        }, 300)
+        const onProgress = (percent) => {
+          console.log(percent)
+          setUpload((prev) => ({...prev, percent}))
+        }
+        try {
+          setUpload({body, percent: 0,})
+          uploading = await utils.uploadPhoto(body, file, onProgress)
+          let key = await uploading.start()
+          setUpload((prev) => ({...prev, percent: 100,}))
+          resolve(key)
+        } catch (e) {
+          error(e)
+        } finally {
+          timer && clearInterval(timer)
+        }
+      })
+      setPost((prevPost) => ({
+        ...prevPost,
+        media: prevPost.media.map(item => {
+          if (item.body === body) {
+            item.key = key
+            item.body = item.type === 'image'
+              ? qiniu.getImageUrl(key)
+              : qiniu.getOriginUrl(key)
+            if (prevPost.headbacimgurl === body) {
+              setPostState('coverKey', key)
+              setPostState('headbacimgurl', item.body)
+            }
+          }
+          return item
+        })
+      }))
+    }
   }
 
   const choosePhoto = async (index, isImage) => {
     let data = null
     try {
       data = await utils.choosePhoto(isImage, true)
-      return onPhotoChoose(index, data, isImage)
+      onPhotoChoose(index, data, isImage)
     } catch (e) {
       overlays.showToast(e.message)
-      return
     }
   }
 
@@ -478,15 +527,14 @@ export default pageWrapper()((props) => {
   }
 
   const renderMedia = (media) => {
-    const {coverKey, headbacimgurl} = post
-    if (!media || media.length === 0) {
-      return renderAddItem(0)
-    }
+    if (!media || media.length === 0) return renderAddItem(0)
+
     return media.map((data, index) => (
       // 每个item的key不变可保证每次修改元素后所有的视频不重新加载
       <ul key={`${data._id}-${data.body}`}>
         {renderAddItem(index)}
         <EditMediaItem
+          progress={upload.body === data.body ? upload.percent : 0}
           isCover={mediaIsCover(data)}
           data={data}
           onClick={() => clickMedia(data, index)}
@@ -579,31 +627,6 @@ export default pageWrapper()((props) => {
     }
   }
 
-  const renderPercent = () => {
-    const {
-      currentIndex,
-      currentPercent,
-      count,
-      percent,
-      show
-    } = upload
-    if (!show) return null
-
-    return (
-      <div className='percent'>
-        <div className='child'>
-          <p>正在上传第{currentIndex + 1}张{parseInt(currentPercent.toString())}%，共{count}张</p>
-          <button
-            className='cancel'
-            onClick={cancelUpload}
-          >
-            取消上传
-          </button>
-        </div>
-      </div>
-    )
-  }
-
   const {title, media, audio_id, status} = post
   return (
     <div>
@@ -637,7 +660,6 @@ export default pageWrapper()((props) => {
           onRightClick={() => showBottomEdit('status')}
         />
         <div style={{height: EditBottomHeight}}/>
-        {renderPercent()}
       </div>
     </div>
   )
