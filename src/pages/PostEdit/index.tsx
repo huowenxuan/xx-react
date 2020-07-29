@@ -30,7 +30,6 @@ const MediaTypes = {
 
 let postId = ''
 let draftId = ''
-let coverFile = null // 原生图片选择器选择图片后的file文件，设置为封面图
 let overlay: any = React.createRef()
 let addBtn: any = React.createRef()
 let uploadCancel = false
@@ -78,7 +77,6 @@ export default pageWrapper()((props) => {
 
   const initData = async () => {
     postId = ''
-    coverFile = null
     uploadCancel = false
     draftId = ''
 
@@ -230,14 +228,8 @@ export default pageWrapper()((props) => {
     }
     setPostState('media', media)
     if (updateParams.isCover) {
-      setItemToCover(index, media[index])
+      setCover(media[index].body, media[index].key)
     }
-  }
-
-  // 把某项media设置为封面图
-  const setItemToCover = (index, item) => {
-    setPostState('headbacimgurl', item.body)
-    setPostState('coverKey', item.key)
   }
 
   const clickMedia = (data, index) => {
@@ -281,7 +273,7 @@ export default pageWrapper()((props) => {
     if (!photos || photos.length === 0) return
     // 如果没封面，就把第一张设为封面
     if (isImage && !post.headbacimgurl && !post.coverKey) {
-      setLocalImageToCover(photos[0].src, photos[0].file)
+      setCover(photos[0].src)
     }
 
     let insertData = []
@@ -362,13 +354,15 @@ export default pageWrapper()((props) => {
     let photos = await utils.choosePhoto(true, false)
     let photo = photos[0]
     const {file, src} = photo
-    setLocalImageToCover(src, file)
+    setCover(src)
+    let uploading = await utils.uploadPhoto(src, file, null)
+    let key = await uploading.start()
+    setCover(qiniu.getOriginUrl(key), key)
   }
 
-  const setLocalImageToCover = (src, file) => {
-    setPostState('headbacimgurl', src)
-    setPostState('coverKey', '')
-    coverFile = file
+  const setCover = (body, key='') => {
+    setPostState('headbacimgurl', body)
+    setPostState('coverKey', key)
   }
 
   const onAddClick = (type, index) => {
@@ -411,7 +405,7 @@ export default pageWrapper()((props) => {
           onDelete={() => del(index)}
           onUp={() => up(index)}
           onDown={() => down(index)}
-          onSetCover={() => setItemToCover(index, data)}
+          onSetCover={() => setCover(data.body, data.key)}
         />
         {index === media.length - 1
           ? renderAddItem(index + 1)
@@ -476,9 +470,7 @@ export default pageWrapper()((props) => {
               className='remove'>
               <img className='remove-img' src={images.edit_remove_icon}/>
             </button>
-            <button
-              onClick={onCoverClick}
-              className='update'>
+            <button onClick={onCoverClick} className='update'>
               更改封面
             </button>
           </div>
