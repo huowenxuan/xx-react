@@ -11,6 +11,19 @@ const EditMediaItem = (props) => {
     func && func()
   }
 
+
+  const _onRetry = (e) => {
+    const {upload, onCancel, onRetry} = props
+    e.stopPropagation()
+    onRetry && onRetry()
+  }
+
+  const _onCancel = (e) => {
+    const {upload, onCancel, onRetry} = props
+    e.stopPropagation()
+    onCancel && onCancel()
+  }
+
   const _renderText = (item) => {
     const {style = {}, body} = item
     const {fontSize = 16, fontWeight = 'normal', color = '#222', textAlign = 'left'} = style
@@ -28,8 +41,20 @@ const EditMediaItem = (props) => {
   }
 
   const _renderProgress = (item) => {
-    if (item.key) return null
-    const {progress} = props
+    // if (item.key) return null
+    const {upload, onCancel, onRetry} = props
+    const {progress, error} = upload
+    if (error) {
+      return (
+        <div className='progress-box'>
+          上传失败
+          <div className='error-btns'>
+            <button className='btn' onClick={_onRetry}>重试</button>
+            <button className='btn' onClick={_onCancel}>取消</button>
+          </div>
+        </div>
+      )
+    }
     return (
       <div className='progress-box'>
         <div className='progress-row'>
@@ -40,10 +65,7 @@ const EditMediaItem = (props) => {
           />
           <p
             className='cancel'
-            onClick={(e)=>{
-              e.stopPropagation()
-              console.log('cancel')
-            }}
+            onClick={_onCancel}
           >×</p>
         </div>
         正在上传...

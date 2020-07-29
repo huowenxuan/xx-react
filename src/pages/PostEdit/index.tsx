@@ -153,13 +153,6 @@ export default pageWrapper()((props) => {
     }))
   }
 
-  const cancelUpload = () => {
-    overlays.showAlert('是否取消上传', '', [
-      {text: '取消'},
-      {text: '确定', onPress: () => uploadCancel = true}
-    ])
-  }
-
   const complete = async () => {
     if (!post.title) {
       overlays.showToast('请输入标题')
@@ -340,6 +333,10 @@ export default pageWrapper()((props) => {
     }
   }
 
+  const cancelUpload = (index, data) => {
+    del(index)
+  }
+
   const choosePhoto = async (index, isImage) => {
     let data = null
     try {
@@ -360,7 +357,7 @@ export default pageWrapper()((props) => {
     setCover(qiniu.getOriginUrl(key), key)
   }
 
-  const setCover = (body, key='') => {
+  const setCover = (body, key = '') => {
     setPostState('headbacimgurl', body)
     setPostState('coverKey', key)
   }
@@ -398,7 +395,10 @@ export default pageWrapper()((props) => {
       <ul key={`${data._id}-${data.body}`}>
         {renderAddItem(index)}
         <EditMediaItem
-          progress={upload.body === data.body ? upload.percent : 0}
+          upload={{
+            progress: upload.body === data.body ? upload.percent : 0,
+            error: true
+          }}
           isCover={mediaIsCover(data)}
           data={data}
           onClick={() => clickMedia(data, index)}
@@ -406,6 +406,8 @@ export default pageWrapper()((props) => {
           onUp={() => up(index)}
           onDown={() => down(index)}
           onSetCover={() => setCover(data.body, data.key)}
+          onRetry={() => console.log('retry')}
+          onCancel={() => cancelUpload(index, data)}
         />
         {index === media.length - 1
           ? renderAddItem(index + 1)
