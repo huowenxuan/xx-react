@@ -9,6 +9,7 @@ export default class EditAudio extends PureComponent {
   constructor(props) {
     super(props)
     this.state = {
+      loading: true,
       types: [],
       curType: null,
       allCount: '',
@@ -32,6 +33,7 @@ export default class EditAudio extends PureComponent {
     if (result.category && result.category.length > 0) {
       let types = result.category
       this.setState({
+        loading: false,
         types,
         curType: types[0],
         allCount: result.count
@@ -181,7 +183,7 @@ export default class EditAudio extends PureComponent {
   }
 
   render() {
-    const {allCount} = this.state
+    const {allCount, loading} = this.state
     const {onBack} = this.props
     return (
       <div
@@ -196,18 +198,23 @@ export default class EditAudio extends PureComponent {
             onClick: this._done
           }]}
         />
-        {this._renderHeader()}
+        {loading ? (
+          <div style={{textAlign: 'center'}}>loading...</div>
+        ): (
+          <div>
+            {this._renderHeader()}
+            <div className='main'>
+              {this._renderTypes()}
+              <p className='hot-text'>共有 {allCount} 首乐曲</p>
+              {this._renderMusics()}
+            </div>
 
-        <div className='main'>
-          {this._renderTypes()}
-          <p className='hot-text'>共有 {allCount} 首乐曲</p>
-          {this._renderMusics()}
-        </div>
-
-        <p className='more'>
-          - 更多背景音乐，请到糖水App中设置 -
-        </p>
-        <audio autoPlay={true} ref={this.audio}/>
+            <p className='more'>
+              - 更多背景音乐，请到糖水App中设置 -
+            </p>
+            <audio autoPlay={true} ref={this.audio}/>
+          </div>
+        )}
       </div>
     )
   }
