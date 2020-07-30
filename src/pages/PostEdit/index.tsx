@@ -120,6 +120,15 @@ export default pageWrapper()((props) => {
   }
 
   const onBack = () => {
+    let newPost = _.cloneDeep(post)
+    // 过滤掉没有key的图片和视频
+    newPost.media = newPost.media.filter(item=>{
+      if ((item.type === 'image' || item.type === 'shortvideo') &&
+        !item.key
+      ) return false
+      return true
+    })
+
     const back = () => props.history.goBack()
     const deleteAndBack = () => {
       back()
@@ -127,16 +136,16 @@ export default pageWrapper()((props) => {
     }
     const saveAndBack = () => {
       back()
-      props.actions.saveDraft(1, draftId, post)
+      props.actions.saveDraft(1, draftId, newPost)
     }
 
-    if (JSON.stringify(post) === JSON.stringify(initData)) {
+    if (JSON.stringify(newPost) === JSON.stringify(initData)) {
       console.log('数据未修改，无需保存')
       back()
       return
     }
 
-    if (!post.title && (!post.media || post.media.length === 0)) {
+    if (!newPost.title && (!newPost.media || newPost.media.length === 0)) {
       if (draftId) {
         console.log('数据为空，且为草稿，删除草稿')
         overlays.showAlert('是否删除草稿？', '', [
