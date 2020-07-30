@@ -36,7 +36,6 @@ export default class Page extends PureComponent {
 
   postId = ''
   draftId = ''
-  initData = null // 初始化数据，用于比对是否修改过
   addBtn: any = React.createRef() // 当前点击的加号按钮
   uploading = null // 正在上传的对象
   isUploading = false // 是否正在上传
@@ -44,6 +43,7 @@ export default class Page extends PureComponent {
   constructor(props) {
     super(props)
     this.state = {
+      initData: null, // 初始化数据，用于比对是否修改过
       openedAddItem: -1,
       post: {
         media: [],
@@ -55,7 +55,8 @@ export default class Page extends PureComponent {
         body: '',
         percent: 0,
       },
-      completeBtnEnabled: true
+      completeBtnEnabled: true,
+      error: null
     }
   }
 
@@ -94,7 +95,13 @@ export default class Page extends PureComponent {
       // 编辑
       this.postId = search.postId
       // 编辑旧帖子
-      let data = await request.get(request.API.postEdit + this.postId, {}, Token)
+      let data = null
+      try {
+        data = await request.get(request.API.postEdit + this.postId, {}, Token)
+      } catch (e) {
+        this.setState({error: e.message})
+        return
+      }
       let postData = data.post
       const {media} = postData
       for (let item of media) {
@@ -105,8 +112,10 @@ export default class Page extends PureComponent {
         }
       }
       console.log('编辑', postData)
-      this.setState({post: postData})
-      this.initData = _.cloneDeep(postData)
+      this.setState({
+        post: postData,
+        initData: _.cloneDeep(postData)
+      })
     } else if (photos) {
       // 根据照片创建新帖子
       this.onPhotoChoose(0, photos, true)
@@ -115,10 +124,18 @@ export default class Page extends PureComponent {
       // 草稿
       this.draftId = search.draftId
       let {payload: draft} = await this.props.actions.findDraftById(1, this.draftId)
+      if (!draft) {
+        this.setState({
+          error: '草稿已删除'
+        })
+        return
+      }
       this.postId = draft._id
       console.log('草稿', draft)
-      this.setState({post: draft})
-      this.initData = _.cloneDeep(draft)
+      this.setState({
+        post: draft,
+        initData: _.cloneDeep(draft)
+      })
     } else {
       // 新建
       this.openAdd(0)
@@ -127,7 +144,19 @@ export default class Page extends PureComponent {
 
   onBack = (isClick?) => {
     const {props} = this
-    const {post} = this.state
+    const {post, error} = this.state
+
+    const back = () => {
+      this.removePopstateListener()
+      // 人为点击返回则需要返回，浏览器返回不需要
+      isClick && props.history.goBack()
+    }
+
+    if (error) {
+      back()
+      return
+    }
+
     let newPost = _.cloneDeep(post)
     // 过滤掉没有key的图片和视频
     newPost.media = newPost.media.filter(item => {
@@ -137,11 +166,6 @@ export default class Page extends PureComponent {
       return true
     })
 
-    const back = () => {
-      this.removePopstateListener()
-      // 人为点击返回则需要返回，浏览器返回不需要
-      isClick && props.history.goBack()
-    }
     const deleteAndBack = () => {
       back()
       props.actions.deleteDraft(1, this.draftId)
@@ -151,7 +175,7 @@ export default class Page extends PureComponent {
       props.actions.saveDraft(1, this.draftId, newPost)
     }
 
-    if (JSON.stringify(newPost) === JSON.stringify(this.initData)) {
+    if (JSON.stringify(newPost) === JSON.stringify(this.state.initData)) {
       console.log('数据未修改，无需保存')
       back()
       return
@@ -500,7 +524,6 @@ export default class Page extends PureComponent {
     }
   }
 
-
   renderAddItem = (index) => {
     return (
       <div
@@ -617,9 +640,30 @@ export default class Page extends PureComponent {
   }
 
   render() {
-    const {title, media, audio_id, status} = this.state.post
+    const {post, error, initData} = this.state
+    if (error) {
+      return (
+        <div className='post-edit'>
+          <NavBar title='写文章' onBack={() => this.onBack(true)}/>
+          <div className='error'>{error}</div>
+        </div>
+      )
+    }
+
+    if (!initData) {
+      return (
+        <div className='post-edit'>
+          <NavBar title='写文章' onBack={() => this.onBack(true)}/>
+          <div className='loading'>loading...</div>
+        </div>
+      )
+    }
+
+
+
+    const {title, media, audio_id, status} = post
     return (
-      <div>
+      <div className='post-edit'>
         <NavBar
           title='写文章'
           onBack={() => this.onBack(true)}
@@ -630,7 +674,7 @@ export default class Page extends PureComponent {
           ]}
         />
 
-        <div className='post-edit'>
+        <div>
           {this.renderCover()}
           <div id='wrapper'>
             <input
