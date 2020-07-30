@@ -76,6 +76,12 @@ export default class Page extends PureComponent {
     this.onBack()
   }
 
+  setStateSync = async (handle) => {
+    return new Promise(resolve => {
+      this.setState(handle, resolve)
+    })
+  }
+
   init = async () => {
     postId = ''
     draftId = ''
@@ -292,8 +298,8 @@ export default class Page extends PureComponent {
   up = (index) => {
     this.setState(({post}: any) => {
       let {media} = post
-      if (index === 0) return {}
-        [media[index - 1], media[index]] = [media[index], media[index - 1]]
+      if (index === 0) return
+      [media[index - 1], media[index]] = [media[index], media[index - 1]]
       return {post: {...post, media}}
     })
   }
@@ -301,8 +307,8 @@ export default class Page extends PureComponent {
   down = (index) => {
     this.setState(({post}: any) => {
       let {media} = post
-      if (index === media.length - 1) return {}
-        [media[index - 1], media[index]] = [media[index], media[index - 1]]
+      if (index === media.length - 1) return
+      [media[index], media[index + 1]] = [media[index + 1], media[index]]
       return {post: {...post, media}}
     })
   }
