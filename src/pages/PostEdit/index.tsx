@@ -30,10 +30,11 @@ const MediaTypes = {
 
 let postId = ''
 let draftId = ''
-let overlay: any = React.createRef()
-let addBtn: any = React.createRef()
-let uploading
-let isUploading = false
+let initData = null // 初始化数据，用于比对是否修改过
+
+let addBtn: any = React.createRef() // 当前点击的加号按钮
+let uploading // 正在上传的对象
+let isUploading = false // 是否正在上传
 
 export default pageWrapper()((props) => {
   const [openedAddItem, setOpenedAddItem] = useState(-1)
@@ -51,7 +52,7 @@ export default pageWrapper()((props) => {
 
   useEffect(() => {
     console.log('init data')
-    initData()
+    init()
     return () => console.log('unmount')
   }, [])
 
@@ -76,10 +77,10 @@ export default pageWrapper()((props) => {
     )
   }, [openedAddItem])
 
-  const initData = async () => {
+  const init = async () => {
     postId = ''
     draftId = ''
-
+    initData = null
     // const {id} = props.match.params
     let {photos, search} = props.location
     search = qs.decode(search.substr(1))
@@ -100,6 +101,7 @@ export default pageWrapper()((props) => {
       }
       console.log('编辑', postData)
       setPost(postData)
+      initData = _.cloneDeep(postData)
     } else if (photos) {
       // 根据照片创建新帖子
       onPhotoChoose(0, photos, true)
@@ -110,6 +112,7 @@ export default pageWrapper()((props) => {
       let {payload: draft} = await props.actions.findDraftById(1, draftId)
       console.log('草稿', draft)
       setPost(draft)
+      initData = _.cloneDeep(draft)
     } else {
       // 新建
       openAdd(0)
@@ -117,18 +120,38 @@ export default pageWrapper()((props) => {
   }
 
   const onBack = () => {
-    if (!post.title && (!post.media || post.media.length === 0)) {
-      props.history.goBack()
+    const back = () => props.history.goBack()
+    const deleteAndBack = () => {
+      back()
+      props.actions.deleteDraft(1, draftId)
+    }
+    const saveAndBack = () => {
+      back()
+      props.actions.saveDraft(1, draftId, post)
+    }
+
+    if (JSON.stringify(post) === JSON.stringify(initData)) {
+      console.log('数据未修改，无需保存')
+      back()
       return
     }
 
-    const saveAndBack = () => {
-      props.history.goBack()
-      props.actions.saveDraft(1, draftId, post)
+    if (!post.title && (!post.media || post.media.length === 0)) {
+      if (draftId) {
+        console.log('数据为空，且为草稿，删除草稿')
+        overlays.showAlert('是否删除草稿？', '', [
+          {text: '放弃更改', onPress: back},
+          {text: '删除草稿', onPress: deleteAndBack},
+        ], {showClose: true})
+      } else {
+        back()
+      }
+      return
     }
-    overlays.showAlert('是否保存草稿', '', [
-      {text: '放弃更改', onPress: () => props.history.goBack()},
-      {text: '保存草稿', onPress: () => saveAndBack()},
+
+    overlays.showAlert('是否保存草稿？', '', [
+      {text: '放弃更改', onPress: back},
+      {text: '保存草稿', onPress: saveAndBack},
     ], {showClose: true})
   }
 
@@ -215,7 +238,7 @@ export default pageWrapper()((props) => {
   }
 
   const updateMediaByIndex = async (index, updateParams) => {
-    setPost(newPost=>{
+    setPost(newPost => {
       const {media} = newPost
       media[index] = {
         ...media[index],
@@ -236,7 +259,7 @@ export default pageWrapper()((props) => {
   }
 
   const del = (index) => {
-    setPost((newPost)=>{
+    setPost((newPost) => {
       let {media} = newPost
       media.splice(index, 1)
       return {...newPost, media}
@@ -244,19 +267,19 @@ export default pageWrapper()((props) => {
   }
 
   const up = (index) => {
-    setPost((newPost)=>{
+    setPost((newPost) => {
       let {media} = newPost
-      if (index === 0) return newPost;
-      [media[index - 1], media[index]] = [media[index], media[index - 1]]
+      if (index === 0) return newPost
+        [media[index - 1], media[index]] = [media[index], media[index - 1]]
       return {...newPost, media}
     })
   }
 
   const down = (index) => {
-    setPost((newPost)=>{
+    setPost((newPost) => {
       let {media} = newPost
-      if (index === media.length - 1) return newPost;
-      [media[index], media[index + 1]] = [media[index + 1], media[index]]
+      if (index === media.length - 1) return newPost
+        [media[index], media[index + 1]] = [media[index + 1], media[index]]
       return {...newPost, media}
     })
   }
@@ -479,7 +502,6 @@ export default pageWrapper()((props) => {
     let key = overlays.show(
       <OverlayViewFade>
         <OverlayView
-          ref={overlay}
           data={curData}
           isCover={mediaIsCover(curData)}
           onChange={(data) => {
