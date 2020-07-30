@@ -249,11 +249,12 @@ export default class Page extends PureComponent {
       this.draftId && this.props.actions.deleteDraft(1, this.draftId)
       console.log(result)
       console.log(result._id)
-      // props.history.replace(`/postedit?postId=${result._id}`)
-      window.location.href = `/postedit?postId=${result._id}`
+      this.removePopstateListener()
+      this.props.history.replace(`/drafts`)
+      // this.props.history.replace(`/postedit?postId=${result._id}`)
+      // window.location.href = `/postedit?postId=${result._id}`
     } catch (e) {
       overlays.showToast(e.message)
-    } finally {
       this.setState({completeBtnEnabled: true})
     }
   }
