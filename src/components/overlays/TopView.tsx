@@ -1,6 +1,6 @@
 import React, {Children, Component, PureComponent} from 'react'
 import md5 from 'md5'
-import eventEmitter from './events'
+import eventEmitter from '../../utils/events'
 
 function randomString() {
   let str = new Date() + Math.random().toString(36).substr(2)

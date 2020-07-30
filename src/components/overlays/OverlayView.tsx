@@ -1,5 +1,5 @@
 import React, {PureComponent} from 'react';
-import eventEmitter from './events'
+import eventEmitter from '../../utils/events'
 export default class OverlayView extends PureComponent {
   props: any
   constructor(props) {

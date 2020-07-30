@@ -53,15 +53,19 @@ export default pageWrapper()((props) => {
   useEffect(() => {
     console.log('init data')
     init()
-    window.addEventListener("popstate", onPopstate, false);
+    window.addEventListener("popstate", onPopstate, false)
     return () => {
       console.log('unmount')
     }
   }, [])
 
-  const onPopstate = ()=>{
-    console.log('浏览器返回事件')
+  const removePopstateListener = () => {
+    console.log('remove')
     window.removeEventListener('popstate', onPopstate)
+  }
+
+  function onPopstate() {
+    console.log('浏览器返回事件')
     onBack()
   }
 
@@ -131,7 +135,7 @@ export default pageWrapper()((props) => {
   const onBack = () => {
     let newPost = _.cloneDeep(post)
     // 过滤掉没有key的图片和视频
-    newPost.media = newPost.media.filter(item=>{
+    newPost.media = newPost.media.filter(item => {
       if ((item.type === 'image' || item.type === 'shortvideo') &&
         !item.key
       ) return false
@@ -139,7 +143,10 @@ export default pageWrapper()((props) => {
     })
     console.log(post)
 
-    const back = () => props.history.goBack()
+    const back = () => {
+      removePopstateListener()
+      props.history.goBack()
+    }
     const deleteAndBack = () => {
       back()
       props.actions.deleteDraft(1, draftId)
