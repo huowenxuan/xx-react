@@ -14,7 +14,8 @@ import images from '../../assets/images'
 import * as request from '../../request'
 import * as utils from '../../utils'
 import * as _ from 'lodash'
-import {pageWrapper} from '../../components/HigherOrderStatelessComponents'
+// import {pageWrapper} from '../../components/HigherOrderStatelessComponents'
+import {pageWrapper} from '../../components/HigherOrderComponents'
 import OverlayViewFade from "../../components/overlays/OverlayViewFade"
 import qs from 'querystring'
 import qiniu from "../../utils/qiniu"
@@ -36,66 +37,51 @@ let addBtn: any = React.createRef() // 当前点击的加号按钮
 let uploading // 正在上传的对象
 let isUploading = false // 是否正在上传
 
-export default pageWrapper()((props) => {
-  const [openedAddItem, setOpenedAddItem] = useState(-1)
-  const [post, setPost]: any = useState({
-    media: [],
-    coverHidden: false,
-    // status: 'public'
-    status: 'private'
-  })
-  const [upload, setUpload] = useState({
-    body: '',
-    percent: 0,
-  })
-  const [completeBtnEnabled, setCompleteBtnEnabled] = useState(true)
+@pageWrapper()
+export default class Page extends PureComponent {
+  props: any
+  state: any
 
-  useEffect(() => {
-    console.log('init data')
-    init()
-    window.addEventListener("popstate", onPopstate, false)
-    return () => {
-      console.log('unmount')
+  constructor(props) {
+    super(props)
+    this.state = {
+      openedAddItem: -1,
+      post: {
+        media: [],
+        coverHidden: false,
+        // status: 'public'
+        status: 'private'
+      },
+      upload: {
+        body: '',
+        percent: 0,
+      },
+      completeBtnEnabled: true
     }
-  }, [])
-
-  const removePopstateListener = () => {
-    console.log('remove')
-    window.removeEventListener('popstate', onPopstate)
   }
 
-  function onPopstate() {
+  componentDidMount() {
+    console.log('init data')
+    this.init()
+    window.addEventListener("popstate", this.onPopstate, false)
+  }
+
+  removePopstateListener = () => {
+    console.log('remove popstate listener')
+    window.removeEventListener('popstate', this.onPopstate)
+  }
+
+  onPopstate = () => {
     console.log('浏览器返回事件')
-    onBack()
+    this.onBack()
   }
 
-  useEffect(() => {
-  }, [post])
-
-  useEffect(() => {
-    if (openedAddItem === -1) return
-    let rect = addBtn.current.getBoundingClientRect()
-    let key = overlays.show(
-      <EditAdd
-        onDismiss={() => {
-          overlays.dismiss(key)
-          setOpenedAddItem(-1)
-        }}
-        rect={rect}
-        onText={() => onAddClick(MediaTypes.Text, openedAddItem)}
-        onImage={() => onAddClick(MediaTypes.Image, openedAddItem)}
-        onLink={() => onAddClick(MediaTypes.Link, openedAddItem)}
-        onVideo={() => onAddClick(MediaTypes.Video, openedAddItem)}
-      />
-    )
-  }, [openedAddItem])
-
-  const init = async () => {
+  init = async () => {
     postId = ''
     draftId = ''
     initData = null
     // const {id} = props.match.params
-    let {photos, search} = props.location
+    let {photos, search} = this.props.location
     search = qs.decode(search.substr(1))
 
     if (search.postId) {
@@ -113,26 +99,28 @@ export default pageWrapper()((props) => {
         }
       }
       console.log('编辑', postData)
-      setPost(postData)
+      this.setState({post: postData})
       initData = _.cloneDeep(postData)
     } else if (photos) {
       // 根据照片创建新帖子
-      onPhotoChoose(0, photos, true)
+      this.onPhotoChoose(0, photos, true)
       console.log('照片', photos)
     } else if (search.draftId) {
       // 草稿
       draftId = search.draftId
-      let {payload: draft} = await props.actions.findDraftById(1, draftId)
+      let {payload: draft} = await this.props.actions.findDraftById(1, draftId)
       console.log('草稿', draft)
-      setPost(draft)
+      this.setState({post: draft})
       initData = _.cloneDeep(draft)
     } else {
       // 新建
-      openAdd(0)
+      this.openAdd(0)
     }
   }
 
-  const onBack = () => {
+  onBack = (isClick?) => {
+    const {props} = this
+    const {post} = this.state
     let newPost = _.cloneDeep(post)
     // 过滤掉没有key的图片和视频
     newPost.media = newPost.media.filter(item => {
@@ -141,11 +129,11 @@ export default pageWrapper()((props) => {
       ) return false
       return true
     })
-    console.log(post)
 
     const back = () => {
-      removePopstateListener()
-      props.history.goBack()
+      this.removePopstateListener()
+      // 人为点击返回则需要返回，浏览器返回不需要
+      isClick && props.history.goBack()
     }
     const deleteAndBack = () => {
       back()
@@ -184,27 +172,30 @@ export default pageWrapper()((props) => {
   }
 
   // 弹出选择图片和权限遮罩
-  const showBottomEdit = (type) => {
-    const {audio_id, status, protect} = post
+  showBottomEdit = (type) => {
+    const {audio_id, status, protect} = this.state.post
     overlays.show(
       <EditBottomOverlay
         type={type}
         audio={audio_id}
         status={status}
         protect={protect}
-        onUpdate={setPostState}
+        onUpdate={this.setPostState}
       />
     )
   }
 
-  const setPostState = (field, data) => {
-    setPost(prevPost => ({
-      ...prevPost,
-      [field]: data
+  setPostState = (field, data) => {
+    this.setState((prev: any) => ({
+      post: {
+        ...prev.post,
+        [field]: data
+      }
     }))
   }
 
-  const complete = async () => {
+  complete = async () => {
+    const {post} = this.state
     if (!post.title) {
       overlays.showToast('请输入标题')
       return
@@ -241,7 +232,7 @@ export default pageWrapper()((props) => {
       protect,
     }
     let result
-    setCompleteBtnEnabled(false)
+    this.setState({completeBtnEnabled: false})
     try {
       if (postId) {
         result = await request.post(request.API.postUpdate + postId, {data}, Token)
@@ -250,7 +241,7 @@ export default pageWrapper()((props) => {
         result = await request.post(request.API.postCreate, {data}, Token)
         overlays.showToast('创建成功')
       }
-      draftId && props.actions.deleteDraft(1, draftId)
+      draftId && this.props.actions.deleteDraft(1, draftId)
       console.log(result)
       console.log(result._id)
       // props.history.replace(`/postedit?postId=${result._id}`)
@@ -258,82 +249,93 @@ export default pageWrapper()((props) => {
     } catch (e) {
       overlays.showToast(e.message)
     } finally {
-      setCompleteBtnEnabled(true)
+      this.setState({completeBtnEnabled: true})
     }
   }
 
-  const insertMedias = async (index, medias) => {
-    let newPost: any = await getNewestPost()
+  insertMedias = async (index, medias) => {
+    let newPost: any = await this.getNewestPost()
     const {media = []} = newPost
     let arr1 = media.slice(0, index)
     let arr2 = media.slice(index, media.length + 1)
     arr1.push(...medias)
     let newMedia = arr1.concat(arr2)
-    setPostState('media', newMedia)
+    this.setPostState('media', newMedia)
   }
 
-  const updateMediaByIndex = async (index, updateParams) => {
-    setPost(newPost => {
-      const {media} = newPost
+  updateMediaByIndex = async (index, updateParams) => {
+    this.setState(({post}: any) => {
+      const {media} = post
       media[index] = {
         ...media[index],
         ...updateParams
       }
       if (updateParams.isCover) {
-        setCover(media[index].body, media[index].key)
+        this.setCover(media[index].body, media[index].key)
       }
-      return {
-        ...newPost,
-        media
-      }
+      return {post: {...post, media}}
     })
   }
 
-  const clickMedia = (data, index) => {
-    showAddOverlay(data.type, index, false)
+  clickMedia = (data, index) => {
+    this.showAddOverlay(data.type, index, false)
   }
 
-  const del = (index) => {
-    setPost((newPost) => {
-      let {media} = newPost
+  del = (index) => {
+    this.setState(({post}: any) => {
+      let {media} = post
       media.splice(index, 1)
-      return {...newPost, media}
+      return {post: {...post, media}}
     })
   }
 
-  const up = (index) => {
-    setPost((newPost) => {
-      let {media} = newPost
-      if (index === 0) return newPost
+  up = (index) => {
+    this.setState(({post}: any) => {
+      let {media} = post
+      if (index === 0) return {}
         [media[index - 1], media[index]] = [media[index], media[index - 1]]
-      return {...newPost, media}
+      return {post: {...post, media}}
     })
   }
 
-  const down = (index) => {
-    setPost((newPost) => {
-      let {media} = newPost
-      if (index === media.length - 1) return newPost
-        [media[index], media[index + 1]] = [media[index + 1], media[index]]
-      return {...newPost, media}
+  down = (index) => {
+    this.setState(({post}: any) => {
+      let {media} = post
+      if (index === media.length - 1) return {}
+        [media[index - 1], media[index]] = [media[index], media[index - 1]]
+      return {post: {...post, media}}
     })
   }
 
-  const openAdd = (index) => {
-    setOpenedAddItem(index)
-  }
-
-  const getNewestPost = () => {
-    return new Promise(resolve => {
-      setPost((prevPost) => {
-        resolve(prevPost)
-        return prevPost
-      })
+  openAdd = (index) => {
+    this.setState({
+      openedAddItem: index
+    }, () => {
+      if (index === -1) return
+      let rect = addBtn.current.getBoundingClientRect()
+      let key = overlays.show(
+        <EditAdd
+          onDismiss={() => {
+            overlays.dismiss(key)
+            this.setState({openedAddItem: -1})
+          }}
+          rect={rect}
+          onText={() => this.onAddClick(MediaTypes.Text, this.state.openedAddItem)}
+          onImage={() => this.onAddClick(MediaTypes.Image, this.state.openedAddItem)}
+          onLink={() => this.onAddClick(MediaTypes.Link, this.state.openedAddItem)}
+          onVideo={() => this.onAddClick(MediaTypes.Video, this.state.openedAddItem)}
+        />
+      )
     })
   }
 
-  const updateMediaByBody = async (body, cb) => {
-    let newPost: any = await getNewestPost()
+  getNewestPost = () => {
+    // TODO 删掉
+    return this.state.post
+  }
+
+  updateMediaByBody = async (body, cb) => {
+    let newPost: any = await this.getNewestPost()
     let media = newPost.media.map(item => {
       if (item.body === body) {
         item = {
@@ -343,49 +345,55 @@ export default pageWrapper()((props) => {
       }
       return item
     })
-    setPost({...newPost, media})
+    this.setState({
+      post: {...newPost, media}
+    })
   }
 
-  const uploadMedia = async (media) => {
+  uploadMedia = async (media) => {
     const {body, file} = media
-    updateMediaByBody(body, () => ({error: null}))
+    this.updateMediaByBody(body, () => ({error: null}))
     await new Promise(async (resolve, reject) => {
       try {
-        setUpload({body, percent: 0})
+        this.setState({upload: {body, percent: 0}})
         uploading = await utils.uploadPhoto(
           body,
           file,
           (percent) => {
             console.log(percent)
-            setUpload((prev) => ({...prev, percent}))
+            this.setState(({upload}: any) => ({
+              upload: {...upload, percent}
+            }))
           }
         )
         let key = await uploading.start()
-        setUpload((prev) => ({...prev, percent: 100}))
-        await updateMediaByBody(body, (item, newPost) => {
+        this.setState(({upload}: any) => ({
+          upload: {...upload, percent: 100}
+        }))
+        await this.updateMediaByBody(body, (item, newPost) => {
           let newBody = item.type === 'image'
             ? qiniu.getImageUrl(key)
             : qiniu.getOriginUrl(key)
           if (newPost.headbacimgurl === body) {
-            setPostState('coverKey', key)
-            setPostState('headbacimgurl', newBody)
+            this.setPostState('coverKey', key)
+            this.setPostState('headbacimgurl', newBody)
           }
           return {key, body: newBody}
         })
         resolve()
       } catch (e) {
         console.error('upload error', media, e)
-        await updateMediaByBody(body, () => ({error: e.message}))
+        await this.updateMediaByBody(body, () => ({error: e.message}))
         resolve()
       }
     })
   }
 
   /* 递归上传，每次都从上往下找未上传和未出错的 */
-  const uploadNextMedia = async () => {
+  uploadNextMedia = async () => {
     console.log('开始查找需要上传的内容')
     isUploading = true
-    let newPost: any = await getNewestPost()
+    let newPost: any = await this.getNewestPost()
     let nextUpload = newPost.media.find(item =>
       (item.type === 'image' || item.type === 'shortvideo') &&
       !item.key &&
@@ -396,13 +404,14 @@ export default pageWrapper()((props) => {
       return
     }
 
-    await uploadMedia(nextUpload)
-    await uploadNextMedia()
+    await this.uploadMedia(nextUpload)
+    await this.uploadNextMedia()
     isUploading = false
   }
 
-  const mediaIsCover = (item) => {
-    const {headbacimgurl, coverKey} = post
+
+  mediaIsCover = (item) => {
+    const {headbacimgurl, coverKey} = this.state.post
     if (!item) return false
     if (headbacimgurl === item.body) return true
     if (coverKey && coverKey === item.key) return true
@@ -410,11 +419,12 @@ export default pageWrapper()((props) => {
   }
 
   /* 处理选择后的图片 */
-  const onPhotoChoose = async (index, photos, isImage) => {
+  onPhotoChoose = async (index, photos, isImage) => {
+    const {post} = this.state
     if (!photos || photos.length === 0) return
     // 如果没封面，就把第一张设为封面
     if (isImage && !post.headbacimgurl && !post.coverKey) {
-      setCover(photos[0].src)
+      this.setCover(photos[0].src)
     }
 
     let insertData = []
@@ -429,98 +439,99 @@ export default pageWrapper()((props) => {
         file
       })
     }
-    await insertMedias(index, insertData)
-    isUploading || uploadNextMedia()
+    await this.insertMedias(index, insertData)
+    isUploading || this.uploadNextMedia()
   }
 
-  const cancelUpload = (index, data) => {
+  cancelUpload = (index, data) => {
     if (uploading && uploading.path === data.body) {
       uploading.cancel()
     }
-    del(index)
+    this.del(index)
   }
 
-  const choosePhoto = async (index, isImage) => {
+  choosePhoto = async (index, isImage) => {
     let data = null
     try {
       data = await utils.choosePhoto(isImage, true)
-      onPhotoChoose(index, data, isImage)
+      this.onPhotoChoose(index, data, isImage)
     } catch (e) {
       overlays.showToast(e.message)
     }
   }
 
-  const onCoverClick = async () => {
+  onCoverClick = async () => {
     let photos = await utils.choosePhoto(true, false)
     let photo = photos[0]
     const {file, src} = photo
-    setCover(src)
+    this.setCover(src)
     let uploading = await utils.uploadPhoto(src, file, null)
     let key = await uploading.start()
-    setCover(qiniu.getOriginUrl(key), key)
+    this.setCover(qiniu.getOriginUrl(key), key)
   }
 
-  const setCover = (body, key = '') => {
-    setPostState('headbacimgurl', body)
-    setPostState('coverKey', key)
+  setCover = (body, key = '') => {
+    this.setPostState('headbacimgurl', body)
+    this.setPostState('coverKey', key)
   }
 
-  const onAddClick = (type, index) => {
+  onAddClick = (type, index) => {
     if (type === MediaTypes.Image) {
-      choosePhoto(index, true)
+      this.choosePhoto(index, true)
     } else if (type === MediaTypes.Video) {
       overlays.showActionSheet([
-        {text: '本地', onPress: () => choosePhoto(index, false)},
-        {text: '网络', onPress: () => showAddOverlay(type, index, true)},
+        {text: '本地', onPress: () => this.choosePhoto(index, false)},
+        {text: '网络', onPress: () => this.showAddOverlay(type, index, true)},
       ])
     } else {
-      showAddOverlay(type, index, true)
+      this.showAddOverlay(type, index, true)
     }
   }
 
-  const renderAddItem = (index) => {
+
+  renderAddItem = (index) => {
     return (
       <div
-        ref={openedAddItem === index ? addBtn : null}
+        ref={this.state.openedAddItem === index ? addBtn : null}
         className='add-row'
-        onClick={() => openAdd(index)}
+        onClick={() => this.openAdd(index)}
       >
         <img className='icon' src={images.add_spe_icon}/>
       </div>
     )
   }
 
-  const renderMedia = (media) => {
-    if (!media || media.length === 0) return renderAddItem(0)
-
+  renderMedia = (media) => {
+    if (!media || media.length === 0) return this.renderAddItem(0)
+    const {upload} = this.state
     return media.map((data, index) => (
       // 每个item的key不变可保证每次修改元素后所有的视频不重新加载
       <ul key={`${data._id}-${data.body}`}>
-        {renderAddItem(index)}
+        {this.renderAddItem(index)}
         <EditMediaItem
           upload={{
             progress: upload.body === data.body ? upload.percent : 0,
             error: data.error
           }}
-          isCover={mediaIsCover(data)}
+          isCover={this.mediaIsCover(data)}
           data={data}
-          onClick={() => clickMedia(data, index)}
-          onDelete={() => del(index)}
-          onUp={() => up(index)}
-          onDown={() => down(index)}
-          onSetCover={() => setCover(data.body, data.key)}
-          onRetry={() => uploadMedia(data)}
-          onCancel={() => cancelUpload(index, data)}
+          onClick={() => this.clickMedia(data, index)}
+          onDelete={() => this.del(index)}
+          onUp={() => this.up(index)}
+          onDown={() => this.down(index)}
+          onSetCover={() => this.setCover(data.body, data.key)}
+          onRetry={() => this.uploadMedia(data)}
+          onCancel={() => this.cancelUpload(index, data)}
         />
         {index === media.length - 1
-          ? renderAddItem(index + 1)
+          ? this.renderAddItem(index + 1)
           : null}
       </ul>
     ))
   }
 
-  const showAddOverlay = (type, index, isNew) => {
-    let curData = isNew ? null : post.media[index]
+  showAddOverlay = (type, index, isNew) => {
+    let curData = isNew ? null : this.state.post.media[index]
     let OverlayView
     if (type === 'text') {
       OverlayView = EditTextOverlay
@@ -538,11 +549,11 @@ export default pageWrapper()((props) => {
       <OverlayViewFade>
         <OverlayView
           data={curData}
-          isCover={mediaIsCover(curData)}
+          isCover={this.mediaIsCover(curData)}
           onChange={(data) => {
             overlays.dismiss(key)
-            if (isNew) insertMedias(index, [data])
-            else updateMediaByIndex(index, data)
+            if (isNew) this.insertMedias(index, [data])
+            else this.updateMediaByIndex(index, data)
           }}
           onCancel={() => overlays.dismiss(key)}
         />
@@ -550,12 +561,12 @@ export default pageWrapper()((props) => {
     )
   }
 
-  const renderCover = () => {
-    const {coverKey, headbacimgurl, coverHidden} = post
+  renderCover = () => {
+    const {coverKey, headbacimgurl, coverHidden} = this.state.post
     if (!headbacimgurl) {
       return (
         <div
-          onClick={onCoverClick}
+          onClick={this.onCoverClick}
           className='edit-cover edit-cover-none'
         >
           上传封面
@@ -570,11 +581,11 @@ export default pageWrapper()((props) => {
           />
           <div className='wrapper'>
             <button
-              onClick={() => setPostState('coverHidden', true)}
+              onClick={() => this.setPostState('coverHidden', true)}
               className='remove'>
               <img className='remove-img' src={images.edit_remove_icon}/>
             </button>
-            <button onClick={onCoverClick} className='update'>
+            <button onClick={this.onCoverClick} className='update'>
               更改封面
             </button>
           </div>
@@ -583,7 +594,7 @@ export default pageWrapper()((props) => {
     } else {
       return (
         <div
-          onClick={() => setPostState('coverHidden', false)}
+          onClick={() => this.setPostState('coverHidden', false)}
           className='edit-cover-hidden'
         >
           <img className='img' src={headbacimgurl}/>
@@ -593,40 +604,42 @@ export default pageWrapper()((props) => {
     }
   }
 
-  const {title, media, audio_id, status} = post
-  return (
-    <div>
-      <NavBar
-        title='写文章'
-        onBack={onBack}
-        rightButtons={[
-          completeBtnEnabled
-            ? {text: '完成', onClick: complete}
-            : {text: ''},
-        ]}
-      />
-
-      <div className='post-edit'>
-        {renderCover()}
-        <div id='wrapper'>
-          <input
-            className='title-input'
-            placeholder="输入标题(2-50字)"
-            value={title || ''}
-            onChange={e => setPostState('title', e.target.value)}
-          />
-          {/*<p>{post.description}</p>*/}
-          {renderMedia(media)}
-        </div>
-
-        <EditBottomButtons
-          audio={audio_id}
-          status={status}
-          onLeftClick={() => showBottomEdit('audio')}
-          onRightClick={() => showBottomEdit('status')}
+  render() {
+    const {title, media, audio_id, status} = this.state.post
+    return (
+      <div>
+        <NavBar
+          title='写文章'
+          onBack={() => this.onBack(true)}
+          rightButtons={[
+            this.state.completeBtnEnabled
+              ? {text: '完成', onClick: this.complete}
+              : {text: ''},
+          ]}
         />
-        <div style={{height: EditBottomHeight}}/>
+
+        <div className='post-edit'>
+          {this.renderCover()}
+          <div id='wrapper'>
+            <input
+              className='title-input'
+              placeholder="输入标题(2-50字)"
+              value={title || ''}
+              onChange={e => this.setPostState('title', e.target.value)}
+            />
+            {/*<p>{post.description}</p>*/}
+            {this.renderMedia(media)}
+          </div>
+
+          <EditBottomButtons
+            audio={audio_id}
+            status={status}
+            onLeftClick={() => this.showBottomEdit('audio')}
+            onRightClick={() => this.showBottomEdit('status')}
+          />
+          <div style={{height: EditBottomHeight}}/>
+        </div>
       </div>
-    </div>
-  )
-})
+    )
+  }
+}
