@@ -224,7 +224,7 @@ export default pageWrapper()((props) => {
         result = await request.post(request.API.postCreate, {data}, Token)
         overlays.showToast('创建成功')
       }
-      draftId && props.actions.removeDraft(1, draftId)
+      draftId && props.actions.deleteDraft(1, draftId)
       console.log(result)
       console.log(result._id)
       // props.history.replace(`/postedit?postId=${result._id}`)
