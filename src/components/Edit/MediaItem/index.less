@@ -47,22 +47,23 @@
         width: 45%;
         height: 7px;
         border-radius: @progressRadius;
+        // 设置后不需要设置bar和value的圆角了
+        overflow: hidden;
         color: red;
         background-color: #ffe1d0;
-        // 对于webkit浏览器，在iSO上要用-wekbit-appearance:none来清空progress的默认样式，才能让背景色，进度颜色起作。
+        // 对于webkit浏览器，在iOS上要用-wekbit-appearance:none来清空progress的默认样式，才能让背景色，进度颜色起作。
         -webkit-appearance: none;
         appearance: none;
         -moz-appearance: none;
       }
+      .progress::-moz-progress-bar { background: #0064B4; }
 
       .progress::-webkit-progress-bar {
         background: #ffe1d0;
-        border-radius: @progressRadius;
       }
 
       .progress::-webkit-progress-value {
         background: #E97462;
-        border-radius: @progressRadius;
       }
     }
   }
