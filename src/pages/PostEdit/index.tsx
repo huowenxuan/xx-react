@@ -325,7 +325,7 @@ export default pageWrapper()((props) => {
 
   /* 递归上传，每次都从上往下找未上传和未出错的 */
   const uploadNextMedia = async () => {
-    console.log('开始上传')
+    console.log('开始查找需要上传的内容')
     isUploading = true
     let newPost: any = await getNewestPost()
     let nextUpload = newPost.media.find(item =>
