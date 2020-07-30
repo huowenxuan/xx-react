@@ -187,10 +187,16 @@ export default pageWrapper()((props) => {
       overlays.showToast('请添加图片或者文字')
       return
     }
-    setCompleteBtnEnabled(false)
     let newPost = _.cloneDeep(post)
     let newMedias = newPost.media
     for (let item of newMedias) {
+      if (item.type === 'image' || item.type === 'shortvideo') {
+        if (!item.key) {
+          overlays.showToast('正在上传，请稍后再试')
+          return
+        }
+      }
+
       delete item.file
       delete item.isCover
       item.info = JSON.stringify(item.info || {})
@@ -209,6 +215,7 @@ export default pageWrapper()((props) => {
       protect,
     }
     let result
+    setCompleteBtnEnabled(false)
     try {
       if (postId) {
         result = await request.post(request.API.postUpdate + postId, {data}, Token)
@@ -224,9 +231,9 @@ export default pageWrapper()((props) => {
       window.location.href = `/postedit?postId=${result._id}`
     } catch (e) {
       overlays.showToast(e.message)
+    } finally {
       setCompleteBtnEnabled(true)
     }
-    setCompleteBtnEnabled(true)
   }
 
   const insertMedias = async (index, medias) => {
