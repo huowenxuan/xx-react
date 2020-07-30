@@ -81,7 +81,7 @@ export default class OverlayViewFade extends OverlayView {
 
   _onUpdate = (field, data) => {
     const {audio, onUpdate} = this.props
-    onUpdate(field, data)
+    onUpdate({[field]: data})
     if (field === 'audio_id') field = 'audio'
     this.setState({[field]: data})
   }

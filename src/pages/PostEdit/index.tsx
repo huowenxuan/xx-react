@@ -191,13 +191,15 @@ export default class Page extends PureComponent {
     )
   }
 
-  setPostState = (field, data) => {
-    this.setState((prev: any) => ({
-      post: {
-        ...prev.post,
-        [field]: data
-      }
-    }))
+  setPostState = async (params) => {
+    return new Promise(resolve => {
+      this.setState(({post}: any) => ({
+        post: {
+          ...post,
+          ...params
+        }
+      }), resolve)
+    })
   }
 
   complete = async () => {
@@ -260,13 +262,16 @@ export default class Page extends PureComponent {
   }
 
   insertMedias = async (index, medias) => {
-    let newPost: any = await this.getNewestPost()
-    const {media = []} = newPost
-    let arr1 = media.slice(0, index)
-    let arr2 = media.slice(index, media.length + 1)
-    arr1.push(...medias)
-    let newMedia = arr1.concat(arr2)
-    this.setPostState('media', newMedia)
+    return new Promise(resolve => {
+      this.setState(({post}: any) => {
+        let {media = []} = post
+        let arr1 = media.slice(0, index)
+        let arr2 = media.slice(index, media.length + 1)
+        arr1.push(...medias)
+        media = arr1.concat(arr2)
+        return {post: {...post, media}}
+      }, resolve)
+    })
   }
 
   updateMediaByIndex = async (index, updateParams) => {
@@ -317,7 +322,6 @@ export default class Page extends PureComponent {
     this.setState({
       openedAddItem: index
     }, () => {
-      if (index === -1) return
       let rect = addBtn.current.getBoundingClientRect()
       let key = overlays.show(
         <EditAdd
@@ -335,30 +339,28 @@ export default class Page extends PureComponent {
     })
   }
 
-  getNewestPost = () => {
-    // TODO 删掉
-    return this.state.post
-  }
-
-  updateMediaByBody = async (body, cb) => {
-    let newPost: any = await this.getNewestPost()
-    let media = newPost.media.map(item => {
+  /* matchItemCb 匹配到item */
+  updateMediaByBody = async (body, params) => {
+    const {post} = this.state
+    let media = post.media.map(item => {
       if (item.body === body) {
         item = {
           ...item,
-          ...cb(item, newPost)
+          ...params
         }
       }
       return item
     })
-    this.setState({
-      post: {...newPost, media}
+    return new Promise(resolve => {
+      this.setState({
+        post: {...post, media}
+      }, resolve)
     })
   }
 
   uploadMedia = async (media) => {
-    const {body, file} = media
-    this.updateMediaByBody(body, () => ({error: null}))
+    const {body, file, type} = media
+    this.updateMediaByBody(body, {error: null})
     await new Promise(async (resolve, reject) => {
       try {
         this.setState({upload: {body, percent: 0}})
@@ -376,20 +378,21 @@ export default class Page extends PureComponent {
         this.setState(({upload}: any) => ({
           upload: {...upload, percent: 100}
         }))
-        await this.updateMediaByBody(body, (item, newPost) => {
-          let newBody = item.type === 'image'
-            ? qiniu.getImageUrl(key)
-            : qiniu.getOriginUrl(key)
-          if (newPost.headbacimgurl === body) {
-            this.setPostState('coverKey', key)
-            this.setPostState('headbacimgurl', newBody)
-          }
-          return {key, body: newBody}
-        })
-        resolve()
+        const {post} = this.state
+        let newBody = type === 'image'
+          ? qiniu.getImageUrl(key)
+          : qiniu.getOriginUrl(key)
+        await this.updateMediaByBody(body, {body: newBody, key})
+        if (post.headbacimgurl === body) {
+          await this.setPostState({
+            'coverKey': key,
+            'headbacimgurl': newBody
+          })
+        }
       } catch (e) {
         console.error('upload error', media, e)
-        await this.updateMediaByBody(body, () => ({error: e.message}))
+        await this.updateMediaByBody(body, {error: e.message},)
+      } finally {
         resolve()
       }
     })
@@ -399,8 +402,8 @@ export default class Page extends PureComponent {
   uploadNextMedia = async () => {
     console.log('开始查找需要上传的内容')
     isUploading = true
-    let newPost: any = await this.getNewestPost()
-    let nextUpload = newPost.media.find(item =>
+
+    let nextUpload = this.state.post.media.find(item =>
       (item.type === 'image' || item.type === 'shortvideo') &&
       !item.key &&
       !item.error
@@ -430,7 +433,7 @@ export default class Page extends PureComponent {
     if (!photos || photos.length === 0) return
     // 如果没封面，就把第一张设为封面
     if (isImage && !post.headbacimgurl && !post.coverKey) {
-      this.setCover(photos[0].src)
+      await this.setCover(photos[0].src)
     }
 
     let insertData = []
@@ -476,9 +479,11 @@ export default class Page extends PureComponent {
     this.setCover(qiniu.getOriginUrl(key), key)
   }
 
-  setCover = (body, key = '') => {
-    this.setPostState('headbacimgurl', body)
-    this.setPostState('coverKey', key)
+  setCover = async (body, key = '') => {
+    await this.setPostState({
+      headbacimgurl: body,
+      coverKey: key
+    })
   }
 
   onAddClick = (type, index) => {
@@ -587,7 +592,7 @@ export default class Page extends PureComponent {
           />
           <div className='wrapper'>
             <button
-              onClick={() => this.setPostState('coverHidden', true)}
+              onClick={() => this.setPostState({coverHidden: true})}
               className='remove'>
               <img className='remove-img' src={images.edit_remove_icon}/>
             </button>
@@ -600,7 +605,7 @@ export default class Page extends PureComponent {
     } else {
       return (
         <div
-          onClick={() => this.setPostState('coverHidden', false)}
+          onClick={() => this.setPostState({coverHidden: false})}
           className='edit-cover-hidden'
         >
           <img className='img' src={headbacimgurl}/>
@@ -631,7 +636,7 @@ export default class Page extends PureComponent {
               className='title-input'
               placeholder="输入标题(2-50字)"
               value={title || ''}
-              onChange={e => this.setPostState('title', e.target.value)}
+              onChange={e => this.setPostState({title: e.target.value})}
             />
             {/*<p>{post.description}</p>*/}
             {this.renderMedia(media)}
