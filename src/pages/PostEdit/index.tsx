@@ -53,8 +53,17 @@ export default pageWrapper()((props) => {
   useEffect(() => {
     console.log('init data')
     init()
-    return () => console.log('unmount')
+    window.addEventListener("popstate", onPopstate, false);
+    return () => {
+      console.log('unmount')
+    }
   }, [])
+
+  const onPopstate = ()=>{
+    console.log('浏览器返回事件')
+    window.removeEventListener('popstate', onPopstate)
+    onBack()
+  }
 
   useEffect(() => {
   }, [post])
@@ -128,6 +137,7 @@ export default pageWrapper()((props) => {
       ) return false
       return true
     })
+    console.log(post)
 
     const back = () => props.history.goBack()
     const deleteAndBack = () => {
