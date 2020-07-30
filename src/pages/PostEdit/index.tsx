@@ -120,6 +120,7 @@ export default class Page extends PureComponent {
       // 根据照片创建新帖子
       this.onPhotoChoose(0, photos, true)
       console.log('照片', photos)
+      this.setState({initData: {}})
     } else if (search.draftId) {
       // 草稿
       this.draftId = search.draftId
@@ -139,6 +140,7 @@ export default class Page extends PureComponent {
     } else {
       // 新建
       this.openAdd(0)
+      this.setState({ initData: {} })
     }
   }
 
