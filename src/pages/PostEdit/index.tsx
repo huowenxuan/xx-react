@@ -144,11 +144,13 @@ export default pageWrapper()((props) => {
           {text: '删除草稿', onPress: deleteAndBack},
         ], {showClose: true})
       } else {
+        console.log('数据为空，不为草稿，直接返回，不操作')
         back()
       }
       return
     }
 
+    console.log('保存草稿')
     overlays.showAlert('是否保存草稿？', '', [
       {text: '放弃更改', onPress: back},
       {text: '保存草稿', onPress: saveAndBack},
