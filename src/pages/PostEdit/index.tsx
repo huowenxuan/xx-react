@@ -33,6 +33,7 @@ let draftId = ''
 let overlay: any = React.createRef()
 let addBtn: any = React.createRef()
 let uploading
+let isUploading = false
 
 export default pageWrapper()((props) => {
   const [openedAddItem, setOpenedAddItem] = useState(-1)
@@ -203,8 +204,9 @@ export default pageWrapper()((props) => {
     setCompleteBtnEnabled(true)
   }
 
-  const insertMedias = (index, medias) => {
-    const {media = []} = post
+  const insertMedias = async (index, medias) => {
+    let newPost: any = await getNewestPost()
+    const {media = []} = newPost
     let arr1 = media.slice(0, index)
     let arr2 = media.slice(index, media.length + 1)
     arr1.push(...medias)
@@ -212,16 +214,21 @@ export default pageWrapper()((props) => {
     setPostState('media', newMedia)
   }
 
-  const updateMedia = (index, updateParams) => {
-    const {media} = post
-    media[index] = {
-      ...media[index],
-      ...updateParams
-    }
-    setPostState('media', media)
-    if (updateParams.isCover) {
-      setCover(media[index].body, media[index].key)
-    }
+  const updateMediaByIndex = async (index, updateParams) => {
+    setPost(newPost=>{
+      const {media} = newPost
+      media[index] = {
+        ...media[index],
+        ...updateParams
+      }
+      if (updateParams.isCover) {
+        setCover(media[index].body, media[index].key)
+      }
+      return {
+        ...newPost,
+        media
+      }
+    })
   }
 
   const clickMedia = (data, index) => {
@@ -229,23 +236,29 @@ export default pageWrapper()((props) => {
   }
 
   const del = (index) => {
-    let {media} = post
-    media.splice(index, 1)
-    setPostState('media', media)
+    setPost((newPost)=>{
+      let {media} = newPost
+      media.splice(index, 1)
+      return {...newPost, media}
+    })
   }
 
   const up = (index) => {
-    let {media} = post
-    if (index === 0) return
-    [media[index - 1], media[index]] = [media[index], media[index - 1]]
-    setPostState('media', media)
+    setPost((newPost)=>{
+      let {media} = newPost
+      if (index === 0) return newPost;
+      [media[index - 1], media[index]] = [media[index], media[index - 1]]
+      return {...newPost, media}
+    })
   }
 
   const down = (index) => {
-    let {media} = post
-    if (index === media.length - 1) return
-    [media[index], media[index + 1]] = [media[index + 1], media[index]]
-    setPostState('media', media)
+    setPost((newPost)=>{
+      let {media} = newPost
+      if (index === media.length - 1) return newPost;
+      [media[index], media[index + 1]] = [media[index + 1], media[index]]
+      return {...newPost, media}
+    })
   }
 
   const openAdd = (index) => {
@@ -261,19 +274,18 @@ export default pageWrapper()((props) => {
     })
   }
 
-  const updateMediaByBody = (body, cb) => {
-    setPost((newPost) => ({
-      ...newPost,
-      media: newPost.media.map(item => {
-        if (item.body === body) {
-          item = {
-            ...item,
-            ...cb(item, newPost)
-          }
+  const updateMediaByBody = async (body, cb) => {
+    let newPost: any = await getNewestPost()
+    let media = newPost.media.map(item => {
+      if (item.body === body) {
+        item = {
+          ...item,
+          ...cb(item, newPost)
         }
-        return item
-      })
-    }))
+      }
+      return item
+    })
+    setPost({...newPost, media})
   }
 
   const uploadMedia = async (media) => {
@@ -292,7 +304,7 @@ export default pageWrapper()((props) => {
         )
         let key = await uploading.start()
         setUpload((prev) => ({...prev, percent: 100}))
-        updateMediaByBody(body, (item, newPost) => {
+        await updateMediaByBody(body, (item, newPost) => {
           let newBody = item.type === 'image'
             ? qiniu.getImageUrl(key)
             : qiniu.getOriginUrl(key)
@@ -304,8 +316,8 @@ export default pageWrapper()((props) => {
         })
         resolve()
       } catch (e) {
-        console.error('upload error', e)
-        updateMediaByBody(body, () => ({error: e.message}))
+        console.error('upload error', media, e)
+        await updateMediaByBody(body, () => ({error: e.message}))
         resolve()
       }
     })
@@ -313,16 +325,22 @@ export default pageWrapper()((props) => {
 
   /* 递归上传，每次都从上往下找未上传和未出错的 */
   const uploadNextMedia = async () => {
+    console.log('开始上传')
+    isUploading = true
     let newPost: any = await getNewestPost()
-    let nextUpload = newPost.media.find(item => !item.key && !item.error)
+    let nextUpload = newPost.media.find(item =>
+      (item.type === 'image' || item.type === 'shortvideo') &&
+      !item.key &&
+      !item.error
+    )
     if (!nextUpload) {
       console.log('全部上传完成')
       return
     }
 
     await uploadMedia(nextUpload)
-    console.log('find next')
-    uploadNextMedia()
+    await uploadNextMedia()
+    isUploading = false
   }
 
   const mediaIsCover = (item) => {
@@ -353,8 +371,8 @@ export default pageWrapper()((props) => {
         file
       })
     }
-    insertMedias(index, insertData)
-    uploadNextMedia()
+    await insertMedias(index, insertData)
+    isUploading || uploadNextMedia()
   }
 
   const cancelUpload = (index, data) => {
@@ -467,7 +485,7 @@ export default pageWrapper()((props) => {
           onChange={(data) => {
             overlays.dismiss(key)
             if (isNew) insertMedias(index, [data])
-            else updateMedia(index, data)
+            else updateMediaByIndex(index, data)
           }}
           onCancel={() => overlays.dismiss(key)}
         />
