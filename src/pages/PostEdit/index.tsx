@@ -29,18 +29,17 @@ const MediaTypes = {
   Video: 'video'
 }
 
-let postId = ''
-let draftId = ''
-let initData = null // 初始化数据，用于比对是否修改过
-
-let addBtn: any = React.createRef() // 当前点击的加号按钮
-let uploading // 正在上传的对象
-let isUploading = false // 是否正在上传
-
 @pageWrapper()
 export default class Page extends PureComponent {
   props: any
   state: any
+
+  postId = ''
+  draftId = ''
+  initData = null // 初始化数据，用于比对是否修改过
+  addBtn: any = React.createRef() // 当前点击的加号按钮
+  uploading = null // 正在上传的对象
+  isUploading = false // 是否正在上传
 
   constructor(props) {
     super(props)
@@ -83,18 +82,15 @@ export default class Page extends PureComponent {
   }
 
   init = async () => {
-    postId = ''
-    draftId = ''
-    initData = null
     // const {id} = props.match.params
     let {photos, search} = this.props.location
     search = qs.decode(search.substr(1))
 
     if (search.postId) {
       // 编辑
-      postId = search.postId
+      this.postId = search.postId
       // 编辑旧帖子
-      let data = await request.get(request.API.postEdit + postId, {}, Token)
+      let data = await request.get(request.API.postEdit + this.postId, {}, Token)
       let postData = data.post
       const {media} = postData
       for (let item of media) {
@@ -106,18 +102,19 @@ export default class Page extends PureComponent {
       }
       console.log('编辑', postData)
       this.setState({post: postData})
-      initData = _.cloneDeep(postData)
+      this.initData = _.cloneDeep(postData)
     } else if (photos) {
       // 根据照片创建新帖子
       this.onPhotoChoose(0, photos, true)
       console.log('照片', photos)
     } else if (search.draftId) {
       // 草稿
-      draftId = search.draftId
-      let {payload: draft} = await this.props.actions.findDraftById(1, draftId)
+      this.draftId = search.draftId
+      let {payload: draft} = await this.props.actions.findDraftById(1, this.draftId)
+      this.postId = draft._id
       console.log('草稿', draft)
       this.setState({post: draft})
-      initData = _.cloneDeep(draft)
+      this.initData = _.cloneDeep(draft)
     } else {
       // 新建
       this.openAdd(0)
@@ -143,21 +140,21 @@ export default class Page extends PureComponent {
     }
     const deleteAndBack = () => {
       back()
-      props.actions.deleteDraft(1, draftId)
+      props.actions.deleteDraft(1, this.draftId)
     }
     const saveAndBack = () => {
       back()
-      props.actions.saveDraft(1, draftId, newPost)
+      props.actions.saveDraft(1, this.draftId, newPost)
     }
 
-    if (JSON.stringify(newPost) === JSON.stringify(initData)) {
+    if (JSON.stringify(newPost) === JSON.stringify(this.initData)) {
       console.log('数据未修改，无需保存')
       back()
       return
     }
 
     if (!newPost.title && (!newPost.media || newPost.media.length === 0)) {
-      if (draftId) {
+      if (this.draftId) {
         console.log('数据为空，且为草稿，删除草稿')
         overlays.showAlert('是否删除草稿？', '', [
           {text: '放弃更改', onPress: back},
@@ -242,14 +239,14 @@ export default class Page extends PureComponent {
     let result
     this.setState({completeBtnEnabled: false})
     try {
-      if (postId) {
-        result = await request.post(request.API.postUpdate + postId, {data}, Token)
+      if (this.postId) {
+        result = await request.post(request.API.postUpdate + this.postId, {data}, Token)
         overlays.showToast('更新成功')
       } else {
         result = await request.post(request.API.postCreate, {data}, Token)
         overlays.showToast('创建成功')
       }
-      draftId && this.props.actions.deleteDraft(1, draftId)
+      this.draftId && this.props.actions.deleteDraft(1, this.draftId)
       console.log(result)
       console.log(result._id)
       // props.history.replace(`/postedit?postId=${result._id}`)
@@ -322,7 +319,7 @@ export default class Page extends PureComponent {
     this.setState({
       openedAddItem: index
     }, () => {
-      let rect = addBtn.current.getBoundingClientRect()
+      let rect = this.addBtn.current.getBoundingClientRect()
       let key = overlays.show(
         <EditAdd
           onDismiss={() => {
@@ -364,7 +361,7 @@ export default class Page extends PureComponent {
     await new Promise(async (resolve, reject) => {
       try {
         this.setState({upload: {body, percent: 0}})
-        uploading = await utils.uploadPhoto(
+        this.uploading = await utils.uploadPhoto(
           body,
           file,
           (percent) => {
@@ -374,7 +371,7 @@ export default class Page extends PureComponent {
             }))
           }
         )
-        let key = await uploading.start()
+        let key = await this.uploading.start()
         this.setState(({upload}: any) => ({
           upload: {...upload, percent: 100}
         }))
@@ -401,7 +398,7 @@ export default class Page extends PureComponent {
   /* 递归上传，每次都从上往下找未上传和未出错的 */
   uploadNextMedia = async () => {
     console.log('开始查找需要上传的内容')
-    isUploading = true
+    this.isUploading = true
 
     let nextUpload = this.state.post.media.find(item =>
       (item.type === 'image' || item.type === 'shortvideo') &&
@@ -415,7 +412,7 @@ export default class Page extends PureComponent {
 
     await this.uploadMedia(nextUpload)
     await this.uploadNextMedia()
-    isUploading = false
+    this.isUploading = false
   }
 
 
@@ -449,12 +446,12 @@ export default class Page extends PureComponent {
       })
     }
     await this.insertMedias(index, insertData)
-    isUploading || this.uploadNextMedia()
+    this.isUploading || this.uploadNextMedia()
   }
 
   cancelUpload = (index, data) => {
-    if (uploading && uploading.path === data.body) {
-      uploading.cancel()
+    if (this.uploading && this.uploading.path === data.body) {
+      this.uploading.cancel()
     }
     this.del(index)
   }
@@ -503,7 +500,7 @@ export default class Page extends PureComponent {
   renderAddItem = (index) => {
     return (
       <div
-        ref={this.state.openedAddItem === index ? addBtn : null}
+        ref={this.state.openedAddItem === index ? this.addBtn : null}
         className='add-row'
         onClick={() => this.openAdd(index)}
       >
