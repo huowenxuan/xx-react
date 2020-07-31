@@ -1,8 +1,8 @@
 
 'use strict'
 
-// const baseUrl = '/api'
-const baseUrl = '/testapi'
+const baseUrl = '/api'
+// const baseUrl = '/testapi'
 // const baseUrl = 'http://a.tangshui.net'
 // const baseUrl = 'http://testenjoy.tangshui.net'
 

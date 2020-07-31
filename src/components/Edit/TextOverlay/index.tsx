@@ -1,5 +1,5 @@
 import React, {PureComponent} from "react"
-import './index.css'
+import './index.less'
 import opacityWrapper from '../../Wrappers/opacityWrapper'
 import images from "../../../assets/images";
 import NavBar from "../../NavBar";
