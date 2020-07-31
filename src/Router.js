@@ -1,5 +1,5 @@
 import React from 'react'
-import {Router as BrowserRouter, Route, Switch} from 'react-router-dom'
+import {Router as BrowserRouter, Route, Switch, Redirect} from 'react-router-dom'
 import {createBrowserHistory} from 'history'
 import {Provider} from "react-redux"
 import store from "./store"
@@ -15,11 +15,12 @@ export default (props) => (
   <Provider store={props.store || store}>
     <BrowserRouter history={props.history || history}>
       <Switch>
-        <Route exact path="/" component={PostNew}/>
-        <Route exact path="/postnew" component={PostNew}/>
-        <Route exact path="/applinks" component={AppLink}/>
-        <Route exact path="/postedit" component={PostEdit}/>
-        <Route exact path="/drafts" component={Draft}/>
+        <Route exact path="/create" component={PostNew}/>
+        <Route exact path="/create/new" component={PostNew}/>
+        {/*<Route exact path="/create/applinks" component={AppLink}/>*/}
+        <Route exact path="/create/edit" component={PostEdit}/>
+        <Route exact path="/create/drafts" component={Draft}/>
+        <Redirect to="/create"/>
       </Switch>
     </BrowserRouter>
   </Provider>

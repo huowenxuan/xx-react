@@ -22,7 +22,7 @@ export default pageWrapper()((props) => {
         {drafts.map((data) => (
           <li
             key={data.draftId}
-            onClick={() => props.history.push(`postedit?draftId=${data.draftId}`)}
+            onClick={() => props.history.push(`create/edit?draftId=${data.draftId}`)}
           >
             {data.title}
           </li>

@@ -9,7 +9,7 @@ export default pageWrapper()((props) => {
   const addImage = async () => {
     let photos = await utils.choosePhoto(true, true)
     props.history.push({
-      pathname: 'postedit',
+      pathname: '/create/edit',
       photos
     })
   }
