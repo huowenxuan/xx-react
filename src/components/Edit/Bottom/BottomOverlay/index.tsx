@@ -1,13 +1,16 @@
 import React, {PureComponent} from 'react'
 import OverlayView from '../../../overlays/OverlayView'
-import EditBottomButtons, {EditBottomHeight} from '../../../Edit/Bottom/Buttons/'
+import EditBottomButtons, {EditBottomHeight} from '../Buttons/'
 import './index.less'
 import EditAudio from '../EditAudio/'
 import EditStatus from '../EditStatus/'
+import Fixed from '../../../Fixed'
 
 const windowHeight = window.screen.height
 const Duration = 300
 export default class OverlayViewFade extends OverlayView {
+  state: any
+
   constructor(props) {
     super(props)
 

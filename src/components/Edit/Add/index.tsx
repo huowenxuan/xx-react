@@ -37,6 +37,7 @@ export default (props) => {
       style={{backgroundColor: 'transparent'}}
     >
       <div
+        onMouseDown={onDismiss}
         onTouchStart={onDismiss}
         className='edit-add-overlay'
       >

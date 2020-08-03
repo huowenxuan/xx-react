@@ -3,7 +3,7 @@ import './index.less'
 import opacityWrapper from '../../Wrappers/opacityWrapper'
 import images from "../../../assets/images"
 
-class EditTextOverlay extends PureComponent {
+class EditImageOverlay extends PureComponent {
   props: any
   state: any
 
@@ -106,4 +106,4 @@ class EditTextOverlay extends PureComponent {
   }
 }
 
-export default opacityWrapper(EditTextOverlay)
+export default opacityWrapper(EditImageOverlay)

@@ -2,6 +2,7 @@ import React, {PureComponent} from "react"
 import './index.less'
 import PropTypes from 'prop-types'
 import images from '../../assets/images'
+import Fixed from '../Fixed'
 
 export default class NavBar extends PureComponent {
   props: any
@@ -105,7 +106,7 @@ export default class NavBar extends PureComponent {
     )
   }
 
-  _renderButtons(buttons, style={}) {
+  _renderButtons(buttons, style = {}) {
     return (
       <div className='center' style={style}>
         {buttons
@@ -118,18 +119,20 @@ export default class NavBar extends PureComponent {
   _renderNavBar(navHeight) {
     const {title, leftButtons, rightButtons, style, titleView} = this.props
     return (
-      <nav style={{height: navHeight, ...style}} className='nav-bar'>
-        <div className='title-box'>
-          <div style={{pointerEvents: 'auto'}}>
-            {titleView || <p className='title'>
-              {this._showTitle(title)}
-            </p>}
+      <Fixed>
+        <nav style={{height: navHeight, ...style}} className='nav-bar'>
+          <div className='title-box'>
+            <div style={{pointerEvents: 'auto'}}>
+              {titleView || <p className='title'>
+                {this._showTitle(title)}
+              </p>}
+            </div>
           </div>
-        </div>
 
-        {this._renderButtons(leftButtons || this.backButton())}
-        {this._renderButtons(rightButtons)}
-      </nav>
+          {this._renderButtons(leftButtons || this.backButton())}
+          {this._renderButtons(rightButtons)}
+        </nav>
+      </Fixed>
     )
   }
 

@@ -1,6 +1,7 @@
 import React, {PureComponent, useEffect} from "react"
 import {withStateHandlers, compose, pure} from "recompose"
 import {Statuses} from '../EditStatus'
+import Fixed from '../../../Fixed'
 import './index.less'
 import images from "../../../../assets/images"
 
@@ -41,28 +42,30 @@ const EditBottom = (props) => {
   }
 
   return (
-    <div
-      className='edit-bottom'
-      style={{height: EditBottomHeight}}
-    >
-      {_renderBtn(
-        '背景音频',
-        props.active === 'audio',
-        images.icon_music_red,
-        images.icon_music,
-        onLeftClick,
-        audio ? audio.filename : '',
-        {marginLeft: 50}
-      )}
-      {_renderBtn(
-        '谁可以看',
-        props.active === 'status',
-        images.icon_limit_red,
-        images.icon_limit,
-        onRightClick,
-        status ? Statuses.find(i=>i.type===status).title : ''
-      )}
-    </div>
+    <Fixed>
+      <div
+        className='edit-bottom'
+        style={{height: EditBottomHeight}}
+      >
+        {_renderBtn(
+          '背景音频',
+          props.active === 'audio',
+          images.icon_music_red,
+          images.icon_music,
+          onLeftClick,
+          audio ? audio.filename : '',
+          {marginLeft: 50}
+        )}
+        {_renderBtn(
+          '谁可以看',
+          props.active === 'status',
+          images.icon_limit_red,
+          images.icon_limit,
+          onRightClick,
+          status ? Statuses.find(i => i.type === status).title : ''
+        )}
+      </div>
+    </Fixed>
   )
 }
 export default compose(pure)(EditBottom)
