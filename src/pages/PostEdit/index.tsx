@@ -280,7 +280,7 @@ export default class Page extends PureComponent {
       console.log(result)
       console.log(result._id)
       setTimeout(()=>{
-        this.props.history.replace(`/create/drafts`)
+        this.props.history.replaceToDrafts()
       }, 1000)
       // this.props.history.replace(`/postedit?postId=${result._id}`)
       // window.location.href = `/postedit?postId=${result._id}`

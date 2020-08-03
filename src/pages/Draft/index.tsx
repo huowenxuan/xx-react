@@ -22,7 +22,9 @@ export default pageWrapper()((props) => {
         {drafts.map((data) => (
           <li
             key={data.draftId}
-            onClick={() => props.history.push(`/create/edit?draftId=${data.draftId}`)}
+            onClick={() => props.history.toEdit({
+              draftId: data.draftId
+            })}
           >
             {data.title}
           </li>

@@ -8,10 +8,7 @@ import {pageWrapper} from '../../components/HigherOrderStatelessComponents'
 export default pageWrapper()((props) => {
   const addImage = async () => {
     let photos = await utils.choosePhoto(true, true)
-    props.history.push({
-      pathname: '/create/edit',
-      photos
-    })
+    props.history.toEdit(null, {photos})
   }
 
   return (
