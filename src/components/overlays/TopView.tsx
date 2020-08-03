@@ -1,6 +1,7 @@
 import React, {Children, Component, PureComponent} from 'react'
 import md5 from 'md5'
 import eventEmitter from '../../utils/events'
+import './TopView.less'
 
 function randomString() {
   let str = new Date() + Math.random().toString(36).substr(2)
@@ -95,8 +96,8 @@ export default class TopView extends PureComponent {
     elements.forEach((item) => {
       elementComponents.push(
         <div
+          className='top-view'
           key={'topView' + item._key}
-          style={styles.overlay}
         >
           {
             React.cloneElement(item.element, {
@@ -122,17 +123,4 @@ export default class TopView extends PureComponent {
       </div>
     );
   }
-}
-
-let styles: any = {
-  overlay: {
-    backgroundColor: 'rgba(0, 0, 0, 0)',
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    pointerEvents: 'none',
-    zIndex: 999
-  },
 }
