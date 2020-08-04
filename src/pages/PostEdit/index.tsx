@@ -622,7 +622,7 @@ export default class Page extends PureComponent {
             <button
               onClick={() => this.setPostState({coverHidden: true})}
               className='remove'>
-              <img className='remove-img' src={images.edit_remove_icon}/>
+              <img className='img' src={images.edit_remove_icon}/>
             </button>
             <button onClick={this.onCoverClick} className='update'>
               更改封面
