@@ -614,7 +614,7 @@ export default class Page extends PureComponent {
       return (
         <div className='post-edit'>
           <NavBar title='写文章' onBack={() => this.onBack(true)}/>
-          <div className='loading'>loading...</div>
+          <div className='loading'>加载中...</div>
         </div>
       )
     }
