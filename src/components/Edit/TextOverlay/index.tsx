@@ -226,6 +226,7 @@ class EditTextOverlay extends PureComponent {
         >
           <textarea
             className='add-textarea'
+            autoFocus={!this.state.text}
             value={text}
             placeholder='点这里输入文字'
             onChange={e => this.setState({text: e.target.value})}
