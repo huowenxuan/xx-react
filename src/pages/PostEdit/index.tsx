@@ -556,8 +556,8 @@ export default class Page extends PureComponent {
     )
   }
 
-  renderCover = () => {
-    const {coverKey, headbacimgurl, coverHidden} = this.state.post
+  renderCover = (post) => {
+    const {coverKey, headbacimgurl, coverHidden} = post
     if (!headbacimgurl) {
       return (
         <div
@@ -633,7 +633,7 @@ export default class Page extends PureComponent {
         />
 
         <div>
-          {this.renderCover()}
+          {this.renderCover(post)}
           <div id='wrapper'>
             <input
               className='title-input'
