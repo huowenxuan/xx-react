@@ -95,6 +95,19 @@ export default handleActions({
       }
     }
   }),
+  [types.EDIT_MEDIA_UPDATE_BY_BODY]: ({
+    next(state, {payload: {body, update}}) {
+      let media = state.post.media.map(item => {
+        if (item.body === body)
+          item = {...item, ...update}
+        return item
+      })
+      return {
+        ...state,
+        post: {...state.post, media}
+      }
+    }
+  }),
   [types.EDIT_UPDATE_STATE]: ({
     next(state, {payload: params}) {
       return {

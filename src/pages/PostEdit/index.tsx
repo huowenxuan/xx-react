@@ -278,28 +278,9 @@ export default class Page extends PureComponent {
     })
   }
 
-  /* matchItemCb 匹配到item */
-  updateMediaByBody = async (body, params) => {
-    const {post} = this.getEditState()
-    let media = post.media.map(item => {
-      if (item.body === body) {
-        item = {
-          ...item,
-          ...params
-        }
-      }
-      return item
-    })
-    return new Promise(resolve => {
-      this.setState({
-        post: {...post, media}
-      }, resolve)
-    })
-  }
-
   uploadMedia = async (media) => {
     const {body, file, type} = media
-    this.updateMediaByBody(body, {error: null})
+    this.props.actions.updateMediaByBody(body, {error: null})
     await new Promise(async (resolve, reject) => {
       try {
         this.setState({upload: {body, percent: 0}})
@@ -321,7 +302,7 @@ export default class Page extends PureComponent {
         let newBody = type === 'image'
           ? qiniu.getImageUrl(key)
           : qiniu.getOriginUrl(key)
-        await this.updateMediaByBody(body, {body: newBody, key})
+        await this.props.actions.updateMediaByBody(body, {body: newBody, key})
         if (post.headbacimgurl === body) {
           await this.props.actions.setPostState({
             'coverKey': key,
@@ -330,7 +311,7 @@ export default class Page extends PureComponent {
         }
       } catch (e) {
         console.error('upload error', media, e)
-        await this.updateMediaByBody(body, {error: e.message},)
+        await this.props.actions.updateMediaByBody(body, {error: e.message},)
       } finally {
         resolve()
       }
@@ -341,8 +322,8 @@ export default class Page extends PureComponent {
   uploadNextMedia = async () => {
     console.log('开始查找需要上传的内容')
     this.isUploading = true
-
-    let nextUpload = this.state.post.media.find(item =>
+    const {post} = this.getEditState()
+    let nextUpload = post.media.find(item =>
       (item.type === 'image' || item.type === 'shortvideo') &&
       !item.key &&
       !item.error
@@ -359,7 +340,8 @@ export default class Page extends PureComponent {
 
 
   mediaIsCover = (item) => {
-    const {headbacimgurl, coverKey} = this.state.post
+    const {post} = this.getEditState()
+    const {headbacimgurl, coverKey} = post
     if (!item) return false
     if (headbacimgurl === item.body) return true
     if (coverKey && coverKey === item.key) return true
@@ -484,7 +466,8 @@ export default class Page extends PureComponent {
   }
 
   showAddOverlay = (type, index, isNew) => {
-    let curData = isNew ? null : this.state.post.media[index]
+    const {post} = this.getEditState()
+    let curData = isNew ? null : post.media[index]
     let OverlayView
     if (type === 'text') {
       OverlayView = EditTextOverlay
@@ -528,14 +511,12 @@ export default class Page extends PureComponent {
     } else if (!coverHidden) {
       return (
         <div className='edit-cover'>
-          <img
-            className='cover'
-            src={headbacimgurl}
-          />
+          <img className='cover' src={headbacimgurl}/>
           <div className='wrapper'>
             <button
               onClick={() => this.props.actions.setPostState({coverHidden: true})}
-              className='remove'>
+              className='remove'
+            >
               <img className='img' src={images.edit_remove_icon}/>
             </button>
             <button onClick={this.onCoverClick} className='update'>
