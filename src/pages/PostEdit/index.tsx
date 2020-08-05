@@ -80,11 +80,7 @@ export default class Page extends PureComponent {
     this.onBack()
   }
 
-  setStateSync = async (handle) => {
-    return new Promise(resolve => {
-      this.setState(handle, resolve)
-    })
-  }
+  getEditState = () => this.props.state.edit
 
   init = async () => {
     // const {id} = props.match.params
@@ -338,7 +334,6 @@ export default class Page extends PureComponent {
     this.isUploading = false
   }
 
-
   mediaIsCover = (item) => {
     const {post} = this.getEditState()
     const {headbacimgurl, coverKey} = post
@@ -346,10 +341,6 @@ export default class Page extends PureComponent {
     if (headbacimgurl === item.body) return true
     if (coverKey && coverKey === item.key) return true
     return false
-  }
-
-  getEditState() {
-    return this.props.state.edit
   }
 
   /* 处理选择后的图片 */
