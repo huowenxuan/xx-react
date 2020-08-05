@@ -107,8 +107,8 @@ export default class Page extends PureComponent {
       this.postId = draft._id
     } else {
       // 新建
-      this.openAdd(0)
       await this.props.actions.initPostEdit()
+      this.openAdd(0)
     }
   }
 
@@ -424,9 +424,13 @@ export default class Page extends PureComponent {
     return false
   }
 
+  getEditState()  {
+    return this.props.state.edit
+  }
+
   /* 处理选择后的图片 */
   onPhotoChoose = async (index, photos, isImage) => {
-    const {post} = this.state
+    const {post} = this.getEditState()
     if (!photos || photos.length === 0) return
     // 如果没封面，就把第一张设为封面
     if (isImage && !post.headbacimgurl && !post.coverKey) {
@@ -612,7 +616,7 @@ export default class Page extends PureComponent {
   }
 
   render() {
-    const {post, error, initData} = this.props.state.edit
+    const {post, error, initData} = this.getEditState()
     if (error) {
       return (
         <div className='post-edit'>
