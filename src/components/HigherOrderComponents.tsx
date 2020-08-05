@@ -1,9 +1,9 @@
 'use strict'
 
-import React, {PureComponent} from 'react';
+import React, {PureComponent} from 'react'
 import {connect} from 'react-redux'
-import {bindActionCreators} from "redux";
-import actions from '../actions/index';
+import {bindActionCreators} from "redux"
+import actions from '../actions/index'
 
 export const reduxTmp = () => {
   return (Comp) => {

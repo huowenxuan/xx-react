@@ -59,9 +59,19 @@ export default class Page extends PureComponent {
   }
 
   componentDidMount() {
-    console.log('init data')
-    this.init()
+    if (this.props.user && this.props.user.userId) {
+      console.log('init data didmount')
+      this.init()
+    }
     window.addEventListener("popstate", this.onPopstate, false)
+  }
+
+  componentWillReceiveProps(nextProps, nextContext: any): void {
+    const {user} = nextProps
+    if (!this.props.user && user) {
+      console.log('init data receiveProp')
+      this.init()
+    }
   }
 
   componentWillUnmount() {
@@ -543,7 +553,7 @@ export default class Page extends PureComponent {
       )
     }
 
-    if (!initData) {
+    if (!initData || !this.props.user) {
       return (
         <div className='post-edit'>
           <NavBar title='写文章' onBack={() => this.onBack(true)}/>
