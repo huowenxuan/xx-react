@@ -306,16 +306,15 @@ export default class Page extends PureComponent {
     this.setState({
       openedAddItem: index
     }, () => {
-      const {openedAddItem} = this.state
       let rect = this.addBtn.current.getBoundingClientRect()
       let key = overlays.show(
         <EditAdd
           onDismiss={() => overlays.dismiss(key)}
           rect={rect}
-          onText={() => this.onAddClick(MediaTypes.Text, openedAddItem)}
-          onImage={() => this.onAddClick(MediaTypes.Image, openedAddItem)}
-          onLink={() => this.onAddClick(MediaTypes.Link, openedAddItem)}
-          onVideo={() => this.onAddClick(MediaTypes.Video, openedAddItem)}
+          onText={() => this.onAddClick(MediaTypes.Text, index)}
+          onImage={() => this.onAddClick(MediaTypes.Image, index)}
+          onLink={() => this.onAddClick(MediaTypes.Link, index)}
+          onVideo={() => this.onAddClick(MediaTypes.Video, index)}
         />
       )
     })
