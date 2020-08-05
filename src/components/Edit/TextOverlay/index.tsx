@@ -1,8 +1,9 @@
 import React, {PureComponent} from "react"
 import './index.less'
 import opacityWrapper from '../../Wrappers/opacityWrapper'
-import images from "../../../assets/images";
-import NavBar from "../../NavBar";
+import images from "../../../assets/images"
+import NavBar from "../../NavBar"
+import Fixed from "../../Fixed"
 
 const Weights = ['normal', 'bold']
 const Colors = ['#323232', '#999999', '#E7511A',
@@ -26,7 +27,7 @@ class EditTextOverlay extends PureComponent {
   constructor(props) {
     super(props)
     // style = fontWeight: "normal", textAlign: "left", fontSize: 16
-    const {body='', style = {}} = props.data || {}
+    const {body = '', style = {}} = props.data || {}
     this.state = {
       fontWeight: style.fontWeight,
       color: style.color,
@@ -51,9 +52,9 @@ class EditTextOverlay extends PureComponent {
     })
   }
 
-  _newline = ()=> {
+  _newline = () => {
     console.log('newline')
-    this.setState(({text}: any)=>({
+    this.setState(({text}: any) => ({
       text: (text || '') + '\n'
     }))
   }
@@ -122,8 +123,7 @@ class EditTextOverlay extends PureComponent {
             borderWidth: triangleWidth / 2,
             left: rect.left + rect.width / 2 - triangleWidth / 2
           }}
-        >
-        </div>
+        />
       </div>,
       // 把矩形边框挡住的三角形
       <div
@@ -143,26 +143,28 @@ class EditTextOverlay extends PureComponent {
     const {selectBtnRect: rect, selectType} = this.state
     if (selectType !== 'font') return null
     return (
-      <div
-        onClick={(e) => e.stopPropagation()}
-        className='edit-text-overlay'
-        style={{
-          top: rect.top + rect.height + top,
-          left: 30
-        }}
-      >
-        <div className='edit-text-colors'>
-          {Sizes.map(({size, text}) => (
-            <p
-              key={text}
-              onClick={() => this._clickFont(size)}
-              className='edit-text-font'
-              style={{fontSize: size}}
-            >{text}</p>
-          ))}
+      <Fixed>
+        <div
+          onClick={(e) => e.stopPropagation()}
+          className='edit-text-overlay'
+          style={{
+            top: rect.top + rect.height + top,
+            left: 30
+          }}
+        >
+          <div className='edit-text-colors'>
+            {Sizes.map(({size, text}) => (
+              <p
+                key={text}
+                onClick={() => this._clickFont(size)}
+                className='edit-text-font'
+                style={{fontSize: size}}
+              >{text}</p>
+            ))}
+          </div>
+          {this._renderTriangle(rect, top)}
         </div>
-        {this._renderTriangle(rect, top)}
-      </div>
+      </Fixed>
     )
   }
 
