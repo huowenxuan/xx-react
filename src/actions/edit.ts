@@ -11,7 +11,7 @@ const {API} = request
 
 export const initPostEditWithPostId = createAction(types.EDIT_INIT, async (postId, token) => {
   let data = await request.get(API.postEdit + postId, {}, token)
-  let {post}  = data
+  let {post} = data
   console.log('编辑', post)
   const {media} = post
   for (let item of media) {
@@ -35,6 +35,23 @@ export const initPostEdit = createAction(types.EDIT_INIT, async (photos) => {
   return {}
 })
 
-export const insertMedias = createAction(types.EDIT_ADD_MEDIA, async (index, medias)=>{
+export const insertMedias = createAction(types.EDIT_ADD_MEDIA, async (index, medias) => {
   return {index, medias}
 })
+
+export const mediaUp = createAction(types.EDIT_MEDIA_UP, async (index) => {
+  return index
+})
+
+export const mediaDown = createAction(types.EDIT_MEDIA_DOWN, async (index) => {
+  return index
+})
+
+export const deleteMedia = createAction(types.EDIT_MEDIA_DEL, async (index) => {
+  return index
+})
+
+export const updateMediaByIndex = createAction(types.EDIT_MEDIA_UPDATE_BY_IDX,
+  async (index, update) => {
+    return {index, update}
+  })

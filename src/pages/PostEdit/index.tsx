@@ -259,47 +259,16 @@ export default class Page extends PureComponent {
   }
 
   updateMediaByIndex = async (index, updateParams) => {
-    this.setState(({post}: any) => {
-      const {media} = post
-      media[index] = {
-        ...media[index],
-        ...updateParams
-      }
-      if (updateParams.isCover) {
-        this.setCover(media[index].body, media[index].key)
-      }
-      return {post: {...post, media}}
-    })
+    await this.props.actions.updateMediaByIndex(index, updateParams)
+    let {post} = this.getEditState()
+    const {media} = post
+    if (updateParams.isCover) {
+      this.setCover(media[index].body, media[index].key)
+    }
   }
 
   clickMedia = (data, index) => {
     this.showAddOverlay(data.type, index, false)
-  }
-
-  del = (index) => {
-    this.setState(({post}: any) => {
-      let {media} = post
-      media.splice(index, 1)
-      return {post: {...post, media}}
-    })
-  }
-
-  up = (index) => {
-    this.setState(({post}: any) => {
-      let {media} = post
-      if (index === 0) return
-      [media[index - 1], media[index]] = [media[index], media[index - 1]]
-      return {post: {...post, media}}
-    })
-  }
-
-  down = (index) => {
-    this.setState(({post}: any) => {
-      let {media} = post
-      if (index === media.length - 1) return
-      [media[index], media[index + 1]] = [media[index + 1], media[index]]
-      return {post: {...post, media}}
-    })
   }
 
   openAdd = (index) => {
@@ -441,7 +410,7 @@ export default class Page extends PureComponent {
     if (this.uploading && this.uploading.path === data.body) {
       this.uploading.cancel()
     }
-    this.del(index)
+    this.props.actions.deleteMedia(index)
   }
 
   choosePhoto = async (index, isImage) => {
@@ -511,9 +480,9 @@ export default class Page extends PureComponent {
           isCover={this.mediaIsCover(data)}
           data={data}
           onClick={() => this.clickMedia(data, index)}
-          onDelete={() => this.del(index)}
-          onUp={() => this.up(index)}
-          onDown={() => this.down(index)}
+          onDelete={() => this.props.actions.deleteMedia(index)}
+          onUp={() => this.props.actions.mediaUp(index)}
+          onDown={() => this.props.actions.mediaDown(index)}
           onSetCover={() => this.setCover(data.body, data.key)}
           onRetry={() => this.uploadMedia(data)}
           onCancel={() => this.cancelUpload(index, data)}

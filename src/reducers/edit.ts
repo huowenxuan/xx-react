@@ -45,5 +45,54 @@ export default handleActions({
         post: {...state.post, media}
       }
     }
-  })
+  }),
+  [types.EDIT_MEDIA_UP]: ({
+    next(state, {payload: index}) {
+      let {media} = state.post
+      if (index === 0) {
+        return state
+      }
+      [media[index - 1], media[index]] = [media[index], media[index - 1]]
+      return {
+        ...state,
+        post: {...state.post, media}
+      }
+    },
+  }),
+  [types.EDIT_MEDIA_DOWN]: ({
+    next(state, {payload: index}) {
+      let {media} = state.post
+      if (index === media.length - 1) {
+        return state
+      }
+      [media[index], media[index + 1]] = [media[index + 1], media[index]]
+      return {
+        ...state,
+        post: {...state.post, media}
+      }
+    }
+  }),
+  [types.EDIT_MEDIA_DEL]: ({
+    next(state, {payload: index}) {
+      let {media} = state.post
+      media.splice(index, 1)
+      return {
+        ...state,
+        post: {...state.post, media}
+      }
+    }
+  }),
+  [types.EDIT_MEDIA_UPDATE_BY_IDX]: ({
+    next(state, {payload: {index, update}}) {
+      const {media} = state.post
+      media[index] = {
+        ...media[index],
+        ...update
+      }
+      return {
+        ...state,
+        post: {...state.post, media}
+      }
+    }
+  }),
 }, defaultState)
