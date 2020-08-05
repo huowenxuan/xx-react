@@ -27,7 +27,11 @@ export default pageWrapper()((props) => {
         </div>
         <p className='text'>可上传100张图片，一键分享朋友圈</p>
         <Fixed>
-          <div className='open-app-box' onClick={utils.openApp}>
+          <div className='open-app-box' onClick={()=>{
+            // TODO 测试，修改
+            // utils.openApp()
+            props.history.push('/create/edit?postId=5f27825fcc3f9a6bc1bcf208')
+          }}>
             <div className='open-app'>
               打开糖水App，探索更多有趣玩法
             </div>

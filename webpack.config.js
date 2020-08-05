@@ -19,7 +19,7 @@ module.exports = function (webpackEnv) {
         filename: "[name].js",
         libraryTarget: "amd",
         library: "reactApp",
-        publicPath: "/",
+        publicPath: "http://localhost:9003/",
       }
       : {
         filename: "main.js",

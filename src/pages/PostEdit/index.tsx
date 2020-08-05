@@ -20,7 +20,6 @@ import OverlayViewFade from "../../components/overlays/OverlayViewFade"
 import qs from 'querystring'
 import qiniu from "../../utils/qiniu"
 
-// const Token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjU4YTE2NDkzMDRhZjE1OTgwYWZlNDk2YSIsInBob25lIjoiMTg4NDA5MTY3NDIiLCJpYXQiOjE1ODEzMjY4NDV9.jYNFFZWf0DcO5Wu5is21Htywds2zCDGH31YiLZSEeBw'
 const MediaTypes = {
   None: null,
   Text: 'text',
@@ -76,8 +75,10 @@ export default class Page extends PureComponent {
     window.removeEventListener('popstate', this.onPopstate)
   }
 
-  onPopstate = () => {
-    console.log('浏览器返回事件')
+  onPopstate = (e) => {
+    // singlespa在push时也会触发
+    if (e.singleSpaTrigger === 'pushState') return
+    console.log('浏览器返回事件', e)
     this.onBack()
   }
 
