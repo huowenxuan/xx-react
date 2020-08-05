@@ -43,9 +43,7 @@ export default class EditAudio extends PureComponent {
   }
 
   async _updateMusicsByType(type) {
-    let result = await get(`${API.audioCategoryList}${type._id}`, {},
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjU4YTE2NDkzMDRhZjE1OTgwYWZlNDk2YSIsInBob25lIjoiMTg4NDA5MTY3NDIiLCJpYXQiOjE1ODEzMjY4NDV9.jYNFFZWf0DcO5Wu5is21Htywds2zCDGH31YiLZSEeBw'
-    )
+    let result = await get(`${API.audioCategoryList}${type._id}`, {}, this.props.token)
     if (result.audios && result.audios.length > 0) {
       this.setState({
         musics: result.audios

@@ -4,6 +4,7 @@ import {createBrowserHistory} from 'history'
 import {Provider} from "react-redux"
 import store from "./store"
 import * as querystring from "querystring"
+import { withRouter } from "react-router";
 
 import PostEdit from './pages/PostEdit/'
 import PostNew from './pages/PostNew/'
@@ -45,12 +46,16 @@ export default class Router extends Component {
     initRoutes(this.history)
   }
 
-  addRoute(path, Component) {
+  addRoute(path, component) {
     const {globalState} = this.props
     const user = globalState.loginReducer
+    let Component = withRouter(component)
     return (
       <Route exact path={path}>
-        <Component globalState={globalState} user={user}/>
+        <Component
+          globalState={globalState}
+          user={user}
+        />
       </Route>
     )
   }

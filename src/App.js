@@ -15,36 +15,43 @@ ReactDOM.render(
 )
 
 export default ({globalEventDistributor, history, store }) => {
-  const [globalState, setGlobalState] = useState(globalEventDistributor.getState())
+  // const [globalState, setGlobalState] = useState(globalEventDistributor.getState())
+  const [globalState, setGlobalState] = useState({
+    loginReducer: {
+      userId: '1'
+    }
+  })
 
-  useEffect(()=>{{
-    setGlobalState(globalEventDistributor.getState())
-  }}, [globalEventDistributor])
+  // useEffect(()=>{{
+  //   setGlobalState(globalEventDistributor.getState())
+  // }}, [globalEventDistributor])
 
-  console.log("***********");
-  console.log(globalEventDistributor.getState());
-  console.log(globalEventDistributor);
-  if (!globalEventDistributor.getState().loginReducer.userId) {
-    synchronize().then((s) => {
-      console.log(":::::::::::::::::::");
-      console.log(s);
-      console.log(globalEventDistributor.getState());
-      console.log(":::::::::::::::::::");
-      if (globalEventDistributor) {
-        globalEventDistributor.dispatch({
-          type: "login",
-          payload: {
-            userId: s.userId,
-            token: s.token,
-            userName: s.userName,
-            phone: s.phone,
-            openid: s.openid,
-            avatar: s.avatar,
-          },
-        });
-      }
-    });
-  }
+
+
+  // console.log("***********");
+  // console.log(globalEventDistributor.getState());
+  // console.log(globalEventDistributor);
+  // if (!globalEventDistributor.getState().loginReducer.userId) {
+  //   synchronize().then((s) => {
+  //     console.log(":::::::::::::::::::");
+  //     console.log(s);
+  //     console.log(globalEventDistributor.getState());
+  //     console.log(":::::::::::::::::::");
+  //     if (globalEventDistributor) {
+  //       globalEventDistributor.dispatch({
+  //         type: "login",
+  //         payload: {
+  //           userId: s.userId,
+  //           token: s.token,
+  //           userName: s.userName,
+  //           phone: s.phone,
+  //           openid: s.openid,
+  //           avatar: s.avatar,
+  //         },
+  //       });
+  //     }
+  //   });
+  // }
 
   return (
     <div className='App'>

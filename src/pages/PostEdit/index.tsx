@@ -20,7 +20,7 @@ import OverlayViewFade from "../../components/overlays/OverlayViewFade"
 import qs from 'querystring'
 import qiniu from "../../utils/qiniu"
 
-const Token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjU4YTE2NDkzMDRhZjE1OTgwYWZlNDk2YSIsInBob25lIjoiMTg4NDA5MTY3NDIiLCJpYXQiOjE1ODEzMjY4NDV9.jYNFFZWf0DcO5Wu5is21Htywds2zCDGH31YiLZSEeBw'
+// const Token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjU4YTE2NDkzMDRhZjE1OTgwYWZlNDk2YSIsInBob25lIjoiMTg4NDA5MTY3NDIiLCJpYXQiOjE1ODEzMjY4NDV9.jYNFFZWf0DcO5Wu5is21Htywds2zCDGH31YiLZSEeBw'
 const MediaTypes = {
   None: null,
   Text: 'text',
@@ -87,11 +87,11 @@ export default class Page extends PureComponent {
     // const {id} = props.match.params
     let {photos, search} = this.props.location
     search = qs.decode(search.substr(1))
-
+    const {userId, token} = this.props.user || {}
     if (search.postId) {
       this.postId = search.postId
       // 编辑旧帖子
-      await this.props.actions.initPostEditWithPostId(this.postId, Token)
+      await this.props.actions.initPostEditWithPostId(this.postId, token)
     } else if (photos) {
       // 根据照片创建新帖子
       this.onPhotoChoose(0, photos, true)
@@ -100,7 +100,7 @@ export default class Page extends PureComponent {
     } else if (search.draftId) {
       // 草稿
       this.draftId = search.draftId
-      let {payload: draft} = await this.props.actions.initPostEditWithDraftId(1, this.draftId)
+      let {payload: draft} = await this.props.actions.initPostEditWithDraftId(userId, this.draftId)
       this.postId = draft._id
     } else {
       // 新建
@@ -112,7 +112,7 @@ export default class Page extends PureComponent {
   onBack = (isClick?) => {
     const {props} = this
     const {post, error} = this.getEditState()
-
+    const {userId} = this.props.user
     const back = () => {
       this.removePopstateListener()
       // 人为点击返回则需要返回，浏览器返回不需要
@@ -135,11 +135,11 @@ export default class Page extends PureComponent {
 
     const deleteAndBack = () => {
       back()
-      props.actions.deleteDraft(1, this.draftId)
+      props.actions.deleteDraft(userId, this.draftId)
     }
     const saveAndBack = () => {
       back()
-      props.actions.saveDraft(1, this.draftId, newPost)
+      props.actions.saveDraft(userId, this.draftId, newPost)
     }
 
     if (JSON.stringify(newPost) === JSON.stringify(this.state.initData)) {
@@ -174,6 +174,7 @@ export default class Page extends PureComponent {
     const {audio_id, status, protect} = this.state.post
     overlays.show(
       <EditBottomOverlay
+        token={this.props.user.token}
         type={type}
         audio={audio_id}
         status={status}
@@ -223,14 +224,15 @@ export default class Page extends PureComponent {
     let result
     this.setState({completeBtnEnabled: false})
     try {
+      let {userId, token} = this.props.user
       if (this.postId) {
-        result = await request.post(request.API.postUpdate + this.postId, {data}, Token)
+        result = await request.post(request.API.postUpdate + this.postId, {data}, token)
         overlays.showToast('更新成功')
       } else {
-        result = await request.post(request.API.postCreate, {data}, Token)
+        result = await request.post(request.API.postCreate, {data}, token)
         overlays.showToast('创建成功')
       }
-      this.draftId && this.props.actions.deleteDraft(1, this.draftId)
+      this.draftId && this.props.actions.deleteDraft(userId, this.draftId)
       console.log(result)
       console.log(result._id)
       setTimeout(() => {

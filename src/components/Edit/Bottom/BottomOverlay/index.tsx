@@ -90,9 +90,10 @@ export default class OverlayViewFade extends OverlayView {
   }
 
   _renderAudio() {
-    const {audio, onUpdate} = this.props
+    const {audio, onUpdate, token} = this.props
     return (
       <EditAudio
+        token={token}
         onBack={this.disappear}
         audio={audio}
         onUpdate={this._onUpdate}
