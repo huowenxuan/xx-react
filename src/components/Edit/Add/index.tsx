@@ -13,8 +13,8 @@ export default (props) => {
   ]
 
   const _action = (action) => {
-    onDismiss && onDismiss()
     action && action()
+    onDismiss && onDismiss()
   }
 
   const _renderActions = () => {

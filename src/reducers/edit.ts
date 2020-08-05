@@ -33,4 +33,17 @@ export default handleActions({
       }
     }
   }),
+  [types.EDIT_ADD_MEDIA]: ({
+    next(state, {payload: {index, medias}}) {
+      let {media = []} = state.post
+      let arr1 = media.slice(0, index)
+      let arr2 = media.slice(index, media.length + 1)
+      arr1.push(...medias)
+      media = arr1.concat(arr2)
+      return {
+        ...state,
+        post: {...state.post, media}
+      }
+    }
+  })
 }, defaultState)

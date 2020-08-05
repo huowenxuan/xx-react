@@ -114,7 +114,7 @@ export default class Page extends PureComponent {
 
   onBack = (isClick?) => {
     const {props} = this
-    const {post, error} = this.state
+    const {post, error} = this.getEditState()
 
     const back = () => {
       this.removePopstateListener()
@@ -198,7 +198,7 @@ export default class Page extends PureComponent {
   }
 
   complete = async () => {
-    const {post} = this.state
+    const {post} = this.getEditState()
     if (!post.title) {
       overlays.showToast('请输入标题')
       return
@@ -247,7 +247,7 @@ export default class Page extends PureComponent {
       this.draftId && this.props.actions.deleteDraft(1, this.draftId)
       console.log(result)
       console.log(result._id)
-      setTimeout(()=>{
+      setTimeout(() => {
         this.props.history.replaceToDrafts()
       }, 1000)
       // this.props.history.replace(`/postedit?postId=${result._id}`)
@@ -256,19 +256,6 @@ export default class Page extends PureComponent {
       overlays.showToast(e.message)
       this.setState({completeBtnEnabled: true})
     }
-  }
-
-  insertMedias = async (index, medias) => {
-    return new Promise(resolve => {
-      this.setState(({post}: any) => {
-        let {media = []} = post
-        let arr1 = media.slice(0, index)
-        let arr2 = media.slice(index, media.length + 1)
-        arr1.push(...medias)
-        media = arr1.concat(arr2)
-        return {post: {...post, media}}
-      }, resolve)
-    })
   }
 
   updateMediaByIndex = async (index, updateParams) => {
@@ -319,18 +306,16 @@ export default class Page extends PureComponent {
     this.setState({
       openedAddItem: index
     }, () => {
+      const {openedAddItem} = this.state
       let rect = this.addBtn.current.getBoundingClientRect()
       let key = overlays.show(
         <EditAdd
-          onDismiss={() => {
-            overlays.dismiss(key)
-            this.setState({openedAddItem: -1})
-          }}
+          onDismiss={() => overlays.dismiss(key)}
           rect={rect}
-          onText={() => this.onAddClick(MediaTypes.Text, this.state.openedAddItem)}
-          onImage={() => this.onAddClick(MediaTypes.Image, this.state.openedAddItem)}
-          onLink={() => this.onAddClick(MediaTypes.Link, this.state.openedAddItem)}
-          onVideo={() => this.onAddClick(MediaTypes.Video, this.state.openedAddItem)}
+          onText={() => this.onAddClick(MediaTypes.Text, openedAddItem)}
+          onImage={() => this.onAddClick(MediaTypes.Image, openedAddItem)}
+          onLink={() => this.onAddClick(MediaTypes.Link, openedAddItem)}
+          onVideo={() => this.onAddClick(MediaTypes.Video, openedAddItem)}
         />
       )
     })
@@ -338,7 +323,7 @@ export default class Page extends PureComponent {
 
   /* matchItemCb 匹配到item */
   updateMediaByBody = async (body, params) => {
-    const {post} = this.state
+    const {post} = this.getEditState()
     let media = post.media.map(item => {
       if (item.body === body) {
         item = {
@@ -375,7 +360,7 @@ export default class Page extends PureComponent {
         this.setState(({upload}: any) => ({
           upload: {...upload, percent: 100}
         }))
-        const {post} = this.state
+        const {post} = this.getEditState()
         let newBody = type === 'image'
           ? qiniu.getImageUrl(key)
           : qiniu.getOriginUrl(key)
@@ -424,7 +409,7 @@ export default class Page extends PureComponent {
     return false
   }
 
-  getEditState()  {
+  getEditState() {
     return this.props.state.edit
   }
 
@@ -449,7 +434,7 @@ export default class Page extends PureComponent {
         file
       })
     }
-    await this.insertMedias(index, insertData)
+    await this.props.actions.insertMedias(index, insertData)
     this.isUploading || this.uploadNextMedia()
   }
 
@@ -563,7 +548,7 @@ export default class Page extends PureComponent {
           isCover={this.mediaIsCover(curData)}
           onChange={(data) => {
             overlays.dismiss(key)
-            if (isNew) this.insertMedias(index, [data])
+            if (isNew) this.props.actions.insertMedias(index, [data])
             else this.updateMediaByIndex(index, data)
           }}
           onCancel={() => overlays.dismiss(key)}

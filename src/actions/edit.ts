@@ -34,3 +34,7 @@ export const initPostEditWithDraftId = createAction(types.EDIT_INIT, async (user
 export const initPostEdit = createAction(types.EDIT_INIT, async (photos) => {
   return {}
 })
+
+export const insertMedias = createAction(types.EDIT_ADD_MEDIA, async (index, medias)=>{
+  return {index, medias}
+})
