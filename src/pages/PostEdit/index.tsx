@@ -42,7 +42,6 @@ export default class Page extends PureComponent {
   constructor(props) {
     super(props)
     this.state = {
-      initData: null, // 初始化数据，用于比对是否修改过
       openedAddItem: -1,
       post: {
         media: [],
@@ -112,7 +111,7 @@ export default class Page extends PureComponent {
 
   onBack = (isClick?) => {
     const {props} = this
-    const {post, error} = this.getEditState()
+    const {post, error, initData} = this.getEditState()
     const {userId} = this.props.user
     const back = () => {
       this.removePopstateListener()
@@ -143,7 +142,7 @@ export default class Page extends PureComponent {
       props.actions.saveDraft(userId, this.draftId, newPost)
     }
 
-    if (JSON.stringify(newPost) === JSON.stringify(this.state.initData)) {
+    if (JSON.stringify(newPost) === JSON.stringify(initData)) {
       console.log('数据未修改，无需保存')
       back()
       return
