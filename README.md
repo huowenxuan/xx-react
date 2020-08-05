@@ -7,3 +7,7 @@ prod
 ```
 npm start
 ```
+
+```
+TODO user redux
+```

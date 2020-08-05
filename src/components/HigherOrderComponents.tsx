@@ -50,27 +50,3 @@ export const pageWrapper = () => {
     return reduxWrapper()(WrappedComponent)
   }
 }
-
-export const pageWrapper2 = () => {
-  return (Container) => {
-    class WrappedComponent extends PureComponent {
-      componentDidMount() {
-        super.componentDidMount && super.componentDidMount()
-      }
-
-      componentWillUnmount() {
-        super.componentWillUnmount && super.componentWillUnmount()
-      }
-
-      render() {
-        let params = {}
-        // if (_.has(this.props, 'navigation.state.params')) {
-        //   params = this.props.navigation.state.params
-        // }
-        return <Container {...this.props} {...params}/>
-      }
-    }
-
-    return reduxWrapper()(WrappedComponent)
-  }
-}

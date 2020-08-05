@@ -92,55 +92,23 @@ export default class Page extends PureComponent {
     search = qs.decode(search.substr(1))
 
     if (search.postId) {
-      // 编辑
       this.postId = search.postId
       // 编辑旧帖子
-      let data = null
-      try {
-        data = await request.get(request.API.postEdit + this.postId, {}, Token)
-      } catch (e) {
-        this.setState({error: e.message})
-        return
-      }
-      let postData = data.post
-      const {media} = postData
-      for (let item of media) {
-        const {info, type, style} = item
-        if (type === 'image') {
-          item.info = utils.toJson(info)
-          item.style = utils.toJson(style)
-        }
-      }
-      console.log('编辑', postData)
-      this.setState({
-        post: postData,
-        initData: _.cloneDeep(postData)
-      })
+      await this.props.actions.initPostEditWithPostId(this.postId, Token)
     } else if (photos) {
       // 根据照片创建新帖子
       this.onPhotoChoose(0, photos, true)
       console.log('照片', photos)
-      this.setState({initData: {}})
+      await this.props.actions.initPostEdit()
     } else if (search.draftId) {
       // 草稿
       this.draftId = search.draftId
-      let {payload: draft} = await this.props.actions.findDraftById(1, this.draftId)
-      if (!draft) {
-        this.setState({
-          error: '草稿已删除'
-        })
-        return
-      }
+      let {payload: draft} = await this.props.actions.initPostEditWithDraftId(1, this.draftId)
       this.postId = draft._id
-      console.log('草稿', draft)
-      this.setState({
-        post: draft,
-        initData: _.cloneDeep(draft)
-      })
     } else {
       // 新建
       this.openAdd(0)
-      this.setState({ initData: {} })
+      await this.props.actions.initPostEdit()
     }
   }
 
@@ -644,7 +612,7 @@ export default class Page extends PureComponent {
   }
 
   render() {
-    const {post, error, initData} = this.state
+    const {post, error, initData} = this.props.state.edit
     if (error) {
       return (
         <div className='post-edit'>
@@ -662,8 +630,6 @@ export default class Page extends PureComponent {
         </div>
       )
     }
-
-
 
     const {title, media, audio_id, status} = post
     return (
