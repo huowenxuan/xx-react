@@ -215,3 +215,22 @@ export function openApp(toPostId) {
 export function toStore() {
   window.location.href = "http://a.app.qq.com/o/simple.jsp?pkgname=com.girtu.girtu"
 }
+
+
+let userInfoKeys = ["avatar", "userId", "openid", "userName", "token", "phone"];
+export const synchronize = () => {
+  return new Promise((resolve, reject) => {
+    if (localStorage.hasOwnProperty("token")) {
+      // console.log("有storage,开始同步")
+      let obj = {};
+      for (let key of userInfoKeys) {
+        obj[key] = localStorage.getItem(key);
+      }
+      // console.log(obj)
+      resolve(obj);
+    } else {
+      // console.log("没有缓存")
+      resolve({});
+    }
+  });
+};

@@ -93,6 +93,6 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "webpack-dev-server --mode development --env=development --port 3000 --open",
-    "start": "webpack-dev-server --mode production --env=production --port 9002"
+    "start": "webpack-dev-server --mode production --env=production --port 9003"
   }
 }

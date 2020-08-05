@@ -1,4 +1,4 @@
-import React, {PureComponent} from 'react'
+import React, {PureComponent, Component} from 'react'
 import {Router as BrowserRouter, Route, Switch, Redirect} from 'react-router-dom'
 import {createBrowserHistory} from 'history'
 import {Provider} from "react-redux"
@@ -29,13 +29,13 @@ const initRoutes = (history) => {
     })
   }
 
-  history.toEdit = (...args)=>pushTo(routes.edit, ...args)
+  history.toEdit = (...args) => pushTo(routes.edit, ...args)
   history.toNew = () => pushTo(routes.new)
   history.toDrafts = () => pushTo(routes.drafts)
   history.replaceToDrafts = () => replace(routes.drafts)
 }
 
-export default class Router extends PureComponent {
+export default class Router extends Component {
   history
   props: any
 
@@ -45,16 +45,31 @@ export default class Router extends PureComponent {
     initRoutes(this.history)
   }
 
+  addRoute(path, Component) {
+    const {globalState} = this.props
+    const user = globalState.loginReducer
+    return (
+      <Route exact path={path}>
+        <Component globalState={globalState} user={user}/>
+      </Route>
+    )
+  }
+
+  componentWillReceiveProps(nextProps, nextContext: any): void {
+    // console.log(nextProps, 'sssss')
+  }
+
   render() {
+    // console.log(this.props.globalEventDistributor.getState().loginReducer.userId, 'sssss')
     return (
       <Provider store={this.props.store || store}>
         <BrowserRouter history={this.history}>
           <Switch>
-            <Route exact path={routes.root} component={PostNew}/>
-            <Route exact path={routes.new} component={PostNew}/>
+            {this.addRoute(routes.root, PostNew)}
+            {this.addRoute(routes.new, PostNew)}
+            {this.addRoute(routes.edit, PostEdit)}
+            {this.addRoute(routes.drafts, Draft)}
             {/*<Route exact path="/create/applinks" component={AppLink}/>*/}
-            <Route exact path={routes.edit} component={PostEdit}/>
-            <Route exact path={routes.drafts} component={Draft}/>
             <Redirect to={routes.root}/>
           </Switch>
         </BrowserRouter>
