@@ -67,6 +67,7 @@ export default class Page extends PureComponent {
   }
 
   componentWillUnmount() {
+    this.props.actions.clearEdit()
     this.removePopstateListener()
   }
 

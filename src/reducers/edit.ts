@@ -119,5 +119,10 @@ export default handleActions({
       }
     }
   }),
+  [types.EDIT_CLEAR]: ({
+    next(state, {payload}) {
+      return defaultState
+    }
+  }),
 
 }, defaultState)
