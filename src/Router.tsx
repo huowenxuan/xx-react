@@ -34,6 +34,8 @@ const initRoutes = (history) => {
   history.toNew = () => pushTo(routes.new)
   history.toDrafts = () => pushTo(routes.drafts)
   history.replaceToDrafts = () => replace(routes.drafts)
+
+  history.replaceToShow = (postId)=> replace('/show/post/' + postId)
 }
 
 export default class Router extends Component {
@@ -75,7 +77,7 @@ export default class Router extends Component {
             {this.addRoute(routes.edit, PostEdit)}
             {this.addRoute(routes.drafts, Draft)}
             {/*<Route exact path="/create/applinks" component={AppLink}/>*/}
-            <Redirect to={routes.root}/>
+            {/*<Redirect to={routes.root}/>*/}
           </Switch>
         </BrowserRouter>
       </Provider>
