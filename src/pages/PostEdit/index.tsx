@@ -245,9 +245,7 @@ export default class Page extends PureComponent {
       this.draftId && this.props.actions.deleteDraft(userId, this.draftId)
       console.log(result)
       console.log(result._id)
-      setTimeout(() => {
-        this.props.history.replaceToShow(result._id)
-      }, 1000)
+      this.props.history.replaceToShow(result._id)
       // this.props.history.replace(`/postedit?postId=${result._id}`)
       // window.location.href = `/postedit?postId=${result._id}`
     } catch (e) {
