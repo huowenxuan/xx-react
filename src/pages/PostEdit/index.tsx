@@ -181,20 +181,9 @@ export default class Page extends PureComponent {
         audio={audio_id}
         status={status}
         protect={protect}
-        onUpdate={this.setPostState}
+        onUpdate={this.props.actions.setPostState}
       />
     )
-  }
-
-  setPostState = async (params) => {
-    return new Promise(resolve => {
-      this.setState(({post}: any) => ({
-        post: {
-          ...post,
-          ...params
-        }
-      }), resolve)
-    })
   }
 
   complete = async () => {
@@ -334,7 +323,7 @@ export default class Page extends PureComponent {
           : qiniu.getOriginUrl(key)
         await this.updateMediaByBody(body, {body: newBody, key})
         if (post.headbacimgurl === body) {
-          await this.setPostState({
+          await this.props.actions.setPostState({
             'coverKey': key,
             'headbacimgurl': newBody
           })
@@ -434,7 +423,7 @@ export default class Page extends PureComponent {
   }
 
   setCover = async (body, key = '') => {
-    await this.setPostState({
+    await this.props.actions.setPostState({
       headbacimgurl: body,
       coverKey: key
     })
@@ -545,7 +534,7 @@ export default class Page extends PureComponent {
           />
           <div className='wrapper'>
             <button
-              onClick={() => this.setPostState({coverHidden: true})}
+              onClick={() => this.props.actions.setPostState({coverHidden: true})}
               className='remove'>
               <img className='img' src={images.edit_remove_icon}/>
             </button>
@@ -558,7 +547,7 @@ export default class Page extends PureComponent {
     } else {
       return (
         <div
-          onClick={() => this.setPostState({coverHidden: false})}
+          onClick={() => this.props.actions.setPostState({coverHidden: false})}
           className='edit-cover-hidden'
         >
           <img className='img' src={headbacimgurl}/>
@@ -608,7 +597,7 @@ export default class Page extends PureComponent {
               className='title-input'
               placeholder="输入标题(2-50字)"
               value={title || ''}
-              onChange={e => this.setPostState({title: e.target.value})}
+              onChange={e => this.props.actions.setPostState({title: e.target.value})}
             />
             {/*<p>{post.description}</p>*/}
             {this.renderMedia(media)}

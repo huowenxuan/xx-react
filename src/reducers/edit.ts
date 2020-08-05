@@ -95,4 +95,16 @@ export default handleActions({
       }
     }
   }),
+  [types.EDIT_UPDATE_STATE]: ({
+    next(state, {payload: params}) {
+      return {
+        ...state,
+        post: {
+          ...state.post,
+          ...params
+        }
+      }
+    }
+  }),
+
 }, defaultState)

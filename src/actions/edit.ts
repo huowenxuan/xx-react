@@ -55,3 +55,6 @@ export const updateMediaByIndex = createAction(types.EDIT_MEDIA_UPDATE_BY_IDX,
   async (index, update) => {
     return {index, update}
   })
+
+export const setPostState = createAction(types.EDIT_UPDATE_STATE,
+  async (params) => params)
