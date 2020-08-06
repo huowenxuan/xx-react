@@ -49,6 +49,13 @@ export default ({globalEventDistributor, history, store}) => {
         token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjU4YTE2NDkzMDRhZjE1OTgwYWZlNDk2YSIsInBob25lIjoiMTg4NDA5MTY3NDIiLCJpYXQiOjE1ODEzMjY4NDV9.jYNFFZWf0DcO5Wu5is21Htywds2zCDGH31YiLZSEeBw'
       }
     })
+
+    useEffect(()=>{
+      const eruda = require('eruda')
+      const el = document.createElement('div');
+      document.body.appendChild(el);
+      eruda.init({container: el});
+    }, [])
   }
 
   useEffect(() => {
