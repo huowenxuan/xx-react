@@ -93,6 +93,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "webpack-dev-server --mode development --env=development --port 3000 --open",
-    "start": "webpack-dev-server --mode production --env=production --port 9003"
+    "start": "webpack-dev-server --mode production --env=production --port 9003",
+    "build": "webpack --mode production --env=production",
+    "scp": "scp -r build root@101.200.60.199:ice-create"
   }
 }
