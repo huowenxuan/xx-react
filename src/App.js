@@ -8,6 +8,7 @@ import {synchronize} from "./utils"
 import 'lib-flexible'
 
 let topNode = null
+let topViewInstance = null
 export default ({globalEventDistributor, history, store}) => {
   let [globalState, setGlobalState] = []
 
@@ -60,13 +61,14 @@ export default ({globalEventDistributor, history, store}) => {
 
   useEffect(() => {
     // 初始化后再加入，防止顺序在上，无法把app覆盖住
-    topNode = document.createElement("div")
-    document.body.appendChild(topNode)
-    ReactDOM.render(
-      <Fixed><TopView/></Fixed>,
-      topNode
-    )
-    return () => document.body.removeChild(topNode)
+    if (!topViewInstance) {
+      topViewInstance = document.createElement("div")
+      document.body.appendChild(topViewInstance)
+      ReactDOM.render(
+        <Fixed><TopView/></Fixed>,
+        topViewInstance
+      )
+    }
   }, [])
 
 

@@ -62,6 +62,8 @@ export default class Page extends PureComponent {
     if (this.props.user && this.props.user.userId) {
       console.log('init data didmount')
       this.init()
+    } else {
+      console.log('didmount无用户信息')
     }
     window.addEventListener("popstate", this.onPopstate, false)
   }
@@ -76,15 +78,14 @@ export default class Page extends PureComponent {
 
   componentWillUnmount() {
     this.props.actions.clearEdit()
-    this.removePopstateListener()
+    // 不可以在这里取消监听popstate，会导致事件无法执行
   }
 
   removePopstateListener = () => {
-    console.log('remove popstate listener')
     window.removeEventListener('popstate', this.onPopstate)
   }
 
-  onPopstate = (e) => {
+  onPopstate = (e)=> {
     // singlespa在push时也会触发
     if (e.singleSpaTrigger === 'pushState') return
     console.log('浏览器返回事件', e)
@@ -247,6 +248,7 @@ export default class Page extends PureComponent {
       this.draftId && this.props.actions.deleteDraft(userId, this.draftId)
       console.log(result)
       console.log(result._id)
+      this.removePopstateListener()
       this.props.history.replaceToShow(result._id)
       // this.props.history.replace(`/postedit?postId=${result._id}`)
       // window.location.href = `/postedit?postId=${result._id}`
