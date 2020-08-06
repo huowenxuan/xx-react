@@ -7,6 +7,7 @@ import ReactDOM from "react-dom"
 import {synchronize} from "./utils"
 import 'lib-flexible'
 
+let topNode = null
 export default ({globalEventDistributor, history, store}) => {
   let [globalState, setGlobalState] = []
 
@@ -50,15 +51,15 @@ export default ({globalEventDistributor, history, store}) => {
     })
   }
 
-  useState(() => {
+  useEffect(() => {
     // 初始化后再加入，防止顺序在上，无法把app覆盖住
-    let node = document.createElement("div")
-    document.body.appendChild(node)
+    topNode = document.createElement("div")
+    document.body.appendChild(topNode)
     ReactDOM.render(
       <Fixed><TopView/></Fixed>,
-      node
+      topNode
     )
-    console.log('====== 新建TopView ======')
+    return () => document.body.removeChild(topNode)
   }, [])
 
 
