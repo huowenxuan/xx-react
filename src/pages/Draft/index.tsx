@@ -7,9 +7,6 @@ import {pageWrapper} from '../../components/HigherOrderStatelessComponents'
 
 export default pageWrapper()((props) => {
   const {drafts} = props.state.draft
-  useEffect(() => {
-    props.actions.findDrafts(1)
-  }, [])
 
   return (
     <div>

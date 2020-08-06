@@ -6,17 +6,20 @@ import Fixed from "./components/Fixed"
 import ReactDOM from "react-dom"
 import {synchronize} from "./utils"
 import 'lib-flexible'
+import * as _ from 'lodash'
 
-let topNode = null
 let topViewInstance = null
-export default ({globalEventDistributor, history, store}) => {
+const App = ({globalEventDistributor, history, store}) => {
   let [globalState, setGlobalState] = []
 
   if (globalEventDistributor) {
     [globalState, setGlobalState] = useState(globalEventDistributor.getState())
     useEffect(() => {
-      setGlobalState(globalEventDistributor.getState())
-    }, [globalEventDistributor])
+      // setGlobalState({
+      //   ...globalEventDistributor.getState()
+      // })
+      console.log(globalEventDistributor.getState().loginReducer, 'efect sssss')
+    }, [globalEventDistributor.getState()])
 
     console.log("***********")
     console.log(globalEventDistributor.getState())
@@ -51,11 +54,11 @@ export default ({globalEventDistributor, history, store}) => {
       }
     })
 
-    useEffect(()=>{
+    useEffect(() => {
       const eruda = require('eruda')
-      const el = document.createElement('div');
-      document.body.appendChild(el);
-      eruda.init({container: el});
+      const el = document.createElement('div')
+      document.body.appendChild(el)
+      eruda.init({container: el})
     }, [])
   }
 
@@ -71,7 +74,6 @@ export default ({globalEventDistributor, history, store}) => {
     }
   }, [])
 
-
   return (
     <div className='App'>
       <div className='container'>
@@ -85,3 +87,5 @@ export default ({globalEventDistributor, history, store}) => {
   )
 }
 
+
+export default App
