@@ -88,6 +88,7 @@ export default class Page extends PureComponent {
     // singlespa在push时也会触发
     if (e.singleSpaTrigger === 'pushState') return
     console.log('浏览器返回事件', e)
+    overlays.dismissAll()
     this.onBack()
   }
 

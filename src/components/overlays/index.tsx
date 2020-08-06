@@ -38,5 +38,8 @@ export default {
   },
   dismiss: (key) => {
     TopView.hideWithKey(key)
+  },
+  dismissAll: () => {
+    TopView.hideAll()
   }
 }
