@@ -87,5 +87,4 @@ const App = ({globalEventDistributor, history, store}) => {
   )
 }
 
-
 export default App
