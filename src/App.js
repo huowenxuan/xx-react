@@ -58,7 +58,7 @@ export default ({globalEventDistributor, history, store}) => {
       <Fixed><TopView/></Fixed>,
       node
     )
-    console.warn('====== 新建TopView ======')
+    console.log('====== 新建TopView ======')
   }, [])
 
 

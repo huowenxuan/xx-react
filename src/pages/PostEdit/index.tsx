@@ -182,7 +182,8 @@ export default class Page extends PureComponent {
 
   // 弹出选择图片和权限遮罩
   showBottomEdit = (type) => {
-    const {audio_id, status, protect} = this.state.post
+    const {post} = this.getEditState()
+    const {audio_id, status, protect} = post
     overlays.show(
       <EditBottomOverlay
         token={this.props.user.token}
