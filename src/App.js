@@ -15,11 +15,10 @@ const App = ({globalEventDistributor, history, store}) => {
   if (globalEventDistributor) {
     [globalState, setGlobalState] = useState(globalEventDistributor.getState())
     useEffect(() => {
-      // setGlobalState({
-      //   ...globalEventDistributor.getState()
-      // })
-      console.log(globalEventDistributor.getState().loginReducer, 'efect sssss')
-    }, [globalEventDistributor.getState()])
+      setTimeout(() => {
+        setGlobalState(globalEventDistributor.getState())
+      }, 500)
+    }, [])
 
     console.log("***********")
     console.log(globalEventDistributor.getState())
