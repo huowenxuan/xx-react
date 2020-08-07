@@ -62,12 +62,7 @@ export default class Router extends Component {
     )
   }
 
-  componentWillReceiveProps(nextProps, nextContext: any): void {
-    // console.log(nextProps, 'sssss')
-  }
-
   render() {
-    // console.log(this.props.globalEventDistributor.getState().loginReducer.userId, 'sssss')
     return (
       <Provider store={this.props.store || store}>
         <BrowserRouter history={this.history}>
