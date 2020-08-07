@@ -5,6 +5,7 @@ import {connect} from 'react-redux'
 import {bindActionCreators} from "redux"
 import actions from '../actions/index'
 import {withStateHandlers, compose, pure as recomposePure} from "recompose"
+import { withRouter } from "react-router";
 
 export const pure = () => {
   return (WrappedComponent) => {
@@ -27,6 +28,6 @@ export const reduxWrapper = () => {
  */
 export const pageWrapper = (params = {}) => {
   return (WrappedComponent) => {
-    return reduxWrapper()(WrappedComponent)
+    return withRouter(reduxWrapper()(WrappedComponent))
   }
 }

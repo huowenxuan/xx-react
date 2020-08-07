@@ -1,10 +1,9 @@
-import React, {PureComponent, Component} from 'react'
+import React, {PureComponent, Component, useEffect} from 'react'
 import {Router as BrowserRouter, Route, Switch, Redirect} from 'react-router-dom'
 import {createBrowserHistory} from 'history'
 import {Provider} from "react-redux"
 import store from "./store"
 import * as querystring from "querystring"
-import { withRouter } from "react-router";
 
 import PostEdit from './pages/PostEdit/'
 import PostNew from './pages/PostNew/'
@@ -48,10 +47,9 @@ export default class Router extends Component {
     initRoutes(this.history)
   }
 
-  addRoute(path, component) {
+  addRoute(path, Component) {
     const {globalState} = this.props
     const user = globalState.loginReducer
-    let Component = withRouter(component)
     return (
       <Route exact path={path}>
         <Component
