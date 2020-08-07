@@ -14,34 +14,31 @@ const App = ({globalEventDistributor, history, store}) => {
 
   if (globalEventDistributor) {
     [globalState, setGlobalState] = useState(globalEventDistributor.getState())
-    useEffect(() => {
-      setTimeout(() => {
-        setGlobalState(globalEventDistributor.getState())
-      }, 500)
-    }, [])
-
     console.log("***********")
     console.log(globalEventDistributor.getState())
     console.log(globalEventDistributor)
+
     if (!globalEventDistributor.getState().loginReducer.userId) {
+      setTimeout(() => {
+        setGlobalState(globalEventDistributor.getState())
+      }, 500)
       synchronize().then((s) => {
         console.log(":::::::::::::::::::")
         console.log(s)
         console.log(globalEventDistributor.getState())
         console.log(":::::::::::::::::::")
-        if (globalEventDistributor) {
-          globalEventDistributor.dispatch({
-            type: "login",
-            payload: {
-              userId: s.userId,
-              token: s.token,
-              userName: s.userName,
-              phone: s.phone,
-              openid: s.openid,
-              avatar: s.avatar,
-            },
-          })
-        }
+        globalEventDistributor.dispatch({
+          type: "login",
+          payload: {
+            userId: s.userId,
+            token: s.token,
+            userName: s.userName,
+            phone: s.phone,
+            openid: s.openid,
+            avatar: s.avatar,
+          },
+        })
+
       })
     }
   } else {

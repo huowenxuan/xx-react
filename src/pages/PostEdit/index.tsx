@@ -70,7 +70,7 @@ export default class Page extends PureComponent {
 
   componentWillReceiveProps(nextProps, nextContext: any): void {
     const {user} = nextProps
-    if (!this.props.user && user) {
+    if (!this.props.user.userId && user.userId) {
       console.log('init data receiveProp')
       this.init()
     }
@@ -546,6 +546,7 @@ export default class Page extends PureComponent {
 
   render() {
     const {post, error, initData} = this.getEditState()
+
     if (error) {
       return (
         <div className='post-edit'>
