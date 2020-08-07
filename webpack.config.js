@@ -20,7 +20,7 @@ module.exports = function (webpackEnv) {
         libraryTarget: "amd",
         library: "reactApp",
         publicPath: "https://flash.justcome.cn/app3/",
-        publicPath: "http://0.0.0.0:9003/",
+        // publicPath: "http://0.0.0.0:9003/",
         path: path.resolve(__dirname, "build")
       }
       : {

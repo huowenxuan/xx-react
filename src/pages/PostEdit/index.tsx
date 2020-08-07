@@ -61,7 +61,7 @@ export default class Page extends PureComponent {
   componentDidMount() {
     if (this.props.user && this.props.user.userId) {
       console.log('init data didmount')
-      this.init()
+      this.init(this.props.user)
     } else {
       console.log('didmount无用户信息')
     }
@@ -72,7 +72,7 @@ export default class Page extends PureComponent {
     const {user} = nextProps
     if (!this.props.user.userId && user.userId) {
       console.log('init data receiveProp')
-      this.init()
+      this.init(user)
     }
   }
 
@@ -95,11 +95,11 @@ export default class Page extends PureComponent {
 
   getEditState = () => this.props.state.edit
 
-  init = async () => {
+  init = async (user) => {
     // const {id} = props.match.params
     let {photos, search} = this.props.location
     search = qs.decode(search.substr(1))
-    const {userId, token} = this.props.user || {}
+    const {userId, token} = user
     if (search.postId) {
       this.postId = search.postId
       // 编辑旧帖子
