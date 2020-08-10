@@ -20,7 +20,7 @@ module.exports = function (webpackEnv) {
         libraryTarget: "amd",
         library: "reactApp",
         publicPath: "https://flash.justcome.cn/app3/",
-        // publicPath: "http://0.0.0.0:9003/",
+        // publicPath: "http://localhost:9003/",
         path: path.resolve(__dirname, "build")
       }
       : {
@@ -130,7 +130,7 @@ module.exports = function (webpackEnv) {
           pathRewrite: {"^/bookapi": ""},
         },
       },
-      host: "0.0.0.0",
+      host: "localhost",
     },
   }
 }

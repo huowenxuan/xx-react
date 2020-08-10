@@ -1,9 +1,9 @@
 import React, {PureComponent, Component, useEffect} from 'react'
 import {Router as BrowserRouter, Route, Switch, Redirect} from 'react-router-dom'
-import {createBrowserHistory} from 'history'
 import {Provider} from "react-redux"
 import store from "./store"
 import * as querystring from "querystring"
+import createHistory from "history/createBrowserHistory";
 
 import PostEdit from './pages/PostEdit/'
 import PostNew from './pages/PostNew/'
@@ -37,13 +37,13 @@ const initRoutes = (history) => {
   history.replaceToShow = (postId)=> replace('/show/post/' + postId)
 }
 
-export default class Router extends Component {
+export default class Router extends PureComponent {
   history
   props: any
 
   constructor(props) {
     super(props)
-    this.history = props.history || createBrowserHistory()
+    this.history = props.history || createHistory()
     initRoutes(this.history)
   }
 
@@ -62,7 +62,7 @@ export default class Router extends Component {
 
   render() {
     return (
-      <Provider store={this.props.store || store}>
+      <Provider store={store}>
         <BrowserRouter history={this.history}>
           <Switch>
             {this.addRoute(routes.root, PostNew)}

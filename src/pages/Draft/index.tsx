@@ -10,6 +10,7 @@ export default pageWrapper()((props) => {
   useEffect(() => {
     props.actions.findDrafts(props.user.userId)
   }, [props.user])
+
   return (
     <div>
       <NavBar

@@ -77,6 +77,7 @@ export default class Page extends PureComponent {
   }
 
   componentWillUnmount() {
+    console.log('PostEdit unmount')
     this.props.actions.clearEdit()
     // 不可以在这里取消监听popstate，会导致事件无法执行
   }

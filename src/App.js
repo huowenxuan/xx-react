@@ -6,22 +6,34 @@ import Fixed from "./components/Fixed"
 import ReactDOM from "react-dom"
 import {synchronize} from "./utils"
 import 'lib-flexible'
-import * as _ from 'lodash'
 
 let topViewInstance = null
-const App = ({globalEventDistributor, history, store}) => {
-  let [globalState, setGlobalState] = []
+export default ({globalEventDistributor, history}) => {
+  let [globalState, setGlobalState] = useState(globalEventDistributor
+      ? globalEventDistributor.getState()
+      : {
+        loginReducer: {
+          userId: '1',
+          token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjU4YTE2NDkzMDRhZjE1OTgwYWZlNDk2YSIsInBob25lIjoiMTg4NDA5MTY3NDIiLCJpYXQiOjE1ODEzMjY4NDV9.jYNFFZWf0DcO5Wu5is21Htywds2zCDGH31YiLZSEeBw'
+        }
+      }
+  )
 
   if (globalEventDistributor) {
-    [globalState, setGlobalState] = useState(globalEventDistributor.getState())
     console.log("***********")
     console.log(globalEventDistributor.getState())
     console.log(globalEventDistributor)
-
-    if (!globalEventDistributor.getState().loginReducer.userId) {
-      setTimeout(() => {
+    useEffect(() => {
+      globalEventDistributor.on("dispatch", () => {
+        console.log("触发dispatch监听")
+        console.log(globalEventDistributor.getState())
         setGlobalState(globalEventDistributor.getState())
-      }, 500)
+      })
+    }, []);
+
+    [globalState, setGlobalState] = useState(globalEventDistributor.getState())
+    if (!globalEventDistributor.getState().loginReducer.userId) {
+
       synchronize().then((s) => {
         console.log(":::::::::::::::::::")
         console.log(s)
@@ -42,14 +54,6 @@ const App = ({globalEventDistributor, history, store}) => {
       })
     }
   } else {
-    // 本地开发
-    [globalState, setGlobalState] = useState({
-      loginReducer: {
-        userId: '1',
-        token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjU4YTE2NDkzMDRhZjE1OTgwYWZlNDk2YSIsInBob25lIjoiMTg4NDA5MTY3NDIiLCJpYXQiOjE1ODEzMjY4NDV9.jYNFFZWf0DcO5Wu5is21Htywds2zCDGH31YiLZSEeBw'
-      }
-    })
-
     useEffect(() => {
       const eruda = require('eruda')
       const el = document.createElement('div')
@@ -74,13 +78,16 @@ const App = ({globalEventDistributor, history, store}) => {
     <div className='App'>
       <div className='container'>
         <Router
-          globalState={globalState}
+          globalState={{
+            loginReducer: {
+              userId: '1',
+              token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjU4YTE2NDkzMDRhZjE1OTgwYWZlNDk2YSIsInBob25lIjoiMTg4NDA5MTY3NDIiLCJpYXQiOjE1ODEzMjY4NDV9.jYNFFZWf0DcO5Wu5is21Htywds2zCDGH31YiLZSEeBw'
+            }
+          }}
           history={history}
-          store={store}
         />
       </div>
     </div>
   )
 }
 
-export default App
