@@ -9,7 +9,8 @@ import 'lib-flexible'
 
 let topViewInstance = null
 export default ({globalEventDistributor, history}) => {
-  let [globalState, setGlobalState] = useState(globalEventDistributor
+  let isSingleSpa = !!window.singleSpaNavigate
+  let [globalState, setGlobalState] = useState(isSingleSpa
       ? globalEventDistributor.getState()
       : {
         loginReducer: {
@@ -19,7 +20,7 @@ export default ({globalEventDistributor, history}) => {
       }
   )
 
-  if (globalEventDistributor) {
+  if (isSingleSpa) {
     console.log("***********")
     console.log(globalEventDistributor.getState())
     console.log(globalEventDistributor)
@@ -31,9 +32,7 @@ export default ({globalEventDistributor, history}) => {
       })
     }, []);
 
-    [globalState, setGlobalState] = useState(globalEventDistributor.getState())
     if (!globalEventDistributor.getState().loginReducer.userId) {
-
       synchronize().then((s) => {
         console.log(":::::::::::::::::::")
         console.log(s)
@@ -78,12 +77,7 @@ export default ({globalEventDistributor, history}) => {
     <div className='App'>
       <div className='container'>
         <Router
-          globalState={{
-            loginReducer: {
-              userId: '1',
-              token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjU4YTE2NDkzMDRhZjE1OTgwYWZlNDk2YSIsInBob25lIjoiMTg4NDA5MTY3NDIiLCJpYXQiOjE1ODEzMjY4NDV9.jYNFFZWf0DcO5Wu5is21Htywds2zCDGH31YiLZSEeBw'
-            }
-          }}
+          globalState={globalState}
           history={history}
         />
       </div>
