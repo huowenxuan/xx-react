@@ -87,7 +87,7 @@ export default class Page extends PureComponent {
     window.removeEventListener('popstate', this.onPopstate)
   }
 
-  onPopstate = (e)=> {
+  onPopstate = (e) => {
     // singlespa在push时也会触发
     if (e.singleSpaTrigger === 'pushState') return
     console.log('浏览器返回事件', e)
@@ -587,10 +587,11 @@ export default class Page extends PureComponent {
               className='title-input'
               placeholder="输入标题(2-50字)"
               value={this.state.title || ''}
-              onChange={e =>{
-                this.setState({title: e.target.value})
-                // 如果直接通过redux来更新和显示，会造成中文错误
-                this.props.actions.setPostState({title: e.target.value})
+              onChange={e => {
+                let title = e.target.value
+                this.setState({title})
+                // 使用外部状态而非state时输入中文只会保留拼音
+                this.props.actions.setPostState({title})
               }}
             />
             {/*<p>{post.description}</p>*/}
