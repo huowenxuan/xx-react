@@ -54,10 +54,10 @@ export default ({globalEventDistributor, history}) => {
     }
   } else {
     useEffect(() => {
-      const eruda = require('eruda')
-      const el = document.createElement('div')
-      document.body.appendChild(el)
-      eruda.init({container: el})
+      // const eruda = require('eruda')
+      // const el = document.createElement('div')
+      // document.body.appendChild(el)
+      // eruda.init({container: el})
     }, [])
   }
 

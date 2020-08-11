@@ -22,8 +22,7 @@ module.exports = function (webpackEnv) {
         filename: "[name]_[hash:16].js",
         libraryTarget: "amd",
         library: "reactApp",
-        // publicPath: "https://flash.justcome.cn/app3/",
-        publicPath: "http://localhost:9003/",
+        publicPath: "/app3/",
         path: path.resolve(__dirname, "build")
       }
       : {
@@ -134,6 +133,10 @@ module.exports = function (webpackEnv) {
       contentBase: path.resolve(__dirname, "dist"),
       historyApiFallback: true,
       proxy: {
+        "/app3": {
+          target: "http://localhost:9003/",
+          pathRewrite: {"^/app3": ""},
+        },
         "/api": {
           target: "http://a.tangshui.net",
           pathRewrite: {"^/api": ""},
