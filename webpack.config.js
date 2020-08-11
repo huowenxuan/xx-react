@@ -3,6 +3,7 @@ const HtmlWebPackPlugin = require("html-webpack-plugin")
 const px2rem = require("postcss-px2rem")
 const StatsPlugin = require("stats-webpack-plugin")
 const {CleanWebpackPlugin} = require("clean-webpack-plugin")
+const BundleAnalyzerPlugin = require("webpack-bundle-analyzer").BundleAnalyzerPlugin;
 
 module.exports = function (webpackEnv) {
   const isReact = webpackEnv !== "production"
@@ -112,6 +113,7 @@ module.exports = function (webpackEnv) {
         filename: "index.html",
         template: path.resolve(__dirname, "index.html"),
       }),
+      // new BundleAnalyzerPlugin(),
       new StatsPlugin("manifest.json", {
         chunkModules: false,
         entrypoints: true,
@@ -124,7 +126,7 @@ module.exports = function (webpackEnv) {
       }),
       new CleanWebpackPlugin({cleanStaleWebpackAssets: false}),
     ],
-    // devtool: "eval-source-map",
+    devtool: "eval-source-map",
     devServer: {
       headers: {
         "Access-Control-Allow-Origin": "*",
