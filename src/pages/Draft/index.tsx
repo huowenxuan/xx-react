@@ -4,6 +4,7 @@ import NavBar from "../../components/NavBar"
 import images from "../../assets/images"
 import * as utils from "../../utils"
 import {pageWrapper} from '../../components/HigherOrderStatelessComponents'
+import moment from 'moment'
 
 export default pageWrapper()((props) => {
   const {drafts} = props.state.draft
@@ -35,6 +36,7 @@ export default pageWrapper()((props) => {
             </div>
             <div className='line'/>
             <div className='action-row'>
+              {data.updated_at ? moment(data.updated_at).format('YYYY-MM-DD HH:mm:ss') + ' 保存' : ''}
             </div>
           </li>
         ))}
