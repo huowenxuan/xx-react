@@ -1,6 +1,8 @@
 const path = require("path")
 const HtmlWebPackPlugin = require("html-webpack-plugin")
 const px2rem = require("postcss-px2rem")
+const StatsPlugin = require("stats-webpack-plugin")
+const {CleanWebpackPlugin} = require("clean-webpack-plugin")
 
 module.exports = function (webpackEnv) {
   const isReact = webpackEnv !== "production"
@@ -16,11 +18,11 @@ module.exports = function (webpackEnv) {
       },
     output: !isReact
       ? {
-        filename: "[name].js",
+        filename: "[name]_[hash:16].js",
         libraryTarget: "amd",
         library: "reactApp",
-        publicPath: "https://flash.justcome.cn/app3/",
-        // publicPath: "http://localhost:9003/",
+        // publicPath: "https://flash.justcome.cn/app3/",
+        publicPath: "http://localhost:9003/",
         path: path.resolve(__dirname, "build")
       }
       : {
@@ -97,18 +99,31 @@ module.exports = function (webpackEnv) {
           use: [
             {
               loader: "file-loader",
-              options: {},
+              options: {
+                name: "[path][name]_[hash:8].[ext]",
+              },
             },
           ],
         },
       ],
     },
-    plugins: isReact ? [
+    plugins: [
       new HtmlWebPackPlugin({
         filename: "index.html",
         template: path.resolve(__dirname, "index.html"),
       }),
-    ] : [],
+      new StatsPlugin("manifest.json", {
+        chunkModules: false,
+        entrypoints: true,
+        source: false,
+        chunks: false,
+        modules: false,
+        assets: false,
+        children: false,
+        exclude: [/node_modules[\\\/]react/],
+      }),
+      new CleanWebpackPlugin({cleanStaleWebpackAssets: false}),
+    ],
     // devtool: "eval-source-map",
     devServer: {
       headers: {
