@@ -1,4 +1,4 @@
-import React, {PureComponent, createRef} from "react"
+import React, {PureComponent, createRef, useState} from "react"
 import './index.less'
 import images from "../../../assets/images"
 import NavBar from "../../NavBar"
@@ -15,60 +15,45 @@ const Sizes = [
   {size: 18, text: '超大'},
 ]
 
-export default class EditTextOverlay extends PureComponent {
-  state: any
-  props: any
-  btnRefs: any = {
-    color: React.createRef(),
-    font: React.createRef()
+export default (props) => {
+  const {onChange, data, onCancel} = props
+  const {body = '', style = {}} = data || {}
+  const btnRefs: any = {
+    color: createRef(),
+    font: createRef()
   }
 
-  constructor(props) {
-    super(props)
-    // style = fontWeight: "normal", textAlign: "left", fontSize: 16
-    const {body = '', style = {}} = props.data || {}
-    this.state = {
-      fontWeight: style.fontWeight,
-      color: style.color,
-      fontSize: style.fontSize,
-      textAlign: style.textAlign,
-      text: body,
-      selectType: null,
-      selectBtnRect: {}
-    }
-  }
+  const [fontWeight, setFontWidth] = useState(style.fontWeight)
+  const [color, setColor] = useState(style.color)
+  const [fontSize, setFontSizes] = useState(style.fontSize)
+  const [textAlign, setTextAlign] = useState(style.textAlign)
+  const [text, setText] = useState(body)
+  const [selectType, setSelectType] = useState(null)
+  const [selectBtnRect, setSelectBtnRect] = useState(null)
 
-  _showSelect(type) {
-    const {selectType: prevType} = this.state
-    if (prevType === type) {
-      this.setState({selectType: null})
+  const _showSelect = (type) => {
+    if (selectType === type) {
+      setSelectType(null)
       return
     }
-    let rect = this.btnRefs[type].current.getBoundingClientRect()
-    this.setState({
-      selectBtnRect: rect,
-      selectType: type
-    })
+    let rect = btnRefs[type].current.getBoundingClientRect()
+    setSelectBtnRect(rect)
+    setSelectType(type)
   }
 
-  _newline = () => {
-    console.log('newline')
-    this.setState(({text}: any) => ({
-      text: (text || '') + '\n'
-    }))
+  const _newline = () => setText((prevText) => (prevText || '') + '\n')
+
+  const _clickColor = (color) => {
+    setSelectType(null)
+    setColor(color)
   }
 
-  _clickColor(color) {
-    this.setState({color, selectType: null})
+  const _clickFont = (size) => {
+    setFontSizes(size)
+    setSelectType(null)
   }
 
-  _clickFont(size) {
-    this.setState({fontSize: size, selectType: null})
-  }
-
-  _done = () => {
-    const {onChange, data} = this.props
-    const {text, fontWeight, textAlign, fontSize, color} = this.state
+  const _done = () => {
     let style: any = {}
     if (fontWeight) style.fontWeight = fontWeight
     if (textAlign) style.textAlign = textAlign
@@ -82,23 +67,17 @@ export default class EditTextOverlay extends PureComponent {
     })
   }
 
-  change = (type, all) => {
-    this.setState((preState) => {
-      let cur = preState[type]
-      let index = all.indexOf(cur)
-      let next
-      if (index === -1) next = all[1]
-      else if (index === all.length - 1) next = all[0]
-      else next = all[index + 1]
-
-      return {
-        [type]: next,
-        selectType: null
-      }
-    })
+  const change = (type, all, setFn) => {
+    let index = all.indexOf(type)
+    let next
+    if (index === -1) next = all[1]
+    else if (index === all.length - 1) next = all[0]
+    else next = all[index + 1]
+    setFn(next)
+    setSelectType(null)
   }
 
-  _renderTriangle(rect, top) {
+  const _renderTriangle = (rect, top) => {
     const triangleWidth = 16
     const triangle2Width = 22
     const triangle3Width = 18
@@ -137,9 +116,9 @@ export default class EditTextOverlay extends PureComponent {
     ]
   }
 
-  _renderFontOverlay() {
+  const _renderFontOverlay = () => {
     const top = 12
-    const {selectBtnRect: rect, selectType} = this.state
+    let rect = selectBtnRect
     if (selectType !== 'font') return null
     return (
       <Fixed>
@@ -155,21 +134,20 @@ export default class EditTextOverlay extends PureComponent {
             {Sizes.map(({size, text}) => (
               <p
                 key={text}
-                onClick={() => this._clickFont(size)}
+                onClick={() => _clickFont(size)}
                 className='edit-text-font'
                 style={{fontSize: size}}
               >{text}</p>
             ))}
           </div>
-          {this._renderTriangle(rect, top)}
+          {_renderTriangle(rect, top)}
         </div>
       </Fixed>
     )
   }
-
-  _renderColorOverlay() {
+  const _renderColorOverlay = () => {
     const top = 12
-    const {selectBtnRect: rect, selectType} = this.state
+    let rect = selectBtnRect
     if (selectType !== 'color') return null
     return (
       <div
@@ -184,94 +162,86 @@ export default class EditTextOverlay extends PureComponent {
           {Colors.map(color => (
             <div
               key={color}
-              onClick={() => this._clickColor(color)}
+              onClick={() => _clickColor(color)}
               className='edit-text-color'
               style={{backgroundColor: color}}
             />
           ))}
         </div>
-        {this._renderTriangle(rect, top)}
+        {_renderTriangle(rect, top)}
       </div>
     )
   }
 
-  render() {
-    const {
-      text,
-      fontWeight = Weights[0],
-      color = '#222',
-      fontSize = '16',
-      textAlign = 'left'
-    } = this.state
-    const {onCancel} = this.props
-    let alignImg = images.edit_text_left
-    if (textAlign === 'right') alignImg = images.edit_text_right
-    if (textAlign === 'center') alignImg = images.edit_text_center
-    return (
-      <div className='add-text-container'>
-        <NavBar
-          title='编辑文字'
-          onBack={onCancel}
-          rightButtons={[{
-            text: '完成',
-            style: {color: '#E97462'},
-            onClick: this._done
-          }]}
-        />
+  let alignImg = images.edit_text_left
+  if (textAlign === 'right') alignImg = images.edit_text_right
+  if (textAlign === 'center') alignImg = images.edit_text_center
+  let defaultColor = '#222'
+  return (
+    <div className='add-text-container'>
+      <NavBar
+        title='编辑文字'
+        onBack={onCancel}
+        rightButtons={[{
+          text: '完成',
+          style: {color: '#E97462'},
+          onClick: _done
+        }]}
+      />
 
-        <div
-          onClick={e => e.stopPropagation()}
-          className='add-text-wrapper'
-        >
+      <div
+        onClick={e => e.stopPropagation()}
+        className='add-text-wrapper'
+      >
           <textarea
             className='add-textarea'
-            autoFocus={!this.state.text}
+            autoFocus={!text}
             value={text}
             placeholder='点这里输入文字'
-            onChange={e => this.setState({text: e.target.value})}
+            onChange={e => setText(e.target.value)}
             style={{
-              fontWeight,
-              color,
-              textAlign,
-              fontSize: fontSize + 'px'
+              fontWeight: fontWeight || Weights[0],
+              color: color || defaultColor,
+              textAlign: textAlign || 'left',
+              fontSize: (fontSize || 16) + 'px'
             }}
           />
-          <div className='add-text-btns'>
-            <button
-              onClick={() => this.change('fontWeight', Weights)}
-              className='add-text-btn'
-              style={{
-                backgroundImage: `url(${fontWeight === 'normal'
-                  ? images.edit_text
-                  : images.edit_text_bold})`
-              }}
-            />
-            <button
-              ref={this.btnRefs['color']}
-              onClick={() => this._showSelect('color')}
-              className='add-text-btn'
-              style={{backgroundColor: color}}
-            />
-            <button
-              onClick={() => this.change('textAlign', Aligns)}
-              className='add-text-btn'
-              style={{backgroundImage: `url(${alignImg})`}}
-            />
-            <button
-              ref={this.btnRefs['font']}
-              onClick={() => this._showSelect("font")}
-              className='add-text-btn'
-              style={{backgroundImage: `url(${images.edit_text_size})`}}
-            />
-            <button
-              onClick={this._newline}
-              className='add-text-newline'>换行
-            </button>
-          </div>
+        <div className='add-text-btns'>
+          <button
+            onClick={() => change(fontWeight, Weights, setFontWidth)}
+            className='add-text-btn'
+            style={{
+              backgroundImage: `url(${fontWeight === 'normal'
+                ? images.edit_text
+                : images.edit_text_bold})`
+            }}
+          />
+          <button
+            ref={btnRefs['color']}
+            onClick={() => _showSelect('color')}
+            className='add-text-btn'
+            style={{backgroundColor: color || defaultColor}}
+          />
+          <button
+            onClick={() => change(textAlign, Aligns, setTextAlign)}
+            className='add-text-btn'
+            style={{backgroundImage: `url(${alignImg})`}}
+          />
+          <button
+            ref={btnRefs['font']}
+            onClick={() => _showSelect("font")}
+            className='add-text-btn'
+            style={{backgroundImage: `url(${images.edit_text_size})`}}
+          />
+          <button
+            onClick={_newline}
+            className='add-text-newline'>换行
+          </button>
         </div>
-        {this._renderColorOverlay()}
-        {this._renderFontOverlay()}
       </div>
-    )
-  }
+      {_renderColorOverlay()}
+      {_renderFontOverlay()}
+    </div>
+  )
 }
+
