@@ -1,8 +1,9 @@
-import React, {PureComponent, createRef, useState} from "react"
+import React, {PureComponent, createRef, useState, useEffect} from "react"
 import './index.less'
 import images from "../../../assets/images"
 import NavBar from "../../NavBar"
 import Fixed from "../../Fixed"
+import overlays from '../../overlays/'
 
 const Weights = ['normal', 'bold']
 const Colors = ['#323232', '#999999', '#E7511A',
@@ -30,6 +31,15 @@ export default (props) => {
   const [text, setText] = useState(body)
   const [selectType, setSelectType] = useState(null)
   const [selectBtnRect, setSelectBtnRect] = useState(null)
+  const [isUpdate, setIsUpdate] = useState(false) // 是否更新过
+  const [isInit, setInit] = useState(true) // 是否初始化完成，在useEffect中判断是更新还是初始化
+
+  useEffect(() => {
+    if (isInit)
+      return setInit(false)
+    setIsUpdate(true)
+    console.log('更新过')
+  }, [text, fontWeight, fontSize, color, textAlign])
 
   const _showSelect = (type) => {
     if (selectType === type) {
@@ -65,6 +75,23 @@ export default (props) => {
       body: text,
       style
     })
+  }
+
+  const _back = () => {
+    const back = () => onCancel && onCancel()
+    if (isUpdate) {
+      overlays.showAlert('是否保存更新?', '', [
+        {
+          text: '保存', onPress: () => {
+            _done()
+            back()
+          }
+        },
+        {text: '放弃', onPress: back},
+      ])
+    } else {
+      back()
+    }
   }
 
   const change = (type, all, setFn) => {
@@ -181,7 +208,7 @@ export default (props) => {
     <div className='add-text-container'>
       <NavBar
         title='编辑文字'
-        onBack={onCancel}
+        onBack={_back}
         rightButtons={[{
           text: '完成',
           style: {color: '#E97462'},
