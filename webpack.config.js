@@ -133,9 +133,9 @@ module.exports = function (webpackEnv) {
       contentBase: path.resolve(__dirname, "dist"),
       historyApiFallback: true,
       proxy: {
-        "/app3": {
-          target: "http://localhost:9003/",
-          pathRewrite: {"^/app3": ""},
+        "/": {
+          target: "/app3",
+          pathRewrite: {"^/": ""},
         },
         "/api": {
           target: "http://a.tangshui.net",

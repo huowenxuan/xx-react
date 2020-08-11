@@ -105,7 +105,8 @@ export default class Page extends PureComponent {
     if (search.postId) {
       this.postId = search.postId
       // 编辑旧帖子
-      await this.props.actions.initPostEditWithPostId(this.postId, token)
+      let {payload: post} = await this.props.actions.initPostEditWithPostId(this.postId, token)
+      this.setState({title: post.title})
     } else if (photos) {
       // 根据照片创建新帖子
       this.onPhotoChoose(0, photos, true)
@@ -116,6 +117,7 @@ export default class Page extends PureComponent {
       this.draftId = search.draftId
       let {payload: draft} = await this.props.actions.initPostEditWithDraftId(userId, this.draftId)
       this.postId = draft._id
+      this.setState({title: draft.title})
     } else {
       // 新建
       await this.props.actions.initPostEdit()

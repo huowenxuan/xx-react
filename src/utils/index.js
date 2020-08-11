@@ -54,7 +54,7 @@ function choosePhotoBrowser(isImage, multiple, cb) {
   input.type = 'file'
   input.multiple = multiple
   input.accept = isImage
-    ? 'image/gif, image/jpeg, image/png'
+    ? 'image/*'
     : 'video/mp4'
   input.onclick = function (event) {
     event.target.value = null
