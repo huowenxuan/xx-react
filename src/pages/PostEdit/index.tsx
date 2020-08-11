@@ -1,4 +1,4 @@
-import React, {PureComponent, useEffect, useState} from 'react'
+import React, {PureComponent, Component, useEffect, useState} from 'react'
 import EditMediaItem from "../../components/Edit/MediaItem/"
 import EditAdd from "../../components/Edit/Add"
 import EditTextOverlay from '../../components/Edit/TextOverlay/'
@@ -29,7 +29,7 @@ const MediaTypes = {
 }
 
 @pageWrapper()
-export default class Page extends PureComponent {
+export default class Page extends Component {
   props: any
   state: any
 
@@ -54,7 +54,8 @@ export default class Page extends PureComponent {
         percent: 0,
       },
       completeBtnEnabled: true,
-      error: null
+      error: null,
+      title: ''
     }
   }
 
@@ -585,8 +586,12 @@ export default class Page extends PureComponent {
             <input
               className='title-input'
               placeholder="输入标题(2-50字)"
-              value={title || ''}
-              onChange={e => this.props.actions.setPostState({title: e.target.value})}
+              value={this.state.title || ''}
+              onChange={e =>{
+                this.setState({title: e.target.value})
+                // 如果直接通过redux来更新和显示，会造成中文错误
+                this.props.actions.setPostState({title: e.target.value})
+              }}
             />
             {/*<p>{post.description}</p>*/}
             {this.renderMedia(media)}
