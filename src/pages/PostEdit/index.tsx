@@ -29,7 +29,7 @@ const MediaTypes = {
 }
 
 @pageWrapper()
-export default class Page extends Component {
+export default class Page extends PureComponent {
   props: any
   state: any
 
