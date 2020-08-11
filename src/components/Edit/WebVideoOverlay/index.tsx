@@ -1,6 +1,5 @@
 import React, {PureComponent} from "react"
 import './index.less'
-import opacityWrapper from '../../Wrappers/opacityWrapper'
 import NavBar from '../../NavBar/'
 import * as utils from '../../../utils/'
 import overlays from '../../overlays'
@@ -13,7 +12,7 @@ const imgs = [
   baseUrl + 'tangshui_qqyouku_4.jpg',
 ]
 
-class EditTextOverlay extends PureComponent {
+export default class EditTextOverlay extends PureComponent {
   props: any
   state: any
 
@@ -66,9 +65,8 @@ class EditTextOverlay extends PureComponent {
           <div className='btns'>
             <button
               className='btn clear'
-              onClick={() => {
-                this.setState({body: ''})
-              }}>
+              onClick={() => this.setState({body: ''})}
+            >
               清空
             </button>
             <button
@@ -91,5 +89,3 @@ class EditTextOverlay extends PureComponent {
     )
   }
 }
-
-export default opacityWrapper(EditTextOverlay)

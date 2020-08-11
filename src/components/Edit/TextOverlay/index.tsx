@@ -1,6 +1,5 @@
-import React, {PureComponent} from "react"
+import React, {PureComponent, createRef} from "react"
 import './index.less'
-import opacityWrapper from '../../Wrappers/opacityWrapper'
 import images from "../../../assets/images"
 import NavBar from "../../NavBar"
 import Fixed from "../../Fixed"
@@ -16,7 +15,7 @@ const Sizes = [
   {size: 18, text: '超大'},
 ]
 
-class EditTextOverlay extends PureComponent {
+export default class EditTextOverlay extends PureComponent {
   state: any
   props: any
   btnRefs: any = {
@@ -276,5 +275,3 @@ class EditTextOverlay extends PureComponent {
     )
   }
 }
-
-export default opacityWrapper(EditTextOverlay)

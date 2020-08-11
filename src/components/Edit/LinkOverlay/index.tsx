@@ -1,12 +1,10 @@
 import React, {PureComponent} from "react"
 import './index.less'
-import opacityWrapper from '../../Wrappers/opacityWrapper'
 import NavBar from "../../NavBar"
 import * as utils from '../../../utils/'
 import overlays from '../../overlays/'
 
-
-class EditTextOverlay extends PureComponent {
+export default class EditTextOverlay extends PureComponent {
   props: any
   state: any
 
@@ -80,5 +78,3 @@ class EditTextOverlay extends PureComponent {
     )
   }
 }
-
-export default opacityWrapper(EditTextOverlay)

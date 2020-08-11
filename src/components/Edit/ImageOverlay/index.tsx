@@ -1,9 +1,8 @@
 import React, {PureComponent} from "react"
 import './index.less'
-import opacityWrapper from '../../Wrappers/opacityWrapper'
 import images from "../../../assets/images"
 
-class EditImageOverlay extends PureComponent {
+export default class EditImageOverlay extends PureComponent {
   props: any
   state: any
 
@@ -106,4 +105,3 @@ class EditImageOverlay extends PureComponent {
   }
 }
 
-export default opacityWrapper(EditImageOverlay)
