@@ -1,12 +1,46 @@
 .drafts-page {
-  li {
-    background-color: #F4F4F4;
-    height: 50px;
-    display: flex;
-    align-items: center;
-    margin: 7px;
-    border-radius: 10px;
-    padding: 0 15px;
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  background: #F8F8F8;
+  height: 100%;
+  overflow: scroll;
+  padding: 0 20px;
+  .item {
+    background-color: white;
+    margin: 20px 0;
+    border-radius: 8px;
+    height: 100px;
+    box-shadow: 0 5px 30px 0 #D5D5D550;
+    text-align: left;
+
+    .title-row {
+      height: 70px;
+      display: flex;
+      align-items: center;
+      color: #191919;
+      font-size: 14px;
+      font-weight: bold;
+      .img {
+        width: 50px;
+        height: 50px;
+        border-radius: 4px;
+        margin: 0 10px;
+        object-fit: cover;
+      }
+    }
+    .line {
+      height: 1px;
+      width: cala(100% - 20px);
+      margin: 0 10px;
+      box-sizing: border-box;
+      background: #F2F2F2;
+    }
+    .title-row {
+      height: 70px;
+    }
   }
 }
 

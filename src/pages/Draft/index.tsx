@@ -12,21 +12,29 @@ export default pageWrapper()((props) => {
   }, [props.user])
 
   return (
-    <div>
+    <div className='drafts-page'>
       <NavBar
-        title=''
+        title='草稿箱'
         backText='主页'
         onBack={() => props.history.goBack()}
       />
-      <ul className='drafts-page'>
+      <ul className='main'>
         {drafts.map((data) => (
           <li
+            className='item'
             key={data.draftId}
             onClick={() => props.history.toEdit({
               draftId: data.draftId
             })}
           >
-            {data.title}
+            <div className='title-row'>
+              {/* TODO 占位图 */}
+              <img className='img' src={data.headbacimgurl}/>
+              {data.title}
+            </div>
+            <div className='line'/>
+            <div className='action-row'>
+            </div>
           </li>
         ))}
       </ul>
