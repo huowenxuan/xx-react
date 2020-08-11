@@ -11,6 +11,7 @@ export default pageWrapper()((props) => {
     props.actions.findDrafts(props.user.userId)
   }, [props.user])
 
+  console.log(drafts[0])
   return (
     <div className='drafts-page'>
       <NavBar

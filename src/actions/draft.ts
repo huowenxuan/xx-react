@@ -10,8 +10,10 @@ export function _findDraftById(userId, draftId) {
 
 function _saveDraft(userId, draftId, data) {
   let drafts = _findDrafts(userId)
+  let now = Date.now()
+  data.updated_at = now
   if (!draftId) {
-    draftId = Date.now()
+    draftId = now
     drafts = {
       [draftId]: data,
       ...drafts
