@@ -10,8 +10,15 @@ export function _findDraftById(userId, draftId) {
 
 function _saveDraft(userId, draftId, data) {
   let drafts = _findDrafts(userId)
-  if (!draftId) draftId = Date.now()
-  drafts[draftId] = data
+  if (!draftId) {
+    draftId = Date.now()
+    drafts = {
+      [draftId]: data,
+      ...drafts
+    }
+  } else {
+    drafts[draftId] = data
+  }
   localStorage.setItem(`draft-${userId}`, JSON.stringify(drafts))
 }
 
@@ -34,7 +41,7 @@ function _findDrafts(userId) {
 function _format(drafts) {
   let data = []
   for (let k in drafts) {
-    data.unshift({
+    data.push({
       draftId: k,
       ...drafts[k]
     })
