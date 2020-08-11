@@ -65,13 +65,13 @@ class EditTextOverlay extends PureComponent {
         <div className='main'>
           <input
             className='input'
-            placeholder='添加网址(如:https://www.baidu.com)'
+            placeholder='添加网址(如:https://www.tangshui.net/)'
             value={url}
             onChange={e => this.setState({url: e.target.value})}
           />
           <input
             className='input'
-            placeholder='显示文字(如:百度)'
+            placeholder='显示文字(如:糖水官网)'
             value={text}
             onChange={e => this.setState({text: e.target.value})}
           />
