@@ -6,7 +6,7 @@ import overlays from "../../components/overlays"
 import images from "../../assets/images"
 import * as utils from "../../utils"
 import {pageWrapper} from '../../components/HigherOrderStatelessComponents'
-import moment from 'moment'
+import dayjs from 'dayjs'
 
 export default pageWrapper()((props) => {
   const {drafts} = props.state.draft
@@ -60,7 +60,7 @@ export default pageWrapper()((props) => {
             </div>
             <div className='line'/>
             <div className='action-row'>
-              {data.updated_at ? moment(data.updated_at).format('YYYY-MM-DD HH:mm:ss') + ' 保存' : <p/>}
+              {data.updated_at ? dayjs(data.updated_at).format('YYYY-MM-DD HH:mm:ss') + ' 保存' : <p/>}
               <div className='actions'>
                 <div className='btn' onClick={(e) => toEdit(e, data)}>
                   <img className='img' src={images.draft_edit_icon}/>

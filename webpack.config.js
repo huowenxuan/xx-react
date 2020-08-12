@@ -4,6 +4,7 @@ const px2rem = require("postcss-px2rem")
 const StatsPlugin = require("stats-webpack-plugin")
 const {CleanWebpackPlugin} = require("clean-webpack-plugin")
 const BundleAnalyzerPlugin = require("webpack-bundle-analyzer").BundleAnalyzerPlugin;
+const LodashModuleReplacementPlugin = require('lodash-webpack-plugin')
 
 module.exports = function (webpackEnv) {
   const isReact = webpackEnv !== "production"
@@ -86,6 +87,7 @@ module.exports = function (webpackEnv) {
                 require.resolve("@babel/preset-typescript"),
               ],
               plugins: [
+                'lodash',
                 'transform-class-properties',
                 ["@babel/plugin-proposal-decorators", {legacy: true}],
                 require.resolve("@babel/plugin-transform-runtime")
@@ -108,11 +110,12 @@ module.exports = function (webpackEnv) {
       ],
     },
     plugins: [
+      new LodashModuleReplacementPlugin(),
       new HtmlWebPackPlugin({
         filename: "index.html",
         template: path.resolve(__dirname, "index.html"),
       }),
-      // new BundleAnalyzerPlugin(),
+      new BundleAnalyzerPlugin(),
       new StatsPlugin("manifest.json", {
         chunkModules: false,
         entrypoints: true,

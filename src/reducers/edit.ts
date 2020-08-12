@@ -1,7 +1,7 @@
 import {handleActions} from 'redux-actions'
 import * as types from '../actions/actionTypes'
 import * as utils from '../utils'
-import * as _ from 'lodash'
+import * as _ from 'lodash/cloneDeep'
 
 let defaultState = {
   post: {
