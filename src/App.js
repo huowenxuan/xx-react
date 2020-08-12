@@ -7,17 +7,36 @@ import ReactDOM from "react-dom"
 import {synchronize} from "./utils"
 import 'lib-flexible'
 
+let titles = []
+
+function updateTitle() {
+  if (titles.length === 0) return
+  document.title = titles[titles.length - 1].title
+}
+window.insertTitle = (title) => {
+  let id = Date.now()
+  titles.push({id, title})
+  if (title) updateTitle()
+  console.log(titles)
+  return id
+}
+window.popTitle = (id) => {
+  let index = titles.findIndex((item) => item.id === id)
+  titles.splice(index, 1)
+  updateTitle()
+}
+
 let topViewInstance = null
 export default ({globalEventDistributor, history}) => {
   let isSingleSpa = !!window.singleSpaNavigate
   let [globalState, setGlobalState] = useState(isSingleSpa
-      ? globalEventDistributor.getState()
-      : {
-        loginReducer: {
-          userId: '1',
-          token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjU4YTE2NDkzMDRhZjE1OTgwYWZlNDk2YSIsInBob25lIjoiMTg4NDA5MTY3NDIiLCJpYXQiOjE1ODEzMjY4NDV9.jYNFFZWf0DcO5Wu5is21Htywds2zCDGH31YiLZSEeBw'
-        }
+    ? globalEventDistributor.getState()
+    : {
+      loginReducer: {
+        userId: '1',
+        token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjU4YTE2NDkzMDRhZjE1OTgwYWZlNDk2YSIsInBob25lIjoiMTg4NDA5MTY3NDIiLCJpYXQiOjE1ODEzMjY4NDV9.jYNFFZWf0DcO5Wu5is21Htywds2zCDGH31YiLZSEeBw'
       }
+    }
   )
 
   if (isSingleSpa) {
@@ -30,7 +49,7 @@ export default ({globalEventDistributor, history}) => {
         console.log(globalEventDistributor.getState())
         setGlobalState(globalEventDistributor.getState())
       })
-    }, []);
+    }, [])
 
     if (!globalEventDistributor.getState().loginReducer.userId) {
       synchronize().then((s) => {
@@ -70,6 +89,9 @@ export default ({globalEventDistributor, history}) => {
         <Fixed><TopView/></Fixed>,
         topViewInstance
       )
+    }
+    return () => {
+      titles = []
     }
   }, [])
 

@@ -15,7 +15,7 @@ export default pageWrapper()((props) => {
   return (
     <div>
       <NavBar
-        title=''
+        title='创作'
         backText='主页'
         onBack={() => props.history.goBack()}
       />
