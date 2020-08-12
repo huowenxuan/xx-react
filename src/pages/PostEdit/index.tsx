@@ -13,7 +13,8 @@ import EditBottomOverlay from "../../components/Edit/Bottom/BottomOverlay"
 import images from '../../assets/images'
 import * as request from '../../request'
 import * as utils from '../../utils'
-import * as _ from 'lodash'
+import {cloneDeep} from 'lodash'
+// import cloneDeep from 'lodash/cloneDeep'
 // import {pageWrapper} from '../../components/HigherOrderStatelessComponents'
 import {pageWrapper} from '../../components/HigherOrderComponents'
 import OverlayViewFade from "../../components/overlays/OverlayViewFade"
@@ -140,7 +141,7 @@ export default class Page extends PureComponent {
       return
     }
 
-    let newPost = _.cloneDeep(post)
+    let newPost = cloneDeep(post)
     // 过滤掉没有key的图片和视频
     newPost.media = newPost.media.filter(item => {
       if ((item.type === 'image' || item.type === 'shortvideo') &&
@@ -211,7 +212,7 @@ export default class Page extends PureComponent {
       overlays.showToast('请添加图片或者文字')
       return
     }
-    let newPost = _.cloneDeep(post)
+    let newPost = cloneDeep(post)
     let newMedias = newPost.media
     for (let item of newMedias) {
       if (item.type === 'image' || item.type === 'shortvideo') {

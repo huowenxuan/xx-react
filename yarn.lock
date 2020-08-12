@@ -5786,12 +5786,12 @@ flush-write-stream@^1.0.0:
     inherits "^2.0.3"
     readable-stream "^2.3.6"
 
-flux-standard-action@^2.0.3:
+"flux-standard-action@git+https://github.com/huowenxuan/flux-standard-action.git#c5f65cc":
   version "2.1.1"
-  resolved "https://registry.npm.taobao.org/flux-standard-action/download/flux-standard-action-2.1.1.tgz#b2e204145ea8e4294d6b0f178d8e8c416802948f"
-  integrity sha1-suIEFF6o5ClNaw8XjY6MQWgClI8=
+  resolved "git+https://github.com/huowenxuan/flux-standard-action.git#c5f65cc84c1ce1e0956ad9fcd91c531dadd773a4"
   dependencies:
-    lodash "^4.17.15"
+    lodash.isplainobject "^4.0.6"
+    lodash.isstring "^4.0.1"
 
 follow-redirects@1.5.10:
   version "1.5.10"
@@ -7869,6 +7869,16 @@ lodash._reinterpolate@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/lodash._reinterpolate/-/lodash._reinterpolate-3.0.0.tgz#0ccf2d89166af03b3663c796538b75ac6e114d9d"
   integrity sha1-DM8tiRZq8Ds2Y8eWU4t1rG4RTZ0=
+
+lodash.isplainobject@^4.0.6:
+  version "4.0.6"
+  resolved "https://registry.npm.taobao.org/lodash.isplainobject/download/lodash.isplainobject-4.0.6.tgz#7c526a52d89b45c45cc690b88163be0497f550cb"
+  integrity sha1-fFJqUtibRcRcxpC4gWO+BJf1UMs=
+
+lodash.isstring@^4.0.1:
+  version "4.0.1"
+  resolved "https://registry.npm.taobao.org/lodash.isstring/download/lodash.isstring-4.0.1.tgz#d527dfb5456eca7cc9bb95d5daeaf88ba54a5451"
+  integrity sha1-1SfftUVuynzJu5XV2ur4i6VKVFE=
 
 lodash.memoize@^4.1.2:
   version "4.1.2"
@@ -10265,12 +10275,11 @@ redux-logger@^3.0.6:
   dependencies:
     deep-diff "^0.3.5"
 
-redux-promise@^0.6.0:
+"redux-promise@git+https://github.com/huowenxuan/redux-promise.git#7206c22":
   version "0.6.0"
-  resolved "https://registry.npm.taobao.org/redux-promise/download/redux-promise-0.6.0.tgz#c64723b5213bb5603c11b74302883b682e06b319"
-  integrity sha1-xkcjtSE7tWA8EbdDAog7aC4Gsxk=
+  resolved "git+https://github.com/huowenxuan/redux-promise.git#7206c22e18e08cb7af71c7916ad24a2767de88f8"
   dependencies:
-    flux-standard-action "^2.0.3"
+    flux-standard-action "git+https://github.com/huowenxuan/flux-standard-action.git#c5f65cc"
     is-promise "^2.1.0"
 
 redux-thunk@^2.3.0:

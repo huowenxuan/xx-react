@@ -77,7 +77,7 @@
     "redux": "^4.0.5",
     "redux-actions": "^2.6.5",
     "redux-logger": "^3.0.6",
-    "redux-promise": "^0.6.0",
+    "redux-promise": "git+https://github.com/huowenxuan/redux-promise.git#7206c22",
     "redux-thunk": "^2.3.0",
     "resolve": "1.15.0",
     "resolve-url-loader": "3.1.1",
