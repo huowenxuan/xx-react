@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react'
 import './index.less'
 import NavBar from "../../components/NavBar"
+import Fixed from "../../components/Fixed"
 import images from "../../assets/images"
 import * as utils from "../../utils"
 import {pageWrapper} from '../../components/HigherOrderStatelessComponents'
@@ -12,16 +13,19 @@ export default pageWrapper()((props) => {
     props.actions.findDrafts(props.user.userId)
   }, [props.user])
 
-  console.log(drafts[0])
+  console.log(drafts)
   return (
     <div className='drafts-page'>
+      <Fixed style={{zIndex: -1}}>
+        <div className='background'/>
+      </Fixed>
       <NavBar
         title='草稿箱'
         backText='主页'
         onBack={() => props.history.goBack()}
       />
       <ul className='main'>
-        {drafts.map((data) => (
+        {[drafts[0] || []].map((data) => (
           <li
             className='item'
             key={data.draftId}

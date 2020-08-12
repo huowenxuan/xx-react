@@ -1,13 +1,15 @@
 .drafts-page {
-  position: absolute;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  right: 0;
-  background: #F8F8F8;
-  height: 100%;
-  overflow: scroll;
-  padding: 0 20px;
+  position: relative;
+  .background {
+    background: #F8F8F8;
+    width: 100%;
+    height: 100%
+  }
+
+  .main {
+    padding: 0 20px;
+  }
+
   .item {
     background-color: white;
     margin: 20px 0;
@@ -22,6 +24,7 @@
       color: #191919;
       font-size: 14px;
       font-weight: bold;
+
       .img {
         width: 50px;
         height: 50px;
@@ -30,6 +33,7 @@
         object-fit: cover;
       }
     }
+
     .line {
       height: 1px;
       width: cala(100% - 20px);
@@ -37,6 +41,7 @@
       box-sizing: border-box;
       background: #F2F2F2;
     }
+
     .action-row {
       height: 30px;
       color: #7F7F7F;
