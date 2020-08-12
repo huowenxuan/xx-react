@@ -17,7 +17,6 @@ window.insertTitle = (title) => {
   let id = Date.now()
   titles.push({id, title})
   if (title) updateTitle()
-  console.log(titles)
   return id
 }
 window.popTitle = (id) => {

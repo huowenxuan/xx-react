@@ -7,12 +7,12 @@ import Fixed from '../Fixed'
 export default class NavBar extends PureComponent {
   props: any
   state: any
-  titleIdx
+  titleId
 
   constructor(props) {
     super(props)
     // @ts-ignore
-    this.titleIdx = window.insertTitle(props.title)
+    this.titleId = window.insertTitle(props.title)
   }
 
   static propTypes = {
@@ -32,7 +32,7 @@ export default class NavBar extends PureComponent {
 
   componentWillUnmount() {
     // @ts-ignore
-    window.popTitle(this.titleIdx)
+    window.popTitle(this.titleId)
   }
 
   backButton() {
