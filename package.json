@@ -101,8 +101,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "webpack-dev-server --mode development --env=development --port 3000 --open",
-    "start": "sudo webpack-dev-server --mode production --env=production --port 9003",
-    "build": "sudo webpack --mode production --env=production",
+    "start": "webpack-dev-server --mode production --env=production --port 9003",
+    "build": "webpack --mode production --env=production",
     "scp": "scp -r build root@101.200.60.199:ice-create",
     "scp-test": "scp -r build root@47.94.44.35:/opt/node/ice-create",
     "analyz": "NODE_ENV=production npm_config_report=true npm run build"

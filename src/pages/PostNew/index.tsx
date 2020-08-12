@@ -5,11 +5,16 @@ import Fixed from "../../components/Fixed"
 import images from "../../assets/images"
 import * as utils from "../../utils"
 import {pageWrapper} from '../../components/HigherOrderStatelessComponents'
+import overlays from "../../components/overlays";
 
 export default pageWrapper()((props) => {
   const addImage = async () => {
-    let photos = await utils.choosePhoto(true, true)
-    props.history.toEdit(null, {photos})
+    try {
+      let photos = await utils.choosePhoto(true, true)
+      props.history.toEdit(null, {photos})
+    } catch (e) {
+      overlays.showToast(e.message)
+    }
   }
 
   return (

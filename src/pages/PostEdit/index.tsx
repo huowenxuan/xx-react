@@ -407,13 +407,17 @@ export default class Page extends PureComponent {
   }
 
   onCoverClick = async () => {
-    let photos = await utils.choosePhoto(true, false)
-    let photo = photos[0]
-    const {file, src} = photo
-    this.setCover(src)
-    let uploading = await utils.uploadPhoto(src, file, null)
-    let key = await uploading.start()
-    this.setCover(qiniu.getOriginUrl(key), key)
+    try {
+      let photos = await utils.choosePhoto(true, false)
+      let photo = photos[0]
+      const {file, src} = photo
+      this.setCover(src)
+      let uploading = await utils.uploadPhoto(src, file, null)
+      let key = await uploading.start()
+      this.setCover(qiniu.getOriginUrl(key), key)
+    } catch (e) {
+      overlays.showToast(e.message)
+    }
   }
 
   setCover = async (body, key = '') => {
