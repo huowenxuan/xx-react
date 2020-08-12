@@ -32,4 +32,7 @@ export default {
   ts_logo: require('./img/ts_logo.png'),
   ts_bg: require('./img/ts_bg.png'),
 
+  draft_del_icon: require('./img/draft_del_icon.png'),
+  draft_edit_icon: require('./img/draft_edit_icon.png'),
+  post_cover_placeholder: require('./img/post_cover_placeholder.png'),
 }
