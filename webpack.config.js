@@ -115,7 +115,7 @@ module.exports = function (webpackEnv) {
         filename: "index.html",
         template: path.resolve(__dirname, "index.html"),
       }),
-      new BundleAnalyzerPlugin(),
+      // new BundleAnalyzerPlugin(),
       new StatsPlugin("manifest.json", {
         chunkModules: false,
         entrypoints: true,
