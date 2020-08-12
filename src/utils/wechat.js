@@ -1,19 +1,14 @@
 import {get, API} from "../request"
-
-let _wechat = null
+import wx from 'weixin-js-sdk'
 
 async function getWechat() {
-  if (!_wechat) {
-    const wx = window.wx
-    let url = encodeURIComponent('http://m.tripcity.cn/')
-    let result = await get('/bookapi/weixin/jsconfig?url=' + url)
-    wx.config({
-      ...result.data,
-      debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
-    })
-    _wechat = wx
-  }
-  return _wechat
+  let url = encodeURIComponent('http://m.tripcity.cn/')
+  let result = await get('/bookapi/weixin/jsconfig?url=' + url)
+  wx.config({
+    ...result.data,
+    debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+  })
+  return wx
 }
 
 export async function chooseImage(multiple) {

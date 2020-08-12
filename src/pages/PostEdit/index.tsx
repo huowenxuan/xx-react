@@ -401,6 +401,7 @@ export default class Page extends PureComponent {
       data = await utils.choosePhoto(isImage, true)
       this.onPhotoChoose(index, data, isImage)
     } catch (e) {
+      console.error(e)
       overlays.showToast(e.message)
     }
   }

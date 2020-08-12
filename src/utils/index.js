@@ -113,11 +113,13 @@ async function choosePhotoWx(multiple) {
  * @param multiple 是否可多选
  */
 export function choosePhoto(isImage, multiple) {
-  // if (isImage && isWeixin) {
-  //   return choosePhotoWx(multiple)
-  // } else {
+  return choosePhotoWx(multiple)
+
+  if (isImage && isWeixin) {
+    return choosePhotoWx(multiple)
+  } else {
     return choosePhotoBrowser(isImage, multiple)
-  // }
+  }
 }
 
 /**
