@@ -24,7 +24,7 @@ export default class OverlayViewToast extends OverlayView {
   }
 
   static defaultProps = {
-    duration: 3 * 1000,
+    duration: 2 * 1000,
   }
 
   componentDidMount() {
