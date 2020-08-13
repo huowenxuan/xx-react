@@ -78,6 +78,7 @@ export async function uploadImage(localId, fakeOnProgress, fakeMaxDuration) {
       localId,
       isShowProgressTips: 0,
       success: async (res) => {
+        // 微信bug，上传之后无法立刻通过serverid获取到素材链接，需要延迟执行
         await new Promise(resolve => setTimeout(resolve, 200))
         let {serverId} = res
         try {
