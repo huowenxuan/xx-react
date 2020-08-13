@@ -150,14 +150,19 @@ const EditMediaItem = (props) => {
 
 
   const _renderBtns = () => {
+    const {upload, onCancel, onRetry} = props
+
     return (
       <div className='btns'>
-        <button
-          className='btn del'
-          onClick={e => _action(e, onDelete)}
-        >
-          <img className='icon' src={images.edit_remove_icon}/>
-        </button>
+        {upload ? null : (
+          <button
+            className='btn del'
+            onClick={e => _action(e, onDelete)}
+          >
+            <img className='icon' src={images.edit_remove_icon}/>
+          </button>
+        )}
+
         <button
           className='btn up'
           onClick={e => _action(e, onUp)}
@@ -170,7 +175,7 @@ const EditMediaItem = (props) => {
         >
           <img className='icon' src={images.edit_down_icon}/>
         </button>
-        {_renderSetCoverBtn()}
+        {upload ? null : _renderSetCoverBtn()}
       </div>
     )
   }

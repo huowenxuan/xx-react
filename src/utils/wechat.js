@@ -16,7 +16,7 @@ async function getWechat() {
       // 只在微信端才会有error
       wx.error((e) => error = e.errMsg)
       // 遇到错误同样会走ready，且ready和error的先后顺序不确定
-      setTimeout(()=>{
+      setTimeout(() => {
         wx.ready(() => {
           if (error) reject(new Error(error))
           else resolve(wx)
@@ -48,10 +48,9 @@ export async function uploadImage(localId, fakeOnProgress, fakeMaxDuration) {
   let _reject
   let timer = null
   let canceled = false
-  let _onProgress = (percent)=>{
-    if (!canceled) {
-      fakeOnProgress && fakeOnProgress(percent)
-    }
+  let _onProgress = (percent) => {
+    if (canceled) return
+    fakeOnProgress && fakeOnProgress(percent)
   }
   obj.start = () => new Promise((resolve, reject) => {
     _reject = reject
