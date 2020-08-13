@@ -44,18 +44,11 @@ export default class Page extends PureComponent {
     super(props)
     this.state = {
       openedAddItem: -1,
-      post: {
-        media: [],
-        coverHidden: false,
-        status: 'public'
-        // status: 'private'
-      },
       upload: {
         body: '',
         percent: 0,
       },
       completeBtnEnabled: true,
-      error: null,
       title: ''
     }
   }

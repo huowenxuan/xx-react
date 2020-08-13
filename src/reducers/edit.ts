@@ -7,8 +7,8 @@ let defaultState = {
   post: {
     media: [],
     coverHidden: false,
-    // status: 'public'
-    status: 'private',
+    status: 'public'
+    // status: 'private',
 
   },
   initData: null, // 初始化数据，用于比对是否修改过

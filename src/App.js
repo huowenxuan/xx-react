@@ -39,8 +39,6 @@ export default ({globalEventDistributor, history}) => {
     }
   )
 
-
-
   if (isSingleSpa) {
     console.log("***********")
     console.log(globalEventDistributor.getState())
