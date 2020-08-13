@@ -39,23 +39,18 @@ export default ({globalEventDistributor, history}) => {
     }
   )
 
+
+
   if (isSingleSpa) {
     console.log("***********")
     console.log(globalEventDistributor.getState())
     console.log(globalEventDistributor)
-    useEffect(() => {
-      globalEventDistributor.on("dispatch", () => {
-        console.log("触发dispatch监听")
-        console.log(globalEventDistributor.getState())
-        setGlobalState(globalEventDistributor.getState())
-      })
-      // 网络状况不好的情况下可能无法触发dispatch，还是需要延迟查询
-      setTimeout(() => {
-        console.log("延迟设置globalstate")
-        console.log(globalEventDistributor.getState())
-        setGlobalState(globalEventDistributor.getState())
-      }, 500)
-    }, [])
+
+    globalEventDistributor.on("dispatch", () => {
+      console.log("触发dispatch监听")
+      console.log(globalEventDistributor.getState())
+      setGlobalState(globalEventDistributor.getState())
+    })
 
     if (!globalEventDistributor.getState().loginReducer.userId) {
       synchronize().then((s) => {
@@ -74,7 +69,6 @@ export default ({globalEventDistributor, history}) => {
             avatar: s.avatar,
           },
         })
-
       })
     }
   }
