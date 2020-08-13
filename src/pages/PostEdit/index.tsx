@@ -297,7 +297,7 @@ export default class Page extends PureComponent {
   uploadRetry = async (media) =>{
     const {body, file, type} = media
     this.props.actions.updateMediaByBody(body, {error: null})
-    this.uploadNextMedia()
+    this.isUploading || this.uploadNextMedia()
   }
 
   uploadMedia = async (media) => {
