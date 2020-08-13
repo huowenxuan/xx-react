@@ -339,13 +339,18 @@ export default class Page extends PureComponent {
     console.log('开始查找需要上传的内容')
     this.isUploading = true
     const {post} = this.getEditState()
-    let nextUpload = post.media.find(item =>
+    let notUploads = post.media.filter(item =>
       (item.type === 'image' || item.type === 'shortvideo') &&
-      !item.key &&
-      !item.error
+      !item.key
     )
-    if (!nextUpload) {
+    if (notUploads.length === 0) {
       overlays.showToast('上传完成')
+      return
+    }
+
+    let nextUpload = post.media.find(item => !item.error)
+    if (!nextUpload) {
+      console.log('有上传失败')
       return
     }
 
