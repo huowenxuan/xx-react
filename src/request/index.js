@@ -1,4 +1,4 @@
-'use strict';
+'use strict'
 import queryString from 'query-string'
 // import Toast from "../utils/Toast";
 import axios from 'axios'
@@ -7,11 +7,11 @@ import APIS from './API'
 export const API = APIS
 export const post = function (url, body, token) {
   return _request('post', url, body, token)
-};
+}
 
 export const get = function (url, query, token) {
   return _request('get', url, query, token)
-};
+}
 
 async function _request(method, url, data = {}, token) {
   if (method === 'get') {
@@ -26,6 +26,7 @@ async function _request(method, url, data = {}, token) {
     headers: {
       'Accept': 'application/json',
       'Content-Type': 'application/json',
+      'Cache-Control': 'no-cache',
       Authorization: token ? `JWT ${token}` : null
     }
   }
