@@ -345,7 +345,7 @@ export default class Page extends PureComponent {
       !item.error
     )
     if (!nextUpload) {
-      console.log('全部上传完成')
+      overlays.showToast('上传完成')
       return
     }
 
