@@ -68,20 +68,28 @@ export async function uploadImage(localId, fakeOnProgress, fakeMaxDuration) {
       if (curTimes === maxTimes - 1) clearInterval(timer)
     }, duration)
 
+    const onFail = (e)=>{
+      _onProgress(0)
+      clearInterval(timer)
+      reject(e)
+    }
+
     wx.uploadImage({
       localId,
-      isShowProgressTips: 0,
+      isShowProgressTips: 1,
       success: async (res) => {
         let {serverId} = res
-        let result = await get(API.mediaToQiniu + serverId)
-        _onProgress(100)
-        clearInterval(timer)
-        resolve(result.data.key)
+        try {
+          let result = await get(API.mediaToQiniu + serverId)
+          _onProgress(100)
+          clearInterval(timer)
+          resolve(result.data.key)
+        } catch(e) {
+          onFail(e)
+        }
       },
       fail: () => {
-        _onProgress(0)
-        clearInterval(timer)
-        reject(new Error('微信素材上传失败'))
+        onFail(new Error('微信素材上传失败'))
       }
     })
   })
