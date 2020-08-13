@@ -296,7 +296,7 @@ export default class Page extends PureComponent {
 
   uploadRetry = async (media) =>{
     const {body, file, type} = media
-    this.props.actions.updateMediaByBody(body, {error: null})
+    await this.props.actions.updateMediaByBody(body, {error: null})
     this.isUploading || this.uploadNextMedia()
   }
 
@@ -350,7 +350,6 @@ export default class Page extends PureComponent {
       !item.key
     )
 
-    console.log(notUploads)
     if (notUploads.length === 0) {
       overlays.showToast('上传完成')
       return
@@ -358,7 +357,7 @@ export default class Page extends PureComponent {
 
     let nextUpload = notUploads.find(item => !item.error)
     if (!nextUpload) {
-      console.log('有上传失败')
+      overlays.showToast('部分上传失败')
       return
     }
 
