@@ -5,7 +5,7 @@ import images from "../../../assets/images"
 import {compose, pure} from 'recompose'
 
 const EditMediaItem = (props) => {
-  const {data, onDelete, onUp, onDown, onClick, onSetCover, isCover} = props
+  const {data, onDelete, onUp, upload, onDown,onCancel, onClick, onRetry, onSetCover, isCover} = props
   const _action = (e, func) => {
     e.stopPropagation()
     func && func()
@@ -13,13 +13,11 @@ const EditMediaItem = (props) => {
 
 
   const _onRetry = (e) => {
-    const {upload, onCancel, onRetry} = props
     e.stopPropagation()
     onRetry && onRetry()
   }
 
   const _onCancel = (e) => {
-    const {upload, onCancel, onRetry} = props
     e.stopPropagation()
     onCancel && onCancel()
   }
@@ -150,8 +148,6 @@ const EditMediaItem = (props) => {
 
 
   const _renderBtns = () => {
-    const {upload, onCancel, onRetry} = props
-
     return (
       <div className='btns'>
         {upload ? null : (
@@ -181,7 +177,9 @@ const EditMediaItem = (props) => {
   }
 
   const _onClick = () => {
-    onClick && onClick()
+    if (!upload) {
+      onClick && onClick()
+    }
   }
 
   const {type} = data
