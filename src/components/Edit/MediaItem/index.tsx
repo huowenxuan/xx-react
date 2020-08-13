@@ -38,6 +38,13 @@ const EditMediaItem = (props) => {
     )
   }
 
+  const willUpload = ()=>{
+    return (
+      (data.type === 'image' || data.type === 'shortvideo') &&
+      !data.key
+    )
+  }
+
   const _renderProgress = (item) => {
     if (item.key) return null
     const {upload, onCancel, onRetry} = props
@@ -148,9 +155,10 @@ const EditMediaItem = (props) => {
 
 
   const _renderBtns = () => {
+    let isWillUpload = willUpload()
     return (
       <div className='btns'>
-        {upload ? null : (
+        {isWillUpload ? null : (
           <button
             className='btn del'
             onClick={e => _action(e, onDelete)}
@@ -171,13 +179,13 @@ const EditMediaItem = (props) => {
         >
           <img className='icon' src={images.edit_down_icon}/>
         </button>
-        {upload ? null : _renderSetCoverBtn()}
+        {isWillUpload ? null : _renderSetCoverBtn()}
       </div>
     )
   }
 
   const _onClick = () => {
-    if (!upload) {
+    if (!willUpload()) {
       onClick && onClick()
     }
   }
