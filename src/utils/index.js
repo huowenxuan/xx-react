@@ -134,7 +134,7 @@ export async function uploadPhoto(path, file, onProgress) {
     upload = await wechat.uploadImage(path, onProgress)
   } else if (file) {
     let key = qiniu.generateKey(path)
-    upload = await  qiniu.uploadFile(file, key, onProgress)
+    upload = await qiniu.uploadFile(file, key, onProgress)
   } else {
     throw new Error('没有路径或文件')
   }

@@ -46,6 +46,13 @@ export async function uploadImage(localId, fakeOnProgress, fakeMaxDuration) {
   let wx = await getWechat()
   let obj = {}
   let _reject
+  let timer = null
+  let canceled = false
+  let _onProgress = (percent)=>{
+    if (!canceled) {
+      fakeOnProgress && fakeOnProgress(percent)
+    }
+  }
   obj.start = () => new Promise((resolve, reject) => {
     _reject = reject
     // 假的进度
@@ -54,13 +61,12 @@ export async function uploadImage(localId, fakeOnProgress, fakeMaxDuration) {
     let duration = 100
     let maxTimes = Math.ceil(maxDuration / duration)
     let curTimes = 0
-    let timer = setInterval(() => {
+    timer = setInterval(() => {
       curTimes++
       fakePercent = ((curTimes * duration) / maxDuration) * 100
-      fakeOnProgress && fakeOnProgress(fakePercent)
+      _onProgress(fakePercent)
       // 最后一次不再增加（不会加到100%）
-      if (curTimes === maxTimes - 1)
-        clearInterval(timer)
+      if (curTimes === maxTimes - 1) clearInterval(timer)
     }, duration)
 
     wx.uploadImage({
@@ -69,18 +75,20 @@ export async function uploadImage(localId, fakeOnProgress, fakeMaxDuration) {
       success: async (res) => {
         let {serverId} = res
         let result = await get(API.mediaToQiniu + serverId)
-        fakeOnProgress && fakeOnProgress(100)
+        _onProgress(100)
         clearInterval(timer)
         resolve(result.data.key)
       },
       fail: () => {
-        fakeOnProgress && fakeOnProgress(0)
+        _onProgress(0)
         clearInterval(timer)
-        reject('微信素材上传失败')
+        reject(new Error('微信素材上传失败'))
       }
     })
   })
   obj.cancel = () => {
+    canceled = true
+    clearInterval(timer)
     // 微信不能取消，手动取消需要reject，让下面的代码继续执行
     _reject(new Error('cancel'))
   }
