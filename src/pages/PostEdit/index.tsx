@@ -389,8 +389,13 @@ export default class Page extends PureComponent {
   }
 
   cancelUpload = (index, data) => {
+    let {post} = this.getEditState()
+    const {coverKey, headbacimgurl, coverHidden} = post
     if (this.uploading && this.uploading.path === data.body) {
       this.uploading.cancel()
+    }
+    if (headbacimgurl === data.body) {
+      this.setCover('')
     }
     this.props.actions.deleteMedia(index)
   }
