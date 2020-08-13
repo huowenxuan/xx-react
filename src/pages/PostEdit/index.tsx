@@ -294,6 +294,12 @@ export default class Page extends PureComponent {
     })
   }
 
+  uploadRetry = async (media) =>{
+    const {body, file, type} = media
+    this.props.actions.updateMediaByBody(body, {error: null})
+    this.uploadNextMedia()
+  }
+
   uploadMedia = async (media) => {
     const {body, file, type} = media
     this.props.actions.updateMediaByBody(body, {error: null})
@@ -343,12 +349,14 @@ export default class Page extends PureComponent {
       (item.type === 'image' || item.type === 'shortvideo') &&
       !item.key
     )
+
+    console.log(notUploads)
     if (notUploads.length === 0) {
       overlays.showToast('上传完成')
       return
     }
 
-    let nextUpload = post.media.find(item => !item.error)
+    let nextUpload = notUploads.find(item => !item.error)
     if (!nextUpload) {
       console.log('有上传失败')
       return
@@ -481,7 +489,7 @@ export default class Page extends PureComponent {
           onUp={() => this.props.actions.mediaUp(index)}
           onDown={() => this.props.actions.mediaDown(index)}
           onSetCover={() => this.setCover(data.body, data.key)}
-          onRetry={() => this.uploadMedia(data)}
+          onRetry={() => this.uploadRetry(data)}
           onCancel={() => this.cancelUpload(index, data)}
         />
         {index === media.length - 1
