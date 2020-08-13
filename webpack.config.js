@@ -144,10 +144,6 @@ module.exports = function (webpackEnv) {
           target: "http://testenjoy.tangshui.net",
           pathRewrite: {"^/testapi": ""},
         },
-        "/bookapi": {
-          target: 'http://book.tripcity.cn/',
-          pathRewrite: {"^/bookapi": ""},
-        },
       },
       host: "localhost",
     },

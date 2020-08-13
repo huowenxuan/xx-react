@@ -357,7 +357,7 @@ export default class Page extends PureComponent {
 
     let nextUpload = notUploads.find(item => !item.error)
     if (!nextUpload) {
-      overlays.showToast('部分上传失败')
+      console.log('部分上传失败')
       return
     }
 

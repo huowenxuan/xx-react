@@ -6,7 +6,7 @@ let _wechat = null
 async function getWechat() {
   if (!_wechat) {
     let url = encodeURIComponent(location.href.split('#')[0])
-    let result = await get('/bookapi/weixin/jsconfig?url=' + url)
+    let result = await get('/api/youth/weixin/jssdk?url=' + url)
     _wechat = await new Promise((resolve, reject) => {
       let error = null
       wx.config({
@@ -76,7 +76,7 @@ export async function uploadImage(localId, fakeOnProgress, fakeMaxDuration) {
 
     wx.uploadImage({
       localId,
-      isShowProgressTips: 1,
+      isShowProgressTips: 0,
       success: async (res) => {
         let {serverId} = res
         try {
