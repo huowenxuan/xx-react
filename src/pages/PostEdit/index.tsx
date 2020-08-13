@@ -47,8 +47,8 @@ export default class Page extends PureComponent {
       post: {
         media: [],
         coverHidden: false,
-        // status: 'public'
-        status: 'private'
+        status: 'public'
+        // status: 'private'
       },
       upload: {
         body: '',
