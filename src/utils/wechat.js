@@ -52,7 +52,7 @@ export async function uploadImage(localId, fakeOnProgress, fakeMaxDuration) {
     if (canceled) return
     fakeOnProgress && fakeOnProgress(percent)
   }
-  obj.start = () => new Promise((resolve, reject) => {
+  obj.start = () => new Promise(async (resolve, reject) => {
     _reject = reject
     // 假的进度
     let fakePercent = 0
@@ -68,7 +68,7 @@ export async function uploadImage(localId, fakeOnProgress, fakeMaxDuration) {
       if (curTimes === maxTimes - 1) clearInterval(timer)
     }, duration)
 
-    const onFail = (e)=>{
+    const onFail = (e) => {
       _onProgress(0)
       clearInterval(timer)
       reject(e)
@@ -78,13 +78,14 @@ export async function uploadImage(localId, fakeOnProgress, fakeMaxDuration) {
       localId,
       isShowProgressTips: 0,
       success: async (res) => {
+        await new Promise(resolve => setTimeout(resolve, 200))
         let {serverId} = res
         try {
           let result = await get(API.mediaToQiniu + serverId)
           _onProgress(100)
           clearInterval(timer)
           resolve(result.data.key)
-        } catch(e) {
+        } catch (e) {
           onFail(e)
         }
       },
