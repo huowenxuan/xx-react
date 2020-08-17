@@ -30,13 +30,13 @@ function _saveDraft(userId, draftId, data) {
   } else {
     drafts[draftId] = data
   }
-  localStorage.setItem(`draft-${userId}`, JSON.stringify(drafts))
+  _updateLocalStorage(userId, drafts)
 }
 
 function _deleteDraft(userId, draftId) {
   let drafts = _findDrafts(userId)
   delete drafts[draftId]
-  localStorage.setItem(`draft-${userId}`, JSON.stringify(drafts))
+  _updateLocalStorage(userId, drafts)
 }
 
 function _deleteAllDrafts(userId) {
@@ -47,6 +47,12 @@ function _findDrafts(userId) {
   let data = localStorage.getItem(`draft-${userId}`)
   if (!data) return {}
   return JSON.parse(data)
+}
+
+function _updateLocalStorage(userId, drafts) {
+  drafts = drafts || {}
+  localStorage.setItem(`draft-${userId}-count`, Object.keys(drafts).length.toString())
+  localStorage.setItem(`draft-${userId}`, JSON.stringify(drafts))
 }
 
 function _format(drafts) {
