@@ -112,8 +112,8 @@ export default class Page extends PureComponent {
           {
             text: '打开', onPress: async () => {
               let {payload: draft} = await actions.initPostEditWithDraftId(userId, this.draftId)
-              console.log('打开草稿')
               this.setState({title: draft.title})
+              overlays.showToast('已加载草稿')
             }
           },
           {text: '取消'}
