@@ -8,7 +8,7 @@ export default (props) => {
   const actions = [
     {text: '照片', action: () => _action(onImage), icon: images.add_photo_icon},
     {text: '文字', action: () => _action(onText),  icon: images.add_text_icon},
-    {text: '链接', action: () => _action(onLink),  icon: images.add_line_icon},
+    {text: '链接', action: () => _action(onLink),  icon: images.add_link_icon},
     {text: '视频', action: () => _action(onVideo),  icon: images.add_video_icon},
   ]
 

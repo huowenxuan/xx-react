@@ -7,7 +7,7 @@ export default {
   icon_check_un: require('./img/icon_check_un.png'),
   add_spe_icon: require('./img/add_spe_icon.png'),
   add_photo_icon: require('./img/add_photo_icon.png'),
-  add_line_icon: require('./img/add_line_icon.png'),
+  add_link_icon: require('./img/add_link_icon.png'),
   add_video_icon: require('./img/add_video_icon.png'),
   add_text_icon: require('./img/add_text_icon.png'),
   icon_limit: require('./img/icon_limit.png'),
