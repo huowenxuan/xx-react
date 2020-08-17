@@ -87,6 +87,7 @@ export default class Page extends PureComponent {
     console.log('浏览器返回事件', e)
     overlays.dismissAll()
     this.onBack()
+    this.removePopstateListener()
   }
 
   getEditState = () => this.props.state.edit
@@ -119,14 +120,18 @@ export default class Page extends PureComponent {
     }
   }
 
+  /**
+   * @param isClick 是否认为点击，false为浏览器返回
+   */
   onBack = (isClick?) => {
     const {props} = this
     const {post, error, initData} = this.getEditState()
     const {userId} = this.props.user
     const back = () => {
-      this.removePopstateListener()
-      // 人为点击返回则需要返回，浏览器返回不需要
-      isClick && props.history.goBack()
+      if (isClick) {
+        this.removePopstateListener()
+        props.history.goBack()
+      }
     }
 
     if (error) {
