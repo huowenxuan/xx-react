@@ -9,10 +9,9 @@ import {_findDraftById} from './draft'
 
 const {API} = request
 
-export const initPostEditWithPostId = createAction(types.EDIT_INIT, async (postId, token) => {
+const _getPost = async (postId, token) => {
   let data = await request.get(API.postEdit + postId, {}, token)
   let {post} = data
-  console.log('编辑', post)
   const {media} = post
   for (let item of media) {
     const {info, type, style} = item
@@ -22,6 +21,21 @@ export const initPostEditWithPostId = createAction(types.EDIT_INIT, async (postI
     }
   }
   return post
+}
+
+export const getPost = createAction('', async (postId, token) => {
+  let post = await _getPost(postId, token)
+  return post
+})
+
+export const initPostEditWithPostId = createAction(types.EDIT_INIT, async (postId, token) => {
+  let post = await _getPost(postId, token)
+  console.log('编辑', post)
+  if (post.status !== 'public' && post.status !== 'private' && post.status !== 'protect') {
+    throw new Error('帖子不存在')
+  } else {
+    return post
+  }
 })
 
 export const initPostEditWithDraftId = createAction(types.EDIT_INIT, async (userId, draftId) => {

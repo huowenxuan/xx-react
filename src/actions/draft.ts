@@ -8,15 +8,24 @@ export function _findDraftById(userId, draftId) {
   return drafts[draftId] || null
 }
 
+/**
+ * 保存草稿
+ * @param userId
+ * @param draftId 如果编辑帖子，draftId为帖子id，如果直接新建，draftId为时间
+ * @param data
+ * @private
+ */
 function _saveDraft(userId, draftId, data) {
   let drafts = _findDrafts(userId)
   let now = Date.now()
-  data.updated_at = now
-  if (!draftId) {
-    draftId = now
+  data.draft_updated_at = now
+  if (!draftId) draftId = now
+  data.draftId = draftId
+  if (!drafts[draftId]) {
+    data.draft_created_at = now
     drafts = {
       [draftId]: data,
-      ...drafts
+      ...drafts,
     }
   } else {
     drafts[draftId] = data
@@ -73,3 +82,4 @@ export const deleteAllDrafts = createAction(types.SYNC_DRAFTS, async (userId, dr
 export const findDraftById = createAction('', async (userId, draftId) => {
   return _findDraftById(userId, draftId)
 })
+

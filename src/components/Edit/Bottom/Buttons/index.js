@@ -41,6 +41,7 @@ const EditBottom = (props) => {
     )
   }
 
+  let findStatus = status && Statuses.find(i => i.type === status)
   return (
     <Fixed>
       <div
@@ -62,7 +63,7 @@ const EditBottom = (props) => {
           images.icon_limit_red,
           images.icon_limit,
           onRightClick,
-          status ? Statuses.find(i => i.type === status).title : ''
+          findStatus ? findStatus.title : ''
         )}
       </div>
     </Fixed>

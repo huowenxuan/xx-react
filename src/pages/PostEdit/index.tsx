@@ -48,7 +48,7 @@ export default class Page extends PureComponent {
         body: '',
         percent: 0,
       },
-      completeBtnEnabled: true,
+      completeBtnEnabled: false,
       title: ''
     }
   }
@@ -94,30 +94,60 @@ export default class Page extends PureComponent {
 
   init = async (user) => {
     // const {id} = props.match.params
-    let {photos, search} = this.props.location
+    const {history, location, actions} = this.props
+    let {photos, search} = location
     search = qs.decode(search.substr(1))
     const {userId, token} = user
     if (search.postId) {
       this.postId = search.postId
       // 编辑旧帖子
-      let {payload: post} = await this.props.actions.initPostEditWithPostId(this.postId, token)
+      let {payload: post} = await actions.initPostEditWithPostId(this.postId, token)
+      actions.deleteDraft(userId, this.draftId)
+      // 找到帖子之前在编辑的草稿
+      // 如果草稿中已有在编辑的草稿，提示是否打开草稿继续编辑
+      let {payload: draft} = await actions.findDraftById(user.userId, this.postId)
+      if (draft) {
+        this.draftId = draft.draftId
+        overlays.showAlert('本文有未完成的草稿，打开草稿继续编辑？', '', [
+          {
+            text: '打开', onPress: async () => {
+              let {payload: draft} = await actions.initPostEditWithDraftId(userId, this.draftId)
+              console.log('打开草稿')
+              this.setState({title: draft.title})
+            }
+          },
+          {text: '取消'}
+        ])
+      }
+
       this.setState({title: post.title})
+    } else if (search.draftId) {
+      // 草稿
+      this.draftId = search.draftId
+      let {payload: draft} = await actions.initPostEditWithDraftId(userId, this.draftId)
+      this.postId = draft._id
+      // 编辑帖子时，如果帖子被删除，则删除草稿
+      if (this.postId) {
+        let {payload: post} = await actions.getPost(this.postId, token)
+        if (post.status !== 'public' && post.status !== 'private' && post.status !== 'protect') {
+          overlays.showToast('原帖已被删除，即将删除草稿')
+          actions.deleteDraft(userId, this.draftId)
+          setTimeout(history.goBack, 2000)
+          return
+        }
+      }
+      this.setState({title: draft.title})
     } else if (photos) {
       // 根据照片创建新帖子
       this.onPhotoChoose(0, photos, true)
       console.log('照片', photos)
       await this.props.actions.initPostEdit()
-    } else if (search.draftId) {
-      // 草稿
-      this.draftId = search.draftId
-      let {payload: draft} = await this.props.actions.initPostEditWithDraftId(userId, this.draftId)
-      this.postId = draft._id
-      this.setState({title: draft.title})
     } else {
       // 新建
       await this.props.actions.initPostEdit()
       this.openAdd(0)
     }
+    this.setState({completeBtnEnabled: true})
   }
 
   /**
@@ -154,7 +184,7 @@ export default class Page extends PureComponent {
     }
     const saveAndBack = () => {
       back()
-      props.actions.saveDraft(userId, this.draftId, newPost)
+      props.actions.saveDraft(userId, this.draftId || this.postId, newPost)
     }
 
     if (JSON.stringify(newPost) === JSON.stringify(initData)) {
@@ -292,7 +322,7 @@ export default class Page extends PureComponent {
     })
   }
 
-  uploadRetry = async (media) =>{
+  uploadRetry = async (media) => {
     const {body, file, type} = media
     await this.props.actions.updateMediaByBody(body, {error: null})
     this.isUploading || this.uploadNextMedia()
