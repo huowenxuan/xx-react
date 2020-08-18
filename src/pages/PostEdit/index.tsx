@@ -585,7 +585,7 @@ export default class Page extends PureComponent {
     } else if (!coverHidden) {
       return (
         <div className='edit-cover'>
-          <img className='cover' src={headbacimgurl}/>
+          <img className='cover-img' src={headbacimgurl}/>
           <div className='wrapper'>
             <button
               onClick={() => this.props.actions.setPostState({coverHidden: true})}
