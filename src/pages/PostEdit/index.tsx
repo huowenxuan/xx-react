@@ -39,6 +39,7 @@ export default class Page extends PureComponent {
   addBtn: any = React.createRef() // 当前点击的加号按钮
   uploading = null // 正在上传的对象
   isUploading = false // 是否正在上传
+  from = '' // 来源 book
 
   constructor(props) {
     super(props)
@@ -49,7 +50,8 @@ export default class Page extends PureComponent {
         percent: 0,
       },
       completeBtnEnabled: false,
-      title: ''
+      title: '',
+      showBottom: true
     }
   }
 
@@ -96,8 +98,11 @@ export default class Page extends PureComponent {
     // const {id} = props.match.params
     const {history, location, actions} = this.props
     let {photos, search} = location
-    search = qs.decode(search.substr(1))
     const {userId, token} = user
+
+    search = qs.decode(search.substr(1))
+    this.from = search.from
+
     if (search.postId) {
       this.postId = search.postId
       // 编辑旧帖子
@@ -147,6 +152,14 @@ export default class Page extends PureComponent {
       await this.props.actions.initPostEdit()
       this.openAdd(0)
     }
+
+    // 来源于印品，隐藏底部按钮
+    if (this.from === 'book') {
+      this.setState({
+        showBottom: false
+      })
+    }
+
     this.setState({completeBtnEnabled: true})
   }
 
@@ -601,6 +614,7 @@ export default class Page extends PureComponent {
 
   render() {
     const {post, error, initData} = this.getEditState()
+    const {showBottom, completeBtnEnabled} = this.state
 
     if (error) {
       return (
@@ -627,7 +641,7 @@ export default class Page extends PureComponent {
           title='写文章'
           onBack={() => this.onBack(true)}
           rightButtons={[
-            this.state.completeBtnEnabled
+            completeBtnEnabled
               ? {text: '完成', onClick: this.complete}
               : {text: ''},
           ]}
@@ -651,13 +665,18 @@ export default class Page extends PureComponent {
             {this.renderMedia(media)}
           </div>
 
-          <EditBottomButtons
-            audio={audio_id}
-            status={status}
-            onLeftClick={() => this.showBottomEdit('audio')}
-            onRightClick={() => this.showBottomEdit('status')}
-          />
-          <div style={{height: EditBottomHeight}}/>
+          {showBottom ? (
+            <>
+              <EditBottomButtons
+                audio={audio_id}
+                status={status}
+                onLeftClick={() => this.showBottomEdit('audio')}
+                onRightClick={() => this.showBottomEdit('status')}
+              />
+              <div style={{height: EditBottomHeight}}/>
+            </>
+          ) : null}
+
         </div>
       </div>
     )
