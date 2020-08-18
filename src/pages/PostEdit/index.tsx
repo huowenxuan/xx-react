@@ -144,9 +144,9 @@ export default class Page extends PureComponent {
       this.setState({title: draft.title})
     } else if (photos) {
       // 根据照片创建新帖子
+      await this.props.actions.initPostEdit()
       this.onPhotoChoose(0, photos, true)
       console.log('照片', photos)
-      await this.props.actions.initPostEdit()
     } else {
       // 新建
       await this.props.actions.initPostEdit()
