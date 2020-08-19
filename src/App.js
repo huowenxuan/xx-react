@@ -93,14 +93,10 @@ export default ({globalEventDistributor, history}) => {
   }, [])
 
   return (
-    <div className='App'>
-      <div className='container'>
-        <Router
-          globalState={globalState}
-          history={history}
-        />
-      </div>
-    </div>
+    <Router
+      globalState={globalState}
+      history={history}
+    />
   )
 }
 
