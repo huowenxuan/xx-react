@@ -11,7 +11,7 @@ import AppLink from './pages/AppLink/'
 import Draft from './pages/Draft/'
 
 const prefix = '/create'
-const routes = {
+export const routes = {
   root: prefix,
   new: prefix + '/new',
   edit: prefix + '/edit',

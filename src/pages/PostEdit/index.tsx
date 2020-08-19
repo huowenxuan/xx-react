@@ -14,6 +14,7 @@ import images from '../../assets/images'
 import * as request from '../../request'
 import * as utils from '../../utils'
 import {cloneDeep} from 'lodash'
+import {routes} from '../../Router'
 // import cloneDeep from 'lodash/cloneDeep'
 // import {pageWrapper} from '../../components/HigherOrderStatelessComponents'
 import {pageWrapper} from '../../components/HigherOrderComponents'
@@ -56,9 +57,15 @@ export default class Page extends PureComponent {
   }
 
   componentDidMount() {
+    // singlespa错误
+    // 1. 进入当前子应用，页面A
+    // 2. 退出当前子应用进入其他应用
+    // 3. 再进入当前子应用，页面B，会先mount A，再马上unmount，再加载B（href一直都是B）
+    if (window.location.pathname !== routes.edit) {
+      return
+    }
     if (this.props.user && this.props.user.userId) {
-      console.log('init data didmount')
-      this.init(this.props.user)
+      this.init(this.props.user, true)
     } else {
       console.log('didmount无用户信息')
     }
@@ -68,8 +75,7 @@ export default class Page extends PureComponent {
   componentWillReceiveProps(nextProps, nextContext: any): void {
     const {user} = nextProps
     if (!this.props.user.userId && user.userId) {
-      console.log('init data receiveProp')
-      this.init(user)
+      this.init(user, false)
     }
   }
 
@@ -94,7 +100,11 @@ export default class Page extends PureComponent {
 
   getEditState = () => this.props.state.edit
 
-  init = async (user) => {
+  init = async (user, isMount) => {
+    if (isMount)
+      console.log('init data didmount')
+    else
+      console.log('init data receiveProp')
     // const {id} = props.match.params
     const {history, location, actions} = this.props
     let {photos, search} = location
