@@ -57,7 +57,7 @@ export default class Page extends PureComponent {
   }
 
   componentDidMount() {
-    // singlespa错误
+    // singlespa错误：切换应用再回来会先处于上一次的状态再处理新的状态
     // 1. 进入当前子应用，页面A
     // 2. 退出当前子应用进入其他应用
     // 3. 再进入当前子应用，页面B，会先mount A，再马上unmount，再加载B（href一直都是B）
