@@ -29,12 +29,22 @@ const initRoutes = (history) => {
     })
   }
 
+  let replaceTo = (path, qs?, params?) => {
+    qs = qs ? '?' + querystring.stringify(qs) : ''
+    history.replace({
+      pathname: `${path}`,
+      search: qs,
+      ...(params || {})
+    })
+  }
+
   history.toEdit = (...args) => pushTo(routes.edit, ...args)
   history.toNew = () => pushTo(routes.new)
   history.toDrafts = () => pushTo(routes.drafts)
   history.replaceToDrafts = () => replace(routes.drafts)
 
   history.replaceToShow = (postId)=> replace('/show/post/' + postId)
+  history.replaceToEdit = (...args)=> replaceTo(routes.edit, ...args)
 }
 
 export default class Router extends PureComponent {

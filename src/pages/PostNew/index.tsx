@@ -11,7 +11,7 @@ export default pageWrapper()((props) => {
   const addImage = async () => {
     try {
       let photos = await utils.choosePhoto(true, true)
-      props.history.toEdit(null, {photos})
+      props.history.replaceToEdit(null, {photos})
     } catch (e) {
       overlays.showToast(e.message)
     }
