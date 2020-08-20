@@ -145,15 +145,15 @@ export async function uploadPhoto(path, file, onProgress) {
 
 /* 转换从浏览器赋值或者客户端分享出来的优酷、腾讯视频 */
 export function getWebVideoUrl(srcValue) {
-  // srcValue = 'http://v.youku.com/v_show/id_XMjc4OTQ5OTIyOA==.html'
-  // srcValue = 'http://m.v.qq.com/play/play.html?vid=l0024si3r7q&coverid=dhzimk1301&type=2&sharePlayNumTag=0&ptag=4_5.6.3.19314_copy'
+  // srcValue = 'https://v.youku.com/v_show/id_XMjc4OTQ5OTIyOA==.html'
+  // srcValue = 'https://m.v.qq.com/play/play.html?vid=l0024si3r7q&coverid=dhzimk1301&type=2&sharePlayNumTag=0&ptag=4_5.6.3.19314_copy'
   // 如果是优酷视频，就解析，如果解析失败就返回原来的网址
   let getYouKuVideo = (srcValue) => {
     let id
     if (srcValue.indexOf('.html') !== -1 && srcValue.indexOf('id_') !== -1)
       id = srcValue.substring(srcValue.indexOf('id_') + 3, srcValue.indexOf('.html'))
-    else return srcValue
-    return "http://player.youku.com/embed/" + id
+    else return srcValue.replace('http:', 'https:')
+    return "https://player.youku.com/embed/" + id
   }
 
   let getQQVideo = (srcValue) => {
@@ -162,11 +162,11 @@ export function getWebVideoUrl(srcValue) {
       vid = srcValue.substring(srcValue.indexOf('vid') + 4, srcValue.indexOf('vid') + 15)
     else if (srcValue.indexOf('.html') !== -1)
       vid = srcValue.substring(srcValue.indexOf('.html') - 11, srcValue.indexOf('.html'))
-    else return srcValue
-    return 'http://v.qq.com/iframe/player.html?vid=' + vid + `&auto=0`
+    else return srcValue.replace('http:', 'https:')
+    return 'https://v.qq.com/iframe/player.html?vid=' + vid + `&auto=0`
   }
 
-  let errorUrl = 'http://v.qq.com/iframe/player.html?vid=l0024si3rco'
+  let errorUrl = 'https://v.qq.com/iframe/player.html?vid=l0024si3rco'
   if (!srcValue || !srcValue.indexOf) return errorUrl
   if (srcValue.indexOf('youku.com') !== -1) return getYouKuVideo(srcValue)
   if (srcValue.indexOf('qq.com') !== -1) return getQQVideo(srcValue)
