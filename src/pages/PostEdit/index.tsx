@@ -305,7 +305,11 @@ export default class Page extends PureComponent {
       console.log(result)
       console.log(result._id)
       this.removePopstateListener()
-      this.props.history.replaceToShow(result._id)
+      if (this.from === 'book') {
+        this.props.history.goBack()
+      } else {
+        this.props.history.replaceToShow(result._id)
+      }
       // this.props.history.replace(`/postedit?postId=${result._id}`)
       // window.location.href = `/postedit?postId=${result._id}`
     } catch (e) {
