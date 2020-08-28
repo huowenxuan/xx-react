@@ -39,37 +39,39 @@ export default ({globalEventDistributor, history}) => {
     }
   )
 
-  if (isSingleSpa) {
-    console.log("***********")
-    console.log(globalEventDistributor.getState())
-    console.log(globalEventDistributor)
-
-    globalEventDistributor.on("dispatch", () => {
-      console.log("触发dispatch监听")
+  useEffect(()=>{
+    if (isSingleSpa) {
+      console.log("***********")
       console.log(globalEventDistributor.getState())
-      setGlobalState(globalEventDistributor.getState())
-    })
+      console.log(globalEventDistributor)
 
-    if (!globalEventDistributor.getState().loginReducer.userId) {
-      synchronize().then((s) => {
-        console.log(":::::::::::::::::::")
-        console.log(s)
+      globalEventDistributor.on("dispatch", () => {
+        console.log("触发dispatch监听")
         console.log(globalEventDistributor.getState())
-        console.log(":::::::::::::::::::")
-        globalEventDistributor.dispatch({
-          type: "login",
-          payload: {
-            userId: s.userId,
-            token: s.token,
-            userName: s.userName,
-            phone: s.phone,
-            openid: s.openid,
-            avatar: s.avatar,
-          },
-        })
+        setGlobalState(globalEventDistributor.getState())
       })
+
+      if (!globalEventDistributor.getState().loginReducer.userId) {
+        synchronize().then((s) => {
+          console.log(":::::::::::::::::::")
+          console.log(s)
+          console.log(globalEventDistributor.getState())
+          console.log(":::::::::::::::::::")
+          globalEventDistributor.dispatch({
+            type: "login",
+            payload: {
+              userId: s.userId,
+              token: s.token,
+              userName: s.userName,
+              phone: s.phone,
+              openid: s.openid,
+              avatar: s.avatar,
+            },
+          })
+        })
+      }
     }
-  }
+  }, [])
 
   useEffect(() => {
     // 初始化后再加入，防止顺序在上，无法把app覆盖住
