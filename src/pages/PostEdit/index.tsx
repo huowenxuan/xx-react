@@ -40,7 +40,9 @@ export default class Page extends PureComponent {
   addBtn: any = React.createRef() // 当前点击的加号按钮
   uploading = null // 正在上传的对象
   isUploading = false // 是否正在上传
+  search
   from = '' // 来源 book
+  user
 
   constructor(props) {
     super(props)
@@ -54,6 +56,11 @@ export default class Page extends PureComponent {
       title: '',
       showBottom: true
     }
+
+    let {search} = props.location
+    search = qs.decode(search.substr(1))
+    this.search = search
+    this.from = search.from
   }
 
   componentDidMount() {
@@ -64,7 +71,17 @@ export default class Page extends PureComponent {
     if (window.location.pathname !== routes.edit) {
       return
     }
-    if (this.props.user && this.props.user.userId) {
+
+    if (this.search.from === 'book') {
+      request.post('/bookapi/auth/login/phoneOnly', {phone: this.search.phone})
+        .then(({data})=>{
+          this.user = {
+            userId: data.user_id,
+            token: data.token
+          }
+          this.init(this.user, true)
+        })
+    } else if (this.props.user && this.props.user.userId) {
       this.init(this.props.user, true)
     } else {
       console.log('didmount无用户信息')
@@ -101,20 +118,18 @@ export default class Page extends PureComponent {
   getEditState = () => this.props.state.edit
 
   init = async (user, isMount) => {
+    this.user = user
     if (isMount)
       console.log('init data didmount')
     else
       console.log('init data receiveProp')
     // const {id} = props.match.params
     const {history, location, actions} = this.props
-    let {photos, search} = location
+    let {photos} = location
     const {userId, token} = user
 
-    search = qs.decode(search.substr(1))
-    this.from = search.from
-
-    if (search.postId) {
-      this.postId = search.postId
+    if (this.search.postId) {
+      this.postId = this.search.postId
       // 编辑旧帖子
       let {payload: post} = await actions.initPostEditWithPostId(this.postId, token)
       actions.deleteDraft(userId, this.draftId)
@@ -136,9 +151,9 @@ export default class Page extends PureComponent {
       }
 
       this.setState({title: post.title})
-    } else if (search.draftId) {
+    } else if (this.search.draftId) {
       // 草稿
-      this.draftId = search.draftId
+      this.draftId = this.search.draftId
       let {payload: draft} = await actions.initPostEditWithDraftId(userId, this.draftId)
       this.postId = draft._id
       // 编辑帖子时，如果帖子被删除，则删除草稿
@@ -179,7 +194,7 @@ export default class Page extends PureComponent {
   onBack = (isClick?) => {
     const {props} = this
     const {post, error, initData} = this.getEditState()
-    const {userId} = this.props.user
+    const {userId} = this.user
     const back = () => {
       if (isClick) {
         this.removePopstateListener()
@@ -243,7 +258,7 @@ export default class Page extends PureComponent {
     const {audio_id, status, protect} = post
     overlays.show(
       <EditBottomOverlay
-        token={this.props.user.token}
+        token={this.user.token}
         type={type}
         audio={audio_id}
         status={status}
@@ -293,7 +308,7 @@ export default class Page extends PureComponent {
     let result
     this.setState({completeBtnEnabled: false})
     try {
-      let {userId, token} = this.props.user
+      let {userId, token} = this.user
       if (this.postId) {
         result = await request.post(request.API.postUpdate + this.postId, {data}, token)
         overlays.showToast('更新成功')
@@ -639,7 +654,7 @@ export default class Page extends PureComponent {
       )
     }
 
-    if (!initData || !this.props.user) {
+    if (!initData || !this.user) {
       return (
         <div className='post-edit'>
           <NavBar title='写文章' onBack={() => this.onBack(true)}/>
