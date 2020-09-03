@@ -6,12 +6,19 @@ import images from "../../assets/images"
 import * as utils from "../../utils"
 import {pageWrapper} from '../../components/HigherOrderStatelessComponents'
 import overlays from "../../components/overlays";
+import qs from "querystring"
 
 export default pageWrapper()((props) => {
   const addImage = async () => {
+    let {search} = props.location
+    search = qs.decode(search.substr(1))
+    const {from, phone} = search
+    let query: any = {}
+    if (from) query.from = from
+    if (phone) query.phone = phone
     try {
       let photos = await utils.choosePhoto(true, true)
-      props.history.replaceToEdit(null, {photos})
+      props.history.replaceToEdit(query, {photos})
     } catch (e) {
       overlays.showToast(e.message)
     }
