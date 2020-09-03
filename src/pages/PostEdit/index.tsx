@@ -41,6 +41,7 @@ export default class Page extends PureComponent {
   uploading = null // 正在上传的对象
   isUploading = false // 是否正在上传
   search
+  location
   from = '' // 来源 book
   user
 
@@ -57,13 +58,16 @@ export default class Page extends PureComponent {
       showBottom: true
     }
 
-    let {search} = props.location
+    const {location} = props
+    let {search} = location
+    // 在singlespa中，didmount之后location会被重置，只保留pathname、search等参数，自定义的参数被删掉
+    this.location = location
     search = qs.decode(search.substr(1))
     this.search = search
     this.from = search.from
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     // singlespa错误：切换应用再回来会先处于上一次的状态再处理新的状态
     // 1. 进入当前子应用，页面A
     // 2. 退出当前子应用进入其他应用
@@ -71,16 +75,13 @@ export default class Page extends PureComponent {
     if (window.location.pathname !== routes.edit) {
       return
     }
-
     if (this.search.from === 'book') {
-      request.post('/bookapi/auth/login/phoneOnly', {phone: this.search.phone})
-        .then(({data}) => {
-          this.user = {
-            userId: data.user_id,
-            token: data.token
-          }
-          this.init(this.user, true)
-        })
+      let {data} = await request.post('/bookapi/auth/login/phoneOnly', {phone: this.search.phone})
+      this.user = {
+        userId: data.user_id,
+        token: data.token
+      }
+      this.init(this.user, true)
     } else if (this.props.user && this.props.user.userId) {
       this.init(this.props.user, true)
     } else {
@@ -121,15 +122,11 @@ export default class Page extends PureComponent {
 
   init = async (user, isMount) => {
     this.user = user
-    if (isMount)
-      console.log('init data didmount')
-    else
-      console.log('init data receiveProp')
+    console.log(isMount ? 'init data didmount' : 'init data receiveProp')
     // const {id} = props.match.params
-    const {history, location, actions} = this.props
-    let {photos} = location
+    const {history, actions} = this.props
     const {userId, token} = user
-
+    let {photos} = this.location
     if (this.search.postId) {
       this.postId = this.search.postId
       // 编辑旧帖子
