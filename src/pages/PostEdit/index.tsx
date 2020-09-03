@@ -202,6 +202,11 @@ export default class Page extends PureComponent {
       }
     }
 
+    if (this.from === 'book') {
+      back()
+      return
+    }
+
     if (error) {
       back()
       return
