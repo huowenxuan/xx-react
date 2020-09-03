@@ -74,7 +74,7 @@ export default class Page extends PureComponent {
 
     if (this.search.from === 'book') {
       request.post('/bookapi/auth/login/phoneOnly', {phone: this.search.phone})
-        .then(({data})=>{
+        .then(({data}) => {
           this.user = {
             userId: data.user_id,
             token: data.token
@@ -107,8 +107,10 @@ export default class Page extends PureComponent {
   }
 
   onPopstate = (e) => {
-    // singlespa在push时也会触发
-    if (e.singleSpaTrigger === 'pushState') return
+    // singlespa在push、replace时也会触发
+    if (e.singleSpaTrigger === 'pushState'
+      || e.singleSpaTrigger === 'replaceState'
+    ) return
     console.log('浏览器返回事件', e)
     overlays.dismissAll()
     this.onBack()
